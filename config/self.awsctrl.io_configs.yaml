@@ -1,0 +1,138 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  name: configs.self.awsctrl.io
+spec:
+  group: self.awsctrl.io
+  names:
+    kind: Config
+    listKind: ConfigList
+    plural: configs
+    singular: config
+  scope: ""
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Config is the Schema for the configs API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ConfigSpec defines the desired state of Config
+            properties:
+              aws:
+                description: AWS contains all the AWS Account specific details
+                properties:
+                  accountID:
+                    description: AccountID defines the account which each resource
+                      is connected to
+                    type: string
+                  defaultRegion:
+                    description: DefaultRegion configures which region a stack should
+                      be provisioned into by default
+                    type: string
+                  queue:
+                    description: Queue will set up the params for the queue system
+                    properties:
+                      name:
+                        description: Name is the name of the SQS queue to be used
+                        type: string
+                      queueARN:
+                        description: QueueARN defines a preconfigured queue vs creating
+                          them on boot
+                        type: string
+                      queueURL:
+                        description: QueueURL defines the URL for the Queue
+                        type: string
+                      region:
+                        description: Region is where SQS and SNS should be provisioned
+                        type: string
+                      subARN:
+                        description: SubARN is the name ARN for sqs to talk to.
+                        type: string
+                      topicARN:
+                        description: TopicARN is the name ARN for cloudformation to
+                          talk to.
+                        type: string
+                    type: object
+                  supportedRegions:
+                    description: SupportedRegions configures which regions CRDs can
+                      deploy into
+                    items:
+                      type: string
+                    type: array
+                required:
+                - accountID
+                - defaultRegion
+                - supportedRegions
+                type: object
+              clusterName:
+                description: ClusterName is the identity for categorizing all resources
+                  under
+                type: string
+              resources:
+                description: Resources is a whitelist of Services and Resources to
+                  enable
+                items:
+                  type: string
+                type: array
+              version:
+                description: Version stores the operator version information
+                properties:
+                  Commit:
+                    type: string
+                  Date:
+                    type: string
+                  Version:
+                    type: string
+                type: object
+            required:
+            - aws
+            - clusterName
+            - resources
+            type: object
+          status:
+            description: ConfigStatus defines the observed state of Config
+            properties:
+              conditions:
+                description: Conditions defines the stages the deployment is in
+                items:
+                  description: ConfigStatusConditions defines the conditions the operator
+                    is in
+                  properties:
+                    message:
+                      description: Message defines the human readable message for
+                        the condition
+                      type: string
+                    reason:
+                      description: Reason defines the Machine readable status
+                      type: string
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

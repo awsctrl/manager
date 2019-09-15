@@ -1,0 +1,15 @@
+apiVersion: self.awsctrl.io/v1alpha1
+kind: Config
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: config
+spec:
+  clusterName: awsctrl
+  aws:
+    defaultRegion: us-west-2
+    supportedRegions:
+    - us-west-2
+    - us-east-1
+    accountID: "860055033182"
+  resources: []
