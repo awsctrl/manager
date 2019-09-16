@@ -24,9 +24,6 @@ spec:
         Type: AWS::ECR::Repository
         Properties:
           RepositoryName: !Ref Name
-          Tags:
-          - Key: foo
-            Value: bar
     Outputs:
       Name:
         Value: !Ref ECRRepository
