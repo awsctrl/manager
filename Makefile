@@ -22,15 +22,8 @@ install: manifests
 
 # Deploy controller in the configured Kubernetes cluster in ~/.kube/config
 deploy: manifests
-	kubectl apply -f config/crds
+	kubectl apply -f config/crds/
 	kustomize build config/default | kubectl apply -f -
-
-# Generate manifests e.g. CRD, RBAC etc.
-manifests:
-	go run vendor/sigs.k8s.io/controller-tools/cmd/controller-gen/main.go crd \
-		paths=./pkg/apis/... \
-		output:crd:dir=./config/crds/ \
-		crd:trivialVersions=true
 
 # Run go fmt against code
 fmt:
@@ -42,7 +35,16 @@ vet:
 
 # Generate code
 generate:
-	go run vendor/sigs.k8s.io/controller-tools/cmd/controller-gen/main.go paths=./pkg/apis \
+	go run vendor/sigs.k8s.io/controller-tools/cmd/controller-gen/main.go object \
+		paths=./pkg/apis/... \
+		object:headerFile=./hack/boilerplate.go.txt
+
+# Generate manifests e.g. CRD, RBAC etc.
+manifests:
+	go run vendor/sigs.k8s.io/controller-tools/cmd/controller-gen/main.go crd \
+		paths=./pkg/apis/... \
+		output:dir=./config/crds/ \
+		crd:trivialVersions=true \
 		object:headerFile=./hack/boilerplate.go.txt
 
 # Build the docker image
