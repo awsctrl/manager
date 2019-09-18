@@ -34,11 +34,6 @@ type CloudFormationMeta struct {
 	TerminationProtection bool `json:"terminationProtection,omitempty" description:"whether to enable termination protection"`
 }
 
-// StatusInterface allows you to return your stack info without having know the object
-type StatusInterface interface {
-	GetStackID() string
-}
-
 // StatusMeta is the default CloudFormation status metadata
 type StatusMeta struct {
 	// ObservedGeneration is the version of the manifest which has been applied
