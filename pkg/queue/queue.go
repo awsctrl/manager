@@ -9,6 +9,7 @@ import (
 	cloudformationv1alpha1 "awsctrl.io/pkg/apis/cloudformation/v1alpha1"
 	selfv1alpha1 "awsctrl.io/pkg/apis/self/v1alpha1"
 	"awsctrl.io/pkg/event"
+
 	"github.com/aws/aws-sdk-go/aws"
 	awsclient "github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -16,7 +17,11 @@ import (
 	"github.com/aws/aws-sdk-go/service/sns/snsiface"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/aws/aws-sdk-go/service/sqs/sqsiface"
+
+	k8scache "k8s.io/client-go/tools/cache"
+
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/cache"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -64,8 +69,11 @@ func New(mgr manager.Manager, handler func(reconcile.Request) (reconcile.Result,
 
 // Start will start the queue manager
 func (q *queueInformer) Start(stopCh <-chan struct{}) error {
-	if q.Cache.WaitForCacheSync(stopCh) {
-		log.Info("cache counldn't sync")
+	gvk := schema.GroupVersionKind{Group: "self.awsctrl.io", Version: "v1alpha1", Kind: "Config"}
+	configInformer, err := q.Cache.GetInformerForKind(gvk)
+
+	if ok := k8scache.WaitForCacheSync(stopCh, configInformer.HasSynced); !ok {
+		log.Info("failed to wait for caches to sync")
 	}
 
 	ctx := context.Background()
@@ -189,7 +197,6 @@ func (q *queueInformer) Reconcile(evt *event.Event) error {
 		}
 		return err
 	}
-	log.Info("stacks", "count", len(instances.Items))
 
 	for _, stack := range instances.Items {
 		_, err := q.Handler(reconcile.Request{NamespacedName: types.NamespacedName{Namespace: stack.Namespace, Name: stack.Name}})
