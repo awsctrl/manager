@@ -1,8 +1,5 @@
 apiVersion: apigateway.awsctrl.io/v1alpha1
 kind: Account
 metadata:
-  labels:
-    controller-tools.k8s.io: "1.0"
   name: account-sample
-spec:
-  cloudWatchRoleRef: arn:aws:iam::860055033182:role/apig-role
+spec: {}

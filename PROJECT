@@ -1,3 +1,11 @@
-version: "1"
+version: "2"
 domain: awsctrl.io
 repo: awsctrl.io
+multigroup: true
+resources:
+- group: apigateway
+  version: v1alpha1
+  kind: Account
+- group: cloudformation
+  version: v1alpha1
+  kind: Stack
