@@ -75,10 +75,15 @@ func (r *StackReconciler) describeCFNStackStatus(ctx context.Context, instance *
 		return err
 	}
 
-	instanceCopy := instance.DeepCopy()
-
 	if len(outputs.Stacks) == 0 {
-		return fmt.Errorf("could not find stack with name '%s'", instanceCopy.Name)
+		return fmt.Errorf("could not find stack with name '%s'", instance.Name)
+	}
+
+	nsn := types.NamespacedName{Namespace: instance.GetNamespace(), Name: instance.GetName()}
+
+	var instanceCopy cloudformationv1alpha1.Stack
+	if err = r.Get(ctx, nsn, &instanceCopy); err != nil {
+		return err
 	}
 
 	outputsMap := map[string]string{}
@@ -92,12 +97,18 @@ func (r *StackReconciler) describeCFNStackStatus(ctx context.Context, instance *
 	}
 	status := metav1alpha1.ConditionStatus(strcase.ToCamel(strings.ToLower(string(*outputs.Stacks[0].StackStatus))))
 
-	return r.updateCFNStackStatus(ctx, instance, status, reason, *outputs.Stacks[0].StackId, outputsMap)
+	return r.updateCFNStackStatus(ctx, &instanceCopy, status, reason, *outputs.Stacks[0].StackId, outputsMap)
 }
 
 // updateCFNStackStatus will update the stack status object
 func (r *StackReconciler) updateCFNStackStatus(ctx context.Context, instance *cloudformationv1alpha1.Stack, status metav1alpha1.ConditionStatus, message, stackID string, outputs map[string]string) error {
-	instanceCopy := instance.DeepCopy()
+	nsn := types.NamespacedName{Namespace: instance.GetNamespace(), Name: instance.GetName()}
+
+	var instanceCopy cloudformationv1alpha1.Stack
+	if err := r.Get(ctx, nsn, &instanceCopy); err != nil {
+		return err
+	}
+
 	stackstatus := cloudformationv1alpha1.StackStatus{
 		StatusMeta: metav1alpha1.StatusMeta{
 			StackID:            stackID,
@@ -120,7 +131,7 @@ func (r *StackReconciler) updateCFNStackStatus(ctx context.Context, instance *cl
 	stackstatus.Outputs = newOutputs
 	instanceCopy.Status = stackstatus
 
-	return r.Status().Update(ctx, instanceCopy)
+	return r.Status().Update(ctx, &instanceCopy)
 }
 
 // updateStackTemplateVersion will add the template version

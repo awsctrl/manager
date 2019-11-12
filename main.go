@@ -77,7 +77,7 @@ func main() {
 
 	if err = (&self.ConfigReconciler{
 		Client:       mgr.GetClient(),
-		Log:          ctrl.Log.WithName("controllers").WithName("Self").WithName("Config"),
+		Log:          ctrl.Log.WithName("controllers").WithName("self").WithName("config"),
 		Scheme:       mgr.GetScheme(),
 		ConfigName:   configname,
 		PodNamespace: os.Getenv("POD_NAMESPACE"),
@@ -89,7 +89,7 @@ func main() {
 
 	if err = (&cloudformation.StackReconciler{
 		Client:       mgr.GetClient(),
-		Log:          ctrl.Log.WithName("controllers").WithName("Cloudformation").WithName("Stack"),
+		Log:          ctrl.Log.WithName("controllers").WithName("cloudformation").WithName("stack"),
 		Scheme:       mgr.GetScheme(),
 		ConfigName:   configname,
 		PodNamespace: os.Getenv("POD_NAMESPACE"),
@@ -102,7 +102,7 @@ func main() {
 
 	if err = (&apigateway.AccountReconciler{
 		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("Apigatway").WithName("Account"),
+		Log:    ctrl.Log.WithName("controllers").WithName("apigatway").WithName("account"),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "Account")
