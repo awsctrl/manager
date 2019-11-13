@@ -1,4 +1,5 @@
 /*
+Copyright © 2019 AWS Controller authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -51,6 +52,7 @@ func New(c client.Client, scheme *runtime.Scheme) (Generic, error) {
 	}, nil
 }
 
+// Reconcile will take in a awsctrl.io/meta.StackObject and create or update a stack
 func (r *generic) Reconcile(ctx context.Context, log logr.Logger, instance meta.StackObject) (time.Duration, error) {
 	requeueZero := time.Duration(0 * time.Second)
 	requeueLater := time.Duration(2 * time.Second)
