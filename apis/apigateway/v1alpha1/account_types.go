@@ -16,7 +16,11 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"strings"
+
 	metav1alpha1 "awsctrl.io/apis/meta/v1alpha1"
+	controllerutils "awsctrl.io/controllers/utils"
+	cfnencoder "awsctrl.io/encoding/cloudformation"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -76,5 +80,70 @@ func (in *Account) GetTemplate() string {
 
 // GetStackID will return stackID
 func (in *Account) GetStackID() string {
-	return in.Status.StatusMeta.StackID
+	return in.Status.StackID
+}
+
+// GenerateStackName will generate a StackName
+func (in *Account) GenerateStackName() string {
+	return strings.Join([]string{"apigateway", "account", in.GetName(), in.GetNamespace()}, "-")
+}
+
+// GetStackName will return stackName
+func (in *Account) GetStackName() string {
+	return in.Spec.StackName
+}
+
+func (in *Account) GetTemplateVersionLabel() (value string, ok bool) {
+	value, ok = in.Labels[controllerutils.StackTemplateVersionLabel]
+	return
+}
+
+// GetParameters will return CFN Parameters
+func (in *Account) GetParameters() map[string]string {
+	params := map[string]string{}
+	cfnencoder.MarshalTypes(params, in.Spec, "Parameter")
+	return params
+}
+
+// GetCloudFormationMeta will return CFN meta object
+func (in *Account) GetCloudFormationMeta() metav1alpha1.CloudFormationMeta {
+	return in.Spec.CloudFormationMeta
+}
+
+// GetStatus will return the CFN Status
+func (in *Account) GetStatus() metav1alpha1.ConditionStatus {
+	return in.Status.Status
+}
+
+// SetStackID will put a stackID
+func (in *Account) SetStackID(input string) {
+	in.Status.StackID = input
+	return
+}
+
+// SetStackName will return stackName
+func (in *Account) SetStackName(input string) {
+	in.Spec.StackName = input
+	return
+}
+
+// SetTemplateVersionLabel will set the template version label
+func (in *Account) SetTemplateVersionLabel() {
+	if len(in.Labels) == 0 {
+		in.Labels = map[string]string{}
+	}
+
+	in.Labels[controllerutils.StackTemplateVersionLabel] = controllerutils.ComputeHash(in.Spec)
+}
+
+// TemplateVersionChanged will return bool if template has changed
+func (in *Account) TemplateVersionChanged() bool {
+	// Ignore bool since it will still record changed
+	label, _ := in.GetTemplateVersionLabel()
+	return label != controllerutils.ComputeHash(in.Spec)
+}
+
+// SetStatus will set status for object
+func (in *Account) SetStatus(status *metav1alpha1.StatusMeta) {
+	in.Status.StatusMeta = *status
 }

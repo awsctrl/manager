@@ -33,7 +33,10 @@ var (
 )
 
 func IsStatusComplete(status metav1alpha1.ConditionStatus) bool {
-	return status == metav1alpha1.CreateCompleteStatus || status == metav1alpha1.UpdateCompleteStatus
+	return status == metav1alpha1.CreateCompleteStatus ||
+		status == metav1alpha1.UpdateCompleteStatus ||
+		status == metav1alpha1.UpdateRollbackCompleteStatus ||
+		status == metav1alpha1.RollbackCompleteStatus
 }
 
 // ContainsFinalizer will check if the finalizer exists
