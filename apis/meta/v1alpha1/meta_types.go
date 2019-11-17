@@ -20,6 +20,15 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// Tag stores keys and values for tagging
+type Tag struct {
+	// Key labels the tag
+	Key string `json:"key"`
+
+	// Value stores the value for the key
+	Value string `json:"value"`
+}
+
 // CloudFormationMeta is the default CloudFormation spec metadata
 type CloudFormationMeta struct {
 	// +optional

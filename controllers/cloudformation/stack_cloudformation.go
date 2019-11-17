@@ -28,7 +28,9 @@ import (
 	cloudformationutils "awsctrl.io/controllers/cloudformation/utils"
 	controllerutils "awsctrl.io/controllers/utils"
 
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	cfn "github.com/aws/aws-sdk-go/service/cloudformation"
+	"github.com/go-logr/logr"
 
 	"github.com/iancoleman/strcase"
 )
@@ -61,8 +63,25 @@ func (r *StackReconciler) updateCFNStack(ctx context.Context, instance *cloudfor
 }
 
 // deleteCFNStack will delete the CFN Stack
-func (r *StackReconciler) deleteCFNStack(ctx context.Context, instance *cloudformationv1alpha1.Stack) error {
-	if err := cloudformationutils.DeleteCFNStack(r.AWSClient, instance); err != nil {
+func (r *StackReconciler) deleteCFNStack(ctx context.Context, log logr.Logger, instance *cloudformationv1alpha1.Stack) (err error) {
+	var outputs *cfn.DescribeStacksOutput
+	if outputs, err = cloudformationutils.DescribeCFNStacks(r.AWSClient, instance); err != nil {
+		if aerr, ok := err.(awserr.Error); ok {
+			switch aerr.Code() {
+			case "ValidationError":
+				return r.updateCFNStackStatus(ctx, instance, metav1alpha1.DeleteCompleteStatus, "", instance.Status.StackID, map[string]string{})
+			default:
+				return err
+			}
+		}
+		return err
+	}
+
+	if len(outputs.Stacks) == 0 {
+		return nil
+	}
+
+	if err = cloudformationutils.DeleteCFNStack(r.AWSClient, instance); err != nil {
 		return err
 	}
 

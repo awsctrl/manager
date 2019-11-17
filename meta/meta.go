@@ -32,7 +32,7 @@ type StackObject interface {
 	GetNotificationARNs() []string
 
 	// GetTemplate will return the JSON version of the CFN to use.
-	GetTemplate() string
+	GetTemplate() (string, error)
 
 	// GenerateStackName will generate a stackName
 	GenerateStackName() string

@@ -34,6 +34,7 @@ import (
 	cloudformationutils "awsctrl.io/controllers/cloudformation/utils"
 	"awsctrl.io/controllers/utils"
 	"awsctrl.io/token"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // StackReconciler reconciles a Stack object
@@ -91,7 +92,7 @@ func (r *StackReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		}
 
 		log.Info("Deleting CloudFormation Stack")
-		return ctrl.Result{RequeueAfter: waitDuration}, r.deleteCFNStack(ctx, &instance)
+		return ctrl.Result{RequeueAfter: waitDuration}, r.deleteCFNStack(ctx, log, &instance)
 	}
 
 	if ok := utils.ContainsFinalizer(instance.ObjectMeta, cloudformationutils.StackDeletionFinalizerName); !ok {
@@ -140,6 +141,18 @@ func (r *StackReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 // SetupWithManager will setup the controller
 func (r *StackReconciler) SetupWithManager(mgr ctrl.Manager) error {
+	if err := mgr.GetFieldIndexer().IndexField(&cloudformationv1alpha1.Stack{}, utils.ControllerOwnerKey, func(rawObj runtime.Object) []string {
+		stack := rawObj.(*cloudformationv1alpha1.Stack)
+		owner := metav1.GetControllerOf(stack)
+		if owner == nil {
+			return nil
+		}
+
+		return []string{owner.Name}
+	}); err != nil {
+		return err
+	}
+
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&cloudformationv1alpha1.Stack{}).
 		Complete(r)

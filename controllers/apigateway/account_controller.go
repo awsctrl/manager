@@ -27,12 +27,9 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	apigatewayv1alpha1 "awsctrl.io/apis/apigateway/v1alpha1"
 	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
 	"awsctrl.io/controllers/generic"
-	controllerutils "awsctrl.io/controllers/utils"
 )
 
 var (
@@ -84,21 +81,6 @@ func (r *AccountReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 
 // SetupWithManager will setup the controller
 func (r *AccountReconciler) SetupWithManager(mgr ctrl.Manager) error {
-	if err := mgr.GetFieldIndexer().IndexField(&cloudformationv1alpha1.Stack{}, controllerutils.ControllerOwnerKey, func(rawObj runtime.Object) []string {
-		stack := rawObj.(*cloudformationv1alpha1.Stack)
-		owner := metav1.GetControllerOf(stack)
-		if owner == nil {
-			return nil
-		}
-		if owner.APIVersion != APIGVStr || owner.Kind != "Account" {
-			return nil
-		}
-
-		return []string{owner.Name}
-	}); err != nil {
-		return err
-	}
-
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&apigatewayv1alpha1.Account{}).
 		Owns(&cloudformationv1alpha1.Stack{}).

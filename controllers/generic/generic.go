@@ -100,9 +100,14 @@ func (r *generic) updateStack(ctx context.Context, instance meta.StackObject) er
 		return err
 	}
 
+	temp, err := instance.GetTemplate()
+	if err != nil {
+		return err
+	}
+
 	stackCopy := stack.DeepCopy()
 	stackCopy.Spec.Parameters = instance.GetParameters()
-	stackCopy.Spec.TemplateBody = instance.GetTemplate()
+	stackCopy.Spec.TemplateBody = temp
 	stackCopy.Spec.CloudFormationMeta = instance.GetCloudFormationMeta()
 
 	return r.Update(ctx, stackCopy)
@@ -141,9 +146,14 @@ func (r *generic) newStack(instance meta.StackObject) (*cloudformationv1alpha1.S
 		Spec: cloudformationv1alpha1.StackSpec{
 			CloudFormationMeta: instance.GetCloudFormationMeta(),
 			Parameters:         instance.GetParameters(),
-			TemplateBody:       instance.GetTemplate(),
 		},
 	}
+
+	temp, err := instance.GetTemplate()
+	if err != nil {
+		return stack, err
+	}
+	stack.Spec.TemplateBody = temp
 
 	if err := ctrl.SetControllerReference(instance, stack, r.Scheme); err != nil {
 		return nil, err

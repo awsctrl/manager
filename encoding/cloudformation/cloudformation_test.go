@@ -22,6 +22,7 @@ import (
 )
 
 type testCase struct {
+	name    string
 	keyType string
 	object  interface{}
 	length  int
@@ -52,8 +53,8 @@ func TestMarshalParameters(t *testing.T) {
 
 	params := MarshalParameters(d)
 
-	if len(params) != 5 {
-		t.Errorf("marshalled params '%d' not equal to '3'", len(params))
+	if len(params) != 4 {
+		t.Errorf("marshalled params '%d' not equal to '4'", len(params))
 	}
 
 	expected := map[string]string{
@@ -103,20 +104,23 @@ func TestMarshalOutputs(t *testing.T) {
 func TestMarshalTypes(t *testing.T) {
 	cases := []testCase{
 		testCase{
+			name:    "TestFourItemNameFoo",
 			keyType: parameterKeyName,
 			object:  &dynamodb{Name: "foo", CalculatedName: "foobar"},
-			length:  5,
+			length:  4,
 			keyName: "Name",
 			value:   "foo",
 		},
 		testCase{
+			name:    "TestThreeItemArray",
 			keyType: parameterKeyName,
 			object:  &dynamodb{ArrayValue: []string{"test", "1", "2"}},
-			length:  5,
+			length:  3,
 			keyName: "Array",
 			value:   "test, 1, 2",
 		},
 		testCase{
+			name:    "TestFiveItemBody",
 			keyType: parameterKeyName,
 			object:  &dynamodb{Name: "foo", NestedType: nestedType{Body: "blah"}},
 			length:  5,
@@ -124,25 +128,36 @@ func TestMarshalTypes(t *testing.T) {
 			value:   "blah",
 		},
 		testCase{
+			name:    "TestThreeItemBoolean",
 			keyType: parameterKeyName,
 			object:  &dynamodb{Boolean: true},
-			length:  5,
+			length:  3,
 			keyName: "Boolean",
 			value:   "true",
 		},
 		testCase{
+			name:    "TestThreeItemInteger",
 			keyType: parameterKeyName,
 			object:  &dynamodb{Integer: 65},
-			length:  5,
+			length:  3,
 			keyName: "Integer",
 			value:   "65",
 		},
 		testCase{
+			name:    "TestThreeItemInteger",
 			keyType: outputKeyName,
 			object:  &dynamodb{Name: "foo", CalculatedName: "foobar"},
 			length:  1,
 			keyName: "CalcName",
 			value:   "foobar",
+		},
+		testCase{
+			name:    "TestFourEmptyName",
+			keyType: parameterKeyName,
+			object:  &dynamodb{Name: "", Boolean: true},
+			length:  3,
+			keyName: "Boolean",
+			value:   "true",
 		},
 	}
 
@@ -151,17 +166,17 @@ func TestMarshalTypes(t *testing.T) {
 
 		MarshalTypes(types, tCase.object, tCase.keyType)
 		if len(types) != tCase.length {
-			t.Errorf("marshalled response length '%d' not equal to '%d', '%+v'", len(types), tCase.length, types)
+			t.Errorf("%s marshalled response length '%d' not equal to '%d', '%+v'", tCase.name, len(types), tCase.length, types)
 		}
 
 		var key string
 		var ok bool
 		if key, ok = (types)[tCase.keyName]; !ok {
-			t.Errorf("key '%s' doesn't exist, '%+v'", tCase.keyName, types)
+			t.Errorf("%s key '%s' doesn't exist, '%+v'", tCase.name, tCase.keyName, types)
 		}
 
 		if key != tCase.value {
-			t.Errorf("'%+v' value doesn't equal '%s'", key, tCase.value)
+			t.Errorf("%s '%+v' value doesn't equal '%s'", tCase.name, key, tCase.value)
 		}
 	}
 }

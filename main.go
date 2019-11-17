@@ -20,12 +20,15 @@ import (
 	"os"
 
 	apigatewayv1alpha1 "awsctrl.io/apis/apigateway/v1alpha1"
-	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
-	selfv1alpha1 "awsctrl.io/apis/self/v1alpha1"
-	"awsctrl.io/aws"
 	"awsctrl.io/controllers/apigateway"
+
+	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
 	"awsctrl.io/controllers/cloudformation"
+
+	selfv1alpha1 "awsctrl.io/apis/self/v1alpha1"
 	"awsctrl.io/controllers/self"
+
+	"awsctrl.io/aws"
 	"awsctrl.io/token"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"

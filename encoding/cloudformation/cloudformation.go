@@ -125,7 +125,7 @@ func translateRecursive(types map[string]string, value reflect.Value, typeKey, t
 		if tagKey != "" {
 			tagName, ok := types[tagKey]
 			strValue := value.String()
-			if !ok {
+			if !ok && strValue != "" {
 				types[tagKey] = strValue
 			} else {
 				if strValue != "" {
