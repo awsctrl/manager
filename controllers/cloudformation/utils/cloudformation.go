@@ -82,7 +82,12 @@ func DescribeCFNStacks(awsclient aws.AWS, instance *cloudformationv1alpha1.Stack
 	region := instance.Spec.Region
 
 	input := &cfn.DescribeStacksInput{}
-	input.SetStackName(instance.Status.StackID)
+
+	name := Name(instance.ObjectMeta.Name, instance.ObjectMeta.Namespace)
+	if instance.Status.StackID != "" {
+		name = instance.Status.StackID
+	}
+	input.SetStackName(name)
 
 	return awsclient.GetClient(region).DescribeStacks(input)
 }
