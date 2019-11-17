@@ -4,6 +4,8 @@ go 1.12
 
 require (
 	github.com/aws/aws-sdk-go v1.25.22
+	github.com/awslabs/goformation v1.4.1
+	github.com/awslabs/goformation/v3 v3.1.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-logr/logr v0.1.0
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
@@ -21,3 +23,5 @@ require (
 	sigs.k8s.io/kubebuilder v1.0.8 // indirect
 	sigs.k8s.io/kustomize/v3 v3.3.1 // indirect
 )
+
+replace github.com/awslabs/goformation/v3 => github.com/christopherhein/goformation/v3 v3.1.1-0.20191116080820-55bd9397137c
