@@ -6,7 +6,7 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.2.4
   creationTimestamp: null
-  name: accounts.apigateway.awsctrl.io
+  name: environmentec2s.cloud9.awsctrl.io
 spec:
   additionalPrinterColumns:
   - JSONPath: .status.status
@@ -23,22 +23,22 @@ spec:
     name: StackID
     priority: 2
     type: string
-  group: apigateway.awsctrl.io
+  group: cloud9.awsctrl.io
   names:
     categories:
     - aws
     - all
-    - apigateway
-    kind: Account
-    listKind: AccountList
-    plural: accounts
-    singular: account
+    - cloud9
+    kind: EnvironmentEC2
+    listKind: EnvironmentEC2List
+    plural: environmentec2s
+    singular: environmentec2
   scope: Namespaced
   subresources:
     status: {}
   validation:
     openAPIV3Schema:
-      description: Account is the Schema for the apigateway Account API
+      description: EnvironmentEC2 is the Schema for the cloud9 EnvironmentEC2 API
       properties:
         apiVersion:
           description: 'APIVersion defines the versioned schema of this representation
@@ -53,10 +53,19 @@ spec:
         metadata:
           type: object
         spec:
-          description: AccountSpec defines the desired state of Account
+          description: EnvironmentEC2Spec defines the desired state of EnvironmentEC2
           properties:
-            cloudWatchRoleArn:
-              description: CloudWatchRoleArn http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-account.html#cfn-apigateway-account-cloudwatchrolearn
+            automaticStopTimeMinutes:
+              description: AutomaticStopTimeMinutes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-automaticstoptimeminutes
+              type: integer
+            description:
+              description: Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-description
+              type: string
+            instanceType:
+              description: InstanceType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-instancetype
+              type: string
+            name:
+              description: Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-name
               type: string
             notificationARNs:
               description: NotificationARNs the Simple Notification Service (SNS)
@@ -68,9 +77,32 @@ spec:
               description: 'OnFailure determines what action will be taken if stack
                 creation fails. This must be one of: DO_NOTHING, ROLLBACK, or DELETE.'
               type: string
+            ownerArn:
+              description: OwnerArn http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-ownerarn
+              type: string
             region:
               type: string
+            repositories:
+              description: Repositories http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-repositories
+              items:
+                description: EnvironmentEC2_Repository defines the desired state of
+                  EnvironmentEC2Repository
+                properties:
+                  pathComponent:
+                    description: PathComponent http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-pathcomponent
+                    type: string
+                  repositoryUrl:
+                    description: RepositoryUrl http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-repositoryurl
+                    type: string
+                required:
+                - pathComponent
+                - repositoryUrl
+                type: object
+              type: array
             stackName:
+              type: string
+            subnetId:
+              description: SubnetId http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-subnetid
               type: string
             tags:
               additionalProperties:
@@ -85,9 +117,11 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
+          required:
+          - instanceType
           type: object
         status:
-          description: AccountStatus defines the observed state of Account
+          description: EnvironmentEC2Status defines the observed state of EnvironmentEC2
           properties:
             generation:
               description: ObservedGeneration is the version of the manifest which

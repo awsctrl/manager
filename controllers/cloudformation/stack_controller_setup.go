@@ -19,10 +19,10 @@ package cloudformation
 import (
 	"context"
 
-	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
-	selfv1alpha1 "awsctrl.io/apis/self/v1alpha1"
-	cloudformationutils "awsctrl.io/controllers/cloudformation/utils"
-	controllerutils "awsctrl.io/controllers/utils"
+	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
+	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
+	cloudformationutils "go.awsctrl.io/manager/controllers/cloudformation/utils"
+	controllerutils "go.awsctrl.io/manager/controllers/utils"
 )
 
 // addCFNFinalizer will add the deletion finalizer

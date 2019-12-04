@@ -1,4 +1,5 @@
 /*
+Copyright © 2019 AWS Controller authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,18 +19,17 @@ package main
 import (
 	"flag"
 	"os"
+	"time"
 
-	apigatewayv1alpha1 "awsctrl.io/apis/apigateway/v1alpha1"
-	"awsctrl.io/controllers/apigateway"
+	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
+	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
 
-	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
-	"awsctrl.io/controllers/cloudformation"
+	"go.awsctrl.io/manager/controllers/cloudformation"
+	"go.awsctrl.io/manager/controllers/controllermanager"
+	"go.awsctrl.io/manager/controllers/self"
 
-	selfv1alpha1 "awsctrl.io/apis/self/v1alpha1"
-	"awsctrl.io/controllers/self"
-
-	"awsctrl.io/aws"
-	"awsctrl.io/token"
+	"go.awsctrl.io/manager/aws"
+	"go.awsctrl.io/manager/token"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -45,14 +45,15 @@ var (
 
 func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
-
 	_ = selfv1alpha1.AddToScheme(scheme)
 	_ = cloudformationv1alpha1.AddToScheme(scheme)
-	_ = apigatewayv1alpha1.AddToScheme(scheme)
+
+	_ = controllermanager.AddAllSchemes(scheme)
 	// +kubebuilder:scaffold:scheme
 }
 
 func main() {
+	var resyncTimeout time.Duration = 1 * time.Minute
 	var awsclient aws.AWS
 	var configname string
 	var metricsaddr string
@@ -70,6 +71,7 @@ func main() {
 		MetricsBindAddress: metricsaddr,
 		LeaderElection:     enableleaderelection,
 		Port:               9443,
+		SyncPeriod:         &resyncTimeout,
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
@@ -103,12 +105,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&apigateway.AccountReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("apigatway").WithName("account"),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "Account")
+	if name, err := controllermanager.SetupControllers(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", name)
 		os.Exit(1)
 	}
 

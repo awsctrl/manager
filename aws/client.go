@@ -26,7 +26,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/cloudformation"
 	"github.com/aws/aws-sdk-go/service/cloudformation/cloudformationiface"
 
-	selfv1alpha1 "awsctrl.io/apis/self/v1alpha1"
+	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
 )
 
 // AWS Sets and Gets clients based on the config

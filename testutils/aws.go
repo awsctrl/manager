@@ -19,9 +19,9 @@ package testutils
 import (
 	"fmt"
 
-	selfv1alpha1 "awsctrl.io/apis/self/v1alpha1"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudformation/cloudformationiface"
+	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
 )
 
 func NewAWS() *AWS {

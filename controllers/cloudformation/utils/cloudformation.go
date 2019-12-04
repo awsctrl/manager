@@ -19,9 +19,9 @@ package utils
 import (
 	"strings"
 
-	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
-	"awsctrl.io/aws"
-	controllerutils "awsctrl.io/controllers/utils"
+	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
+	"go.awsctrl.io/manager/aws"
+	controllerutils "go.awsctrl.io/manager/controllers/utils"
 
 	awssdk "github.com/aws/aws-sdk-go/aws"
 	cfn "github.com/aws/aws-sdk-go/service/cloudformation"

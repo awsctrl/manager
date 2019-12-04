@@ -18,7 +18,7 @@ limitations under the License.
 package meta
 
 import (
-	metav1alpha1 "awsctrl.io/apis/meta/v1alpha1"
+	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 )

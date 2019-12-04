@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package apigateway
+package cloud9
 
 import (
 	"context"
@@ -27,7 +27,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	v1alpha1 "go.awsctrl.io/manager/apis/apigateway/v1alpha1"
+	v1alpha1 "go.awsctrl.io/manager/apis/cloud9/v1alpha1"
 	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
 	"go.awsctrl.io/manager/controllers/generic"
 )
@@ -37,8 +37,8 @@ var (
 	APIGVStr = v1alpha1.GroupVersion.String()
 )
 
-// AccountReconciler reconciles a Account object
-type AccountReconciler struct {
+// EnvironmentEC2Reconciler reconciles a EnvironmentEC2 object
+type EnvironmentEC2Reconciler struct {
 	client.Client
 	Log    logr.Logger
 	Scheme *runtime.Scheme
@@ -48,17 +48,17 @@ type AccountReconciler struct {
 // +kubebuilder:rbac:groups=cloudformation.awsctrl.io,resources=stacks,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=cloudformation.awsctrl.io,resources=stacks/status,verbs=get;update;patch
 
-// Load the apigateway Account resource
-// +kubebuilder:rbac:groups=apigateway.awsctrl.io,resources=accounts,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=apigateway.awsctrl.io,resources=accounts/status,verbs=get;update;patch
+// Load the cloud9 EnvironmentEC2 resource
+// +kubebuilder:rbac:groups=cloud9.awsctrl.io,resources=environmentec2s,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=cloud9.awsctrl.io,resources=environmentec2s/status,verbs=get;update;patch
 
 // Reconcile will make the desired state a reality
-func (r *AccountReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
+func (r *EnvironmentEC2Reconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	ctx := context.Background()
-	log := r.Log.WithValues("Account", req.NamespacedName)
+	log := r.Log.WithValues("EnvironmentEC2", req.NamespacedName)
 
 	var err error
-	var instance v1alpha1.Account
+	var instance v1alpha1.EnvironmentEC2
 	if err = r.Get(ctx, req.NamespacedName, &instance); err != nil {
 		if errors.IsNotFound(err) {
 			return ctrl.Result{}, nil
@@ -80,9 +80,9 @@ func (r *AccountReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 }
 
 // SetupWithManager will setup the controller
-func (r *AccountReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *EnvironmentEC2Reconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.Account{}).
+		For(&v1alpha1.EnvironmentEC2{}).
 		Owns(&cloudformationv1alpha1.Stack{}).
 		Complete(r)
 }

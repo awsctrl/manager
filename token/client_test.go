@@ -19,7 +19,7 @@ package token_test
 import (
 	"testing"
 
-	"awsctrl.io/token"
+	"go.awsctrl.io/manager/token"
 )
 
 func Test_token_Generate(t *testing.T) {

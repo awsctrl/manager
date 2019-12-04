@@ -18,7 +18,7 @@ package cloudformation
 import (
 	"testing"
 
-	"awsctrl.io/testutils"
+	"go.awsctrl.io/manager/testutils"
 )
 
 type testCase struct {

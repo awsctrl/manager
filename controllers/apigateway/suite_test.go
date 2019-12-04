@@ -23,7 +23,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	apigatewayv1alpha1 "awsctrl.io/apis/apigateway/v1alpha1"
+	apigatewayv1alpha1 "go.awsctrl.io/manager/apis/apigateway/v1alpha1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
