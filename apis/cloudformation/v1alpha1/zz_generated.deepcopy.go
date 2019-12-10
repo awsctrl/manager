@@ -55,7 +55,7 @@ func (in *Stack) DeepCopyObject() runtime.Object {
 func (in *StackList) DeepCopyInto(out *StackList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]Stack, len(*in))

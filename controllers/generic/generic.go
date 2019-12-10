@@ -21,8 +21,8 @@ import (
 	"context"
 	"time"
 
-	"awsctrl.io/meta"
 	"github.com/go-logr/logr"
+	"go.awsctrl.io/manager/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -30,8 +30,8 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
-	controllerutils "awsctrl.io/controllers/utils"
+	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
+	controllerutils "go.awsctrl.io/manager/controllers/utils"
 )
 
 // Generic implements the functions for generic CloudFormation controllers
@@ -145,7 +145,8 @@ func (r *generic) newStack(instance meta.StackObject) (*cloudformationv1alpha1.S
 		},
 		Spec: cloudformationv1alpha1.StackSpec{
 			CloudFormationMeta: instance.GetCloudFormationMeta(),
-			Parameters:         instance.GetParameters(),
+			Parameters:         map[string]string{},
+			// Parameters:         instance.GetParameters(),
 		},
 	}
 

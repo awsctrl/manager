@@ -15,7 +15,7 @@ all: manager
 
 # Run tests
 test: generate fmt vet manifests
-	go test ./... -coverprofile cover.out
+	go test ./... -coverprofile coverage.txt -covermode atomic
 
 # Build manager binary
 manager: generate fmt vet
@@ -62,7 +62,7 @@ docker-push:
 # download controller-gen if necessary
 controller-gen:
 ifeq (, $(shell which controller-gen))
-	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.1
+	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.4
 CONTROLLER_GEN=$(GOBIN)/controller-gen
 else
 CONTROLLER_GEN=$(shell which controller-gen)
@@ -70,8 +70,8 @@ endif
 
 # Install CI will configure
 install-ci:
-	curl -sL https://go.kubebuilder.io/dl/2.1.0/linux/amd64 | tar -xz -C /tmp/
-	sudo mv /tmp/kubebuilder_2.1.0_linux_amd64 /usr/local/kubebuilder
+	curl -sL https://go.kubebuilder.io/dl/2.2.0/linux/amd64 | tar -xz -C /tmp/
+	sudo mv /tmp/kubebuilder_2.2.0_linux_amd64 /usr/local/kubebuilder
 	export PATH=\$PATH:/usr/local/kubebuilder/bin
 	curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases | grep browser_download | grep linux | cut -d '"' -f 4 | grep /kustomize/v | sort | tail -n 1 | xargs curl -O -L
 	tar xzf ./kustomize_v*_linux_amd64.tar.gz

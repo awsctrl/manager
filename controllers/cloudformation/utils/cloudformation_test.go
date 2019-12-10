@@ -19,7 +19,7 @@ package utils_test
 import (
 	"testing"
 
-	"awsctrl.io/controllers/cloudformation/utils"
+	"go.awsctrl.io/manager/controllers/cloudformation/utils"
 )
 
 func TestName(t *testing.T) {

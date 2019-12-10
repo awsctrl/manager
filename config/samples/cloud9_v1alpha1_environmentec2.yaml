@@ -1,0 +1,7 @@
+apiVersion: cloud9.awsctrl.io/v1alpha1
+kind: EnvironmentEC2
+metadata:
+  name: environmentec2-sample
+spec:
+  instanceType: t2.micro
+  subnetId: subnet-12688c49

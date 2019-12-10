@@ -25,8 +25,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	selfv1alpha1 "awsctrl.io/apis/self/v1alpha1"
-	"awsctrl.io/aws"
+	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
+	"go.awsctrl.io/manager/aws"
 )
 
 var (

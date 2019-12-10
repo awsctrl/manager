@@ -20,9 +20,9 @@ import (
 	"reflect"
 	"testing"
 
-	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
-	metav1alpha1 "awsctrl.io/apis/meta/v1alpha1"
-	"awsctrl.io/controllers/utils"
+	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
+	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
+	"go.awsctrl.io/manager/controllers/utils"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

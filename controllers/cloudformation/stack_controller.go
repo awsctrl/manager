@@ -27,13 +27,14 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
-	metav1alpha1 "awsctrl.io/apis/meta/v1alpha1"
-	selfv1alpha1 "awsctrl.io/apis/self/v1alpha1"
-	"awsctrl.io/aws"
-	cloudformationutils "awsctrl.io/controllers/cloudformation/utils"
-	"awsctrl.io/controllers/utils"
-	"awsctrl.io/token"
+	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
+	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
+	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
+	"go.awsctrl.io/manager/aws"
+	cloudformationutils "go.awsctrl.io/manager/controllers/cloudformation/utils"
+	"go.awsctrl.io/manager/controllers/utils"
+	controllerutils "go.awsctrl.io/manager/controllers/utils"
+	"go.awsctrl.io/manager/token"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -115,7 +116,7 @@ func (r *StackReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, r.addNotificationARN(ctx, &instance, &config)
 	}
 
-	if instance.Status.StackID == "" {
+	if instance.Status.StackID == "" || controllerutils.IsStatusNotActive(instance.Status.Status) {
 		log.Info("Creating CFN Stack")
 		return ctrl.Result{RequeueAfter: waitDuration}, r.createCFNStack(ctx, &instance)
 	}

@@ -27,6 +27,26 @@ rules:
   - patch
   - update
 - apiGroups:
+  - cloud9.awsctrl.io
+  resources:
+  - environmentec2s
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cloud9.awsctrl.io
+  resources:
+  - environmentec2s/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - cloudformation.awsctrl.io
   resources:
   - stacks

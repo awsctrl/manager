@@ -25,7 +25,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/rand"
 
-	metav1alpha1 "awsctrl.io/apis/meta/v1alpha1"
+	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
 )
 
 var (
@@ -33,11 +33,18 @@ var (
 	StackTemplateVersionLabel = "stack-template-version"
 )
 
+// IsStatusComplete will return true completed status
 func IsStatusComplete(status metav1alpha1.ConditionStatus) bool {
 	return status == metav1alpha1.CreateCompleteStatus ||
 		status == metav1alpha1.UpdateCompleteStatus ||
 		status == metav1alpha1.UpdateRollbackCompleteStatus ||
 		status == metav1alpha1.RollbackCompleteStatus
+}
+
+// IsStatusNotActive will return true if deleted or rolledback
+func IsStatusNotActive(status metav1alpha1.ConditionStatus) bool {
+	return status == metav1alpha1.RollbackCompleteStatus ||
+		status == metav1alpha1.DeleteCompleteStatus
 }
 
 // ContainsFinalizer will check if the finalizer exists

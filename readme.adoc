@@ -1,5 +1,30 @@
 = AWS Controller
+:toc: macro
 
-image::https://travis-ci.org/awsctrl/awsctrl.svg?branch=master[link="https://travis-ci.org/awsctrl/awsctrl"]
+[cols="a,a,a,a,a,a"]
+|===
+| *API Version* | *Website* | *Build Status* | *Test Coverage* | *Go Report Card* | *License* 
+| image::https://img.shields.io/badge/apiversion-v1alpha1red.svg[link="https://github.com/awsctrl/awsctrl/blob/master/LICENSE"] | image::https://img.shields.io/badge/website-n/a-red.svg[link="https://awsctrl.io"] | image::https://travis-ci.org/awsctrl/awsctrl.svg?branch=master[link="https://travis-ci.org/awsctrl/awsctrl"] | image::https://codecov.io/gh/awsctrl/awsctrl/branch/master/graph/badge.svg[link="https://codecov.io/gh/awsctrl/awsctrl"] | image::https://goreportcard.com/badge/github.com/awsctrl/awsctrl[link="https://goreportcard.com/report/github.com/awsctrl/awsctrl"] | image::https://img.shields.io/badge/license-Apache%202.0-blue.svg[link="https://github.com/awsctrl/awsctrl/blob/master/LICENSE"]
+|===
 
-_TBD_
+toc::[]
+
+AWS Controller is Kubernetes controller manager which contains controllers that manage AWS resources using link:https://kubernetes.io/docs/tasks/access-kubernetes-api/custom-resources/custom-resource-definitions/[custom resource definitions (CRDs)].
+
+== Features
+
+* Kubernetes Native; _using CRDs_
+* 100% Open Source
+* Infrastructure as Configuration
+
+== Overview
+
+*_TBD_*
+
+== Requirements
+
+* Kubernetes >1.14
+
+== Installation
+
+*_TBD_*

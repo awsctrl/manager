@@ -23,10 +23,10 @@ import (
 
 	"k8s.io/apimachinery/pkg/types"
 
-	cloudformationv1alpha1 "awsctrl.io/apis/cloudformation/v1alpha1"
-	metav1alpha1 "awsctrl.io/apis/meta/v1alpha1"
-	cloudformationutils "awsctrl.io/controllers/cloudformation/utils"
-	controllerutils "awsctrl.io/controllers/utils"
+	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
+	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
+	cloudformationutils "go.awsctrl.io/manager/controllers/cloudformation/utils"
+	controllerutils "go.awsctrl.io/manager/controllers/utils"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	cfn "github.com/aws/aws-sdk-go/service/cloudformation"

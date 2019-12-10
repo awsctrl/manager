@@ -5,6 +5,7 @@ resources:
 - bases/self.awsctrl.io_configs.yaml
 - bases/cloudformation.awsctrl.io_stacks.yaml
 - bases/apigateway.awsctrl.io_accounts.yaml
+- bases/cloud9.awsctrl.io_environmentec2s.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:
