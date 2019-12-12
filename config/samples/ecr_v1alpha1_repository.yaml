@@ -1,0 +1,30 @@
+apiVersion: ecr.awsctrl.io/v1alpha1
+kind: Repository
+metadata:
+  name: repository-sample
+spec: 
+  repositoryName: awsctrl-test
+  repositoryPolicyText: |
+    {
+      "Version": "2008-10-17",
+      "Statement": [
+        {
+          "Sid": "AllowPushPull",
+          "Effect": "Allow",
+          "Principal": {
+            "AWS": [
+              "arn:aws:iam::XXXXXXXXXXXX:role/chrishein"
+            ]
+          },
+          "Action": [
+            "ecr:GetDownloadUrlForLayer",
+            "ecr:BatchGetImage",
+            "ecr:BatchCheckLayerAvailability",
+            "ecr:PutImage",
+            "ecr:InitiateLayerUpload",
+            "ecr:UploadLayerPart",
+            "ecr:CompleteLayerUpload"
+          ]
+        }
+      ]
+    }

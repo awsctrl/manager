@@ -27,6 +27,9 @@ import (
 	cloud9v1alpha1 "go.awsctrl.io/manager/apis/cloud9/v1alpha1"
 	"go.awsctrl.io/manager/controllers/cloud9"
 
+	ecrv1alpha1 "go.awsctrl.io/manager/apis/ecr/v1alpha1"
+	"go.awsctrl.io/manager/controllers/ecr"
+
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
@@ -36,6 +39,8 @@ func AddAllSchemes(scheme *runtime.Scheme) error {
 	_ = apigatewayv1alpha1.AddToScheme(scheme)
 
 	_ = cloud9v1alpha1.AddToScheme(scheme)
+
+	_ = ecrv1alpha1.AddToScheme(scheme)
 
 	return nil
 }
@@ -49,6 +54,14 @@ func SetupControllers(mgr manager.Manager) (reconciler string, err error) {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		return "cloud9:environmentec2", err
+	}
+
+	if err = (&ecr.RepositoryReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("ecr").WithName("repository"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "ecr:repository", err
 	}
 
 	if err = (&apigateway.AccountReconciler{

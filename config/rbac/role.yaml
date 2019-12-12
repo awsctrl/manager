@@ -67,6 +67,26 @@ rules:
   - patch
   - update
 - apiGroups:
+  - ecr.awsctrl.io
+  resources:
+  - repositories
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ecr.awsctrl.io
+  resources:
+  - repositories/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - self.awsctrl.io
   resources:
   - config
