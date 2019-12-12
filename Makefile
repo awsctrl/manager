@@ -47,7 +47,8 @@ vet:
 	go vet ./...
 
 # Generate code
-generate: controller-gen
+generate: generator controller-gen
+	$(GENERATOR) run
 	$(CONTROLLER_GEN) object:headerFile=./hack/boilerplate.go.txt paths="./..."
 
 # Build the docker image
@@ -73,9 +74,7 @@ install-ci:
 	curl -sL https://go.kubebuilder.io/dl/2.2.0/linux/amd64 | tar -xz -C /tmp/
 	sudo mv /tmp/kubebuilder_2.2.0_linux_amd64 /usr/local/kubebuilder
 	export PATH=\$PATH:/usr/local/kubebuilder/bin
-	curl -s https://api.github.com/repos/kubernetes-sigs/kustomize/releases | grep browser_download | grep linux | cut -d '"' -f 4 | grep /kustomize/v | sort | tail -n 1 | xargs curl -O -L
-	tar xzf ./kustomize_v*_linux_amd64.tar.gz
-	chmod u+x kustomize
+	go install sigs.k8s.io/kustomize/kustomize/v3
 
 # Create kind cluster for testing
 kind-create:
@@ -84,3 +83,13 @@ kind-create:
 # Delete kind cluster for testing
 kind-delete:
 	kind delete cluster --name awsctrl 
+
+# find or download generator
+# download generator if necessary
+generator:
+ifeq (, $(shell which generator))
+	go install go.awsctrl.io/generator
+GENERATOR=$(GOBIN)/generator
+else
+GENERATOR=$(shell which generator)
+endif
