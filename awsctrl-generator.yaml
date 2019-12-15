@@ -45,7 +45,7 @@ spec:
   # - docdb
   # - dynamodb
   # - ec2
-  # - ecr
+  - ecr
   # - ecs
   # - efs
   # - eks

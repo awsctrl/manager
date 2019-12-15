@@ -53,7 +53,7 @@ func init() {
 }
 
 func main() {
-	var resyncTimeout time.Duration = 1 * time.Minute
+	var resyncTimeout time.Duration = 15 * time.Minute
 	var awsclient aws.AWS
 	var configname string
 	var metricsaddr string
