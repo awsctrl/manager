@@ -27,7 +27,6 @@ spec:
   names:
     categories:
     - aws
-    - all
     - cloud9
     kind: EnvironmentEC2
     listKind: EnvironmentEC2List
