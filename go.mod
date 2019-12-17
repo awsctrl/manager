@@ -20,6 +20,7 @@ require (
 	github.com/gorilla/sessions v1.2.0 // indirect
 	github.com/huandu/xstrings v1.2.1 // indirect
 	github.com/iancoleman/strcase v0.0.0-20190422225806-e506e3ef7365
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/monopole/mdrip v1.0.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
@@ -27,11 +28,15 @@ require (
 	github.com/onsi/gomega v1.7.1
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/satori/go.uuid v1.2.0
+	github.com/spf13/cobra v0.0.5
+	github.com/spf13/viper v1.6.1
 	go.awsctrl.io/generator v0.0.0-20191215230013-f94e3fac5f35 // indirect
 	go.etcd.io/etcd v0.0.0-20191023171146-3cf2f69b5738 // indirect
 	go.hein.dev/go-version v0.1.0
+	go.uber.org/zap v1.10.0
 	golang.org/x/crypto v0.0.0-20191206172530-e9b2fee46413 // indirect
 	golang.org/x/net v0.0.0-20191209160850-c0dbc17a3553 // indirect
+	golang.org/x/sys v0.0.0-20191210023423-ac6580df4449 // indirect
 	golang.org/x/tools v0.0.0-20191217141249-0b43622770f0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20190905181640-827449938966 // indirect
 	k8s.io/apimachinery v0.17.0
