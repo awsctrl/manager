@@ -74,7 +74,6 @@ install-ci:
 	curl -sL https://go.kubebuilder.io/dl/2.2.0/linux/amd64 | tar -xz -C /tmp/
 	sudo mv /tmp/kubebuilder_2.2.0_linux_amd64 /usr/local/kubebuilder
 	export PATH=\$PATH:/usr/local/kubebuilder/bin
-	go install sigs.k8s.io/kustomize/kustomize/v3
 
 # Create kind cluster for testing
 kind-create:

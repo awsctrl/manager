@@ -27,7 +27,6 @@ spec:
   names:
     categories:
     - aws
-    - all
     - apigateway
     kind: Account
     listKind: AccountList

@@ -63,12 +63,12 @@ func (in *EnvironmentEC2) GetTemplate() (string, error) {
 	for _, item := range in.Spec.Repositories {
 		cloud9EnvironmentEC2Repository := cloud9.EnvironmentEC2_Repository{}
 
-		if item.PathComponent != "" {
-			cloud9EnvironmentEC2Repository.PathComponent = item.PathComponent
-		}
-
 		if item.RepositoryUrl != "" {
 			cloud9EnvironmentEC2Repository.RepositoryUrl = item.RepositoryUrl
+		}
+
+		if item.PathComponent != "" {
+			cloud9EnvironmentEC2Repository.PathComponent = item.PathComponent
 		}
 
 	}

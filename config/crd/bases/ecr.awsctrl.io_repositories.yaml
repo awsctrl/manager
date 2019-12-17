@@ -27,7 +27,6 @@ spec:
   names:
     categories:
     - aws
-    - all
     - ecr
     kind: Repository
     listKind: RepositoryList
