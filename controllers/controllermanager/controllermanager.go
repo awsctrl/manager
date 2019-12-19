@@ -48,6 +48,14 @@ func AddAllSchemes(scheme *runtime.Scheme) error {
 // SetupControllers will configure your manager with all controllers
 func SetupControllers(mgr manager.Manager) (reconciler string, err error) {
 
+	if err = (&ecr.RepositoryReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("ecr").WithName("repository"),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "ecr:repository", err
+	}
+
 	if err = (&apigateway.AccountReconciler{
 		Client: mgr.GetClient(),
 		Log:    ctrl.Log.WithName("controllers").WithName("apigateway").WithName("account"),
@@ -62,14 +70,6 @@ func SetupControllers(mgr manager.Manager) (reconciler string, err error) {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		return "cloud9:environmentec2", err
-	}
-
-	if err = (&ecr.RepositoryReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("ecr").WithName("repository"),
-		Scheme: mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "ecr:repository", err
 	}
 
 	return reconciler, nil

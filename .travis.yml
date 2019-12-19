@@ -3,6 +3,11 @@ language: go
 go:
 - 1.13
 
+services:
+- docker
+
+install: true
+
 env:
 - GO111MODULE=on
 
@@ -10,7 +15,7 @@ branches:
   only:
   - master
 
-install:
+before_install:
 - |
   set -e
   make install-ci
@@ -18,7 +23,7 @@ install:
 script:
 - |
   set -e
-  make test
+  make test test-e2e
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -f '*.out'

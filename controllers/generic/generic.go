@@ -106,7 +106,7 @@ func (r *generic) updateStack(ctx context.Context, instance meta.StackObject) er
 	}
 
 	stackCopy := stack.DeepCopy()
-	stackCopy.Spec.Parameters = instance.GetParameters()
+	// stackCopy.Spec.Parameters = instance.GetParameters()
 	stackCopy.Spec.TemplateBody = temp
 	stackCopy.Spec.CloudFormationMeta = instance.GetCloudFormationMeta()
 

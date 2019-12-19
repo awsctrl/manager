@@ -3,4 +3,4 @@ kind: Account
 metadata:
   name: account-sample
 spec: {}
-  # cloudWatchRoleRef: arn:aws:iam::xxxxxxxxxxxx:role/apig-role
+  # cloudWatchRoleArn: arn:aws:iam::860055033182:role/awsctrl-apigateway-account

@@ -14,19 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package testutils
+package e2e
 
-// Token is a mocked token client
-type Token struct {
-	Token string
-}
-
-// NewToken returns a token with a stubbed value
-func NewToken() Token {
-	return Token{"test-token"}
-}
-
-// Generate returns the base stubbed value
-func (t Token) Generate() string {
-	return t.Token
-}
+import (
+	// Purely so that we can get proper test coverage
+	_ "go.awsctrl.io/manager/controllers/apigateway"
+	_ "go.awsctrl.io/manager/controllers/cloud9"
+	_ "go.awsctrl.io/manager/controllers/cloudformation"
+	_ "go.awsctrl.io/manager/controllers/controllermanager"
+	_ "go.awsctrl.io/manager/controllers/ecr"
+	_ "go.awsctrl.io/manager/controllers/self"
+)
