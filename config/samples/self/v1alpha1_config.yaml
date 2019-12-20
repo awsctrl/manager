@@ -10,6 +10,7 @@ spec:
     defaultRegion: us-west-2
     supportedRegions:
     - us-west-2
+    - us-east-1
     accountID: "860055033182"
     queue:
       topicARN: arn:aws:sns:us-west-2:860055033182:awsctrl

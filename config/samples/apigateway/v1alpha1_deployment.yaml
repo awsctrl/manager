@@ -1,0 +1,14 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: Deployment
+metadata:
+  name: deployment-sample
+spec:
+  stageName: Staging
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
+    # Id: l1cm4341c3
+  description: |
+    Staging Deployment description

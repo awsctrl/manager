@@ -1,0 +1,16 @@
+apiVersion: route53.awsctrl.io/v1alpha1
+kind: RecordSetGroup
+metadata:
+  name: recordsetgroup-sample
+spec: 
+  recordSets:
+  - type: A
+    name: test-list.e2e.awsctrl.io
+    resourceRecords:
+    - "104.198.14.52"
+    tTL: '300'
+  hostedZone:
+    kind: hostedZone
+    apiVersion: route53.awsctrl.io/v1alpha1
+    name: hostedzone-sample
+    key: ResourceRef

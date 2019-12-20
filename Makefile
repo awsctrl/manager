@@ -19,13 +19,31 @@ endif
 
 all: manager
 
+# Stub for ci
+test-unit: test
+
 # Run tests
 test: generate fmt vet manifests
 	go test `go list ./... | grep -v e2e` -coverprofile unit.out -covermode atomic
 
+test-e2e-%: 
+ifeq (true,${USE_EXISTING_CLUSTER})
+	export KUBECONFIG=${PWD}/kubeconfig-e2e-$*
+	@$(MAKE) kind-create-awsctrl-$*
+endif
+	go test -coverprofile e2e-$*.out -covermode atomic -v -coverpkg ./controllers/... ./e2e/$*/...
+ifeq (true,${USE_EXISTING_CLUSTER})
+	@$(MAKE) kind-delete-awsctrl-$*
+endif
+
 # Run e2e
-test-e2e:
-	go test ./e2e/... -coverprofile e2e.out -covermode atomic -coverpkg ./controllers/...
+test-e2e: generate fmt vet manifests
+	@$(MAKE) test-e2e-apigateway
+	@$(MAKE) test-e2e-cloud9
+	@$(MAKE) test-e2e-cloudformation
+	@$(MAKE) test-e2e-ecr
+	@$(MAKE) test-e2e-route53
+
 
 # Build manager binary
 manager: generate fmt vet
@@ -80,7 +98,7 @@ CONTROLLER_GEN=$(shell which controller-gen)
 endif
 
 # Install CI will configure
-install-ci: kubebuilder
+install-ci: kubebuilder set-env kind #kubectl kubectl-context kubectl-verify 
 
 # Install kind if not installed
 kind:
@@ -92,24 +110,45 @@ KIND=$(shell which kind)
 endif
 
 # Create kind cluster for testing
-kind-create: kind
-	$(KIND) create cluster --name awsctrl --config config/kind/config.yaml
+kind-create-%: kind
+	$(KIND) create cluster --name $* --config config/kind/config.yaml -q
+
+kind-create:
+	@$(MAKE) kind-create-awsctrl
 
 # Delete kind cluster for testing
-kind-delete: kind
-	$(KIND) delete cluster --name awsctrl 
+kind-delete-%: kind
+	$(KIND) delete cluster --name $* 
+
+kind-delete:
+	@$(MAKE) kind-delete-awsctrl
 
 # Install Kubectl
 kubectl:
 	curl -LO https://storage.googleapis.com/kubernetes-release/release/\$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 	chmod +x ./kubectl
-	./kubectl get nodes -o wide
+	sudo mkdir -p /usr/local/bin/
+	sudo mv ./kubectl /usr/local/bin/kubectl
+	export PATH=\$PATH:/usr/local/bin
+
+# Set Kubectl context
+kubectl-context:
+	kubectl config set-context kind-awsctrl.io
+
+# Test cluster avilable
+kubectl-verify:
+	kubectl get nodes -o wide
 
 # Install Kubebuilder
 kubebuilder:
 	curl -sL https://go.kubebuilder.io/dl/2.2.0/linux/amd64 | tar -xz -C /tmp/
 	sudo mv /tmp/kubebuilder_2.2.0_linux_amd64 /usr/local/kubebuilder
 	export PATH=\$PATH:/usr/local/kubebuilder/bin
+
+set-env:
+	export GO111MODULE=on
+	export USE_EXISTING_CLUSTER=true
+	export POD_NAMESPACE=default
 
 # find or download generator
 # download generator if necessary

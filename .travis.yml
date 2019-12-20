@@ -1,3 +1,4 @@
+sudo: required
 language: go
 
 go:
@@ -6,10 +7,20 @@ go:
 services:
 - docker
 
-install: true
-
 env:
-- GO111MODULE=on
+  global:
+  - export GO111MODULE=on
+  - export USE_EXISTING_CLUSTER=true
+  - export POD_NAMESPACE=default
+  jobs:
+  - TEST_SUITE=unit
+  - TEST_SUITE=e2e- FLAG=apigateway
+  - TEST_SUITE=e2e- FLAG=cloud9
+  - TEST_SUITE=e2e- FLAG=cloudformation
+  - TEST_SUITE=e2e- FLAG=ecr
+  - TEST_SUITE=e2e- FLAG=route53
+
+install: true
 
 branches:
   only:
@@ -19,11 +30,17 @@ before_install:
 - |
   set -e
   make install-ci
+  curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+  chmod +x ./kubectl
+  sudo mkdir -p /usr/local/bin/
+  sudo mv ./kubectl /usr/local/bin/kubectl
  
 script:
 - |
   set -e
-  make test test-e2e
+  make test-${TEST_SUITE}${FLAG}
 
-after_success:
-  - bash <(curl -s https://codecov.io/bash) -f '*.out'
+after_success: 
+- |
+  set -e
+  bash <(curl -s https://codecov.io/bash) -f '*.out'

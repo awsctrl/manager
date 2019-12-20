@@ -17,7 +17,7 @@ limitations under the License.
 // Package v1alpha1 contains API Schema definitions for the ecr v1alpha1 API group
 // +kubebuilder:object:generate=true
 // +groupName=ecr.awsctrl.io
-package v1alpha1
+package v1alpha1 // import "go.awsctrl.io/manager/apis/ecr/v1alpha1"
 
 import (
 	"k8s.io/apimachinery/pkg/runtime/schema"

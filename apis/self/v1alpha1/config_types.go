@@ -1,5 +1,5 @@
 /*
-Copyright © 2019 AWS Controller author
+Copyright © 2019 AWS Controller authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -47,37 +47,6 @@ type ConfigAWS struct {
 
 	// AccountID defines the account which each resource is connected to
 	AccountID string `json:"accountID"`
-
-	// Queue will set up the params for the queue system
-	// +optional
-	Queue ConfigQueue `json:"queue,omitempty"`
-}
-
-// ConfigQueue holds all the configurations for the SQS & SNS configs
-type ConfigQueue struct {
-	// Region is where SQS and SNS should be provisioned
-	// +optional
-	Region string `json:"region"`
-
-	// Name is the name of the SQS queue to be used
-	// +optional
-	Name string `json:"name"`
-
-	// TopicARN is the name ARN for cloudformation to talk to.
-	// +optional
-	TopicARN string `json:"topicARN,omitempty"`
-
-	// SubARN is the name ARN for sqs to talk to.
-	// +optional
-	SubARN string `json:"subARN,omitempty"`
-
-	// QueueARN defines a preconfigured queue vs creating them on boot
-	// +optional
-	QueueARN string `json:"queueARN"`
-
-	// QueueURL defines the URL for the Queue
-	// +optional
-	QueueURL string `json:"queueURL"`
 }
 
 // ConfigStatus defines the observed state of Config

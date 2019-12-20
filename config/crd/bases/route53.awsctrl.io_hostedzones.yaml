@@ -1,0 +1,224 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: hostedzones.route53.awsctrl.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.status
+    description: status of the stack
+    name: Status
+    type: string
+  - JSONPath: .status.message
+    description: reason for the stack status
+    name: Message
+    priority: 1
+    type: string
+  - JSONPath: .status.stackID
+    description: CloudFormation Stack ID
+    name: StackID
+    priority: 2
+    type: string
+  group: route53.awsctrl.io
+  names:
+    categories:
+    - aws
+    - route53
+    kind: HostedZone
+    listKind: HostedZoneList
+    plural: hostedzones
+    singular: hostedzone
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: HostedZone is the Schema for the route53 HostedZone API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: HostedZoneSpec defines the desired state of HostedZone
+          properties:
+            hostedZoneConfig:
+              description: HostedZoneConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-hostedzoneconfig
+              properties:
+                comment:
+                  description: Comment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-hostedzoneconfig.html#cfn-route53-hostedzone-hostedzoneconfig-comment
+                  type: string
+              type: object
+            hostedZoneTags:
+              description: HostedZoneTags http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-hostedzonetags
+              items:
+                description: HostedZone_HostedZoneTag defines the desired state of
+                  HostedZoneHostedZoneTag
+                properties:
+                  key:
+                    description: Key http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-hostedzonetags.html#cfn-route53-hostedzonetags-key
+                    type: string
+                  value:
+                    description: Value http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-hostedzonetags.html#cfn-route53-hostedzonetags-value
+                    type: string
+                required:
+                - key
+                - value
+                type: object
+              type: array
+            name:
+              description: Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-name
+              type: string
+            notificationARNs:
+              description: NotificationARNs the Simple Notification Service (SNS)
+                topic ARNs to publish stack related events.
+              items:
+                type: string
+              type: array
+            onFailure:
+              description: 'OnFailure determines what action will be taken if stack
+                creation fails. This must be one of: DO_NOTHING, ROLLBACK, or DELETE.'
+              type: string
+            queryLoggingConfig:
+              description: QueryLoggingConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-queryloggingconfig
+              properties:
+                cloudWatchLogsLogGroup:
+                  description: CloudWatchLogsLogGroup http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-queryloggingconfig.html#cfn-route53-hostedzone-queryloggingconfig-cloudwatchlogsloggrouparn
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    arn:
+                      description: Arn is used if the object expects an Arn
+                      type: string
+                    id:
+                      description: Id is used if the object expects an ID like Security
+                        groups and vpcs
+                      type: string
+                    key:
+                      description: Key of the referent.
+                      type: string
+                    kind:
+                      description: Kind of the referent.
+                      type: string
+                    name:
+                      description: Name of the referent.
+                      type: string
+                    namespace:
+                      description: Namespace of the referent.
+                      type: string
+                  type: object
+              required:
+              - cloudWatchLogsLogGroup
+              type: object
+            region:
+              type: string
+            stackName:
+              type: string
+            tags:
+              additionalProperties:
+                type: string
+              description: Tags key-value pairs to associate with this stack. AWS
+                CloudFormation also propagates these tags to the resources created
+                in the stack.
+              type: object
+            terminationProtection:
+              description: TerminationProtection whether to enable termination protection
+                on the specified stack. If a user attempts to delete a stack with
+                termination protection enabled, the operation fails and the stack
+                remains unchanged.
+              type: boolean
+            vPCs:
+              description: VPCs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-vpcs
+              items:
+                description: HostedZone_VPC defines the desired state of HostedZoneVPC
+                properties:
+                  vPC:
+                    description: VPC http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcid
+                    properties:
+                      apiVersion:
+                        description: API version of the referent.
+                        type: string
+                      arn:
+                        description: Arn is used if the object expects an Arn
+                        type: string
+                      id:
+                        description: Id is used if the object expects an ID like Security
+                          groups and vpcs
+                        type: string
+                      key:
+                        description: Key of the referent.
+                        type: string
+                      kind:
+                        description: Kind of the referent.
+                        type: string
+                      name:
+                        description: Name of the referent.
+                        type: string
+                      namespace:
+                        description: Namespace of the referent.
+                        type: string
+                    type: object
+                  vPCRegion:
+                    description: VPCRegion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcregion
+                    type: string
+                required:
+                - vPC
+                - vPCRegion
+                type: object
+              type: array
+          required:
+          - name
+          type: object
+        status:
+          description: HostedZoneStatus defines the observed state of HostedZone
+          properties:
+            generation:
+              description: ObservedGeneration is the version of the manifest which
+                has been applied
+              format: int64
+              type: integer
+            lastHeartbeatTime:
+              format: date-time
+              type: string
+            lastTransitionTime:
+              format: date-time
+              type: string
+            message:
+              type: string
+            outputs:
+              additionalProperties:
+                type: string
+              type: object
+            stackID:
+              type: string
+            stackName:
+              type: string
+            status:
+              description: Status is the status of the condition
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

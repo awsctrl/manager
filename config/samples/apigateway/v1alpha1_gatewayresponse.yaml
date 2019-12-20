@@ -1,0 +1,16 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: GatewayResponse
+metadata:
+  name: gatewayresponse-sample
+spec:
+  responseParameters:
+    gatewayresponse.header.Access-Control-Allow-Origin:  "'*'"
+		gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+  responseType: "MISSING_AUTHENTICATION_TOKEN"
+  statusCode:   "404"
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
+      

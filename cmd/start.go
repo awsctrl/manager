@@ -24,6 +24,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/dynamic"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -83,6 +84,12 @@ func runCommand(cmd *cobra.Command, args []string) {
 
 	awsclient = aws.New()
 
+	dynamicClient, err := dynamic.NewForConfig(mgr.GetConfig())
+	if err != nil {
+		setupLog.Error(err, "unable to start dynamic client")
+		os.Exit(1)
+	}
+
 	if err = (&self.ConfigReconciler{
 		Client:       mgr.GetClient(),
 		Log:          ctrl.Log.WithName("controllers").WithName("self").WithName("config"),
@@ -108,7 +115,7 @@ func runCommand(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	if name, err := controllermanager.SetupControllers(mgr); err != nil {
+	if name, err := controllermanager.SetupControllers(mgr, dynamicClient); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", name)
 		os.Exit(1)
 	}

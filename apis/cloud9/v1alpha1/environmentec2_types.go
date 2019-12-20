@@ -25,40 +25,52 @@ import (
 type EnvironmentEC2Spec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// AutomaticStopTimeMinutes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-automaticstoptimeminutes
-	AutomaticStopTimeMinutes int `json:"automaticStopTimeMinutes,omitempty" cloudformation:"AutomaticStopTimeMinutes,Parameter"`
-
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
-
 	// InstanceType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-instancetype
 	InstanceType string `json:"instanceType" cloudformation:"InstanceType,Parameter"`
 
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-name
 	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
 
-	// OwnerArn http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-ownerarn
-	OwnerArn string `json:"ownerArn,omitempty" cloudformation:"OwnerArn,Parameter"`
-
 	// Repositories http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-repositories
-	Repositories []EnvironmentEC2_Repository `json:"repositories,omitempty" cloudformation:"Repositories,Parameter"`
+	Repositories []EnvironmentEC2_Repository `json:"repositories,omitempty" cloudformation:"Repositories"`
 
-	// SubnetId http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-subnetid
-	SubnetId string `json:"subnetId,omitempty" cloudformation:"SubnetId,Parameter"`
+	// Owner http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-ownerarn
+	Owner metav1alpha1.ObjectReference `json:"owner,omitempty" cloudformation:"OwnerArn,Parameter"`
+
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
+	// AutomaticStopTimeMinutes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-automaticstoptimeminutes
+	AutomaticStopTimeMinutes int `json:"automaticStopTimeMinutes,omitempty" cloudformation:"AutomaticStopTimeMinutes,Parameter"`
+
+	// Subnet http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-subnetid
+	Subnet metav1alpha1.ObjectReference `json:"subnet,omitempty" cloudformation:"SubnetId,Parameter"`
 }
 
 // EnvironmentEC2_Repository defines the desired state of EnvironmentEC2Repository
 type EnvironmentEC2_Repository struct {
-	// PathComponent http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-pathcomponent
-	PathComponent string `json:"pathComponent" cloudformation:"PathComponent,Parameter"`
-
 	// RepositoryUrl http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-repositoryurl
 	RepositoryUrl string `json:"repositoryUrl" cloudformation:"RepositoryUrl,Parameter"`
+
+	// PathComponent http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-pathcomponent
+	PathComponent string `json:"pathComponent" cloudformation:"PathComponent,Parameter"`
 }
 
 // EnvironmentEC2Status defines the observed state of EnvironmentEC2
 type EnvironmentEC2Status struct {
 	metav1alpha1.StatusMeta `json:",inline"`
+}
+
+// EnvironmentEC2Output defines the stack outputs
+type EnvironmentEC2Output struct {
+	// http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html
+	Ref string `json:"ref,omitempty"`
+
+	// Arn defines the Arn
+	Arn string `json:"arn,omitempty" cloudformation:"Arn,Output"`
+
+	// Name defines the Name
+	Name string `json:"name,omitempty" cloudformation:"Name,Output"`
 }
 
 // +kubebuilder:object:root=true

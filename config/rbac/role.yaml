@@ -27,6 +27,386 @@ rules:
   - patch
   - update
 - apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - apikeys
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - apikeys/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - authorizers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - authorizers/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - basepathmappings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - basepathmappings/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - clientcertificates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - clientcertificates/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - deployments
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - deployments/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - documentationparts
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - documentationparts/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - documentationversions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - documentationversions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - domainnames
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - domainnames/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - gatewayresponses
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - gatewayresponses/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - methods
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - methods/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - models
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - models/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - requestvalidators
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - requestvalidators/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - resources
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - resources/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - restapis
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - restapis/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - stages
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - stages/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - usageplankeys
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - usageplankeys/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - usageplans
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - usageplans/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - vpclinks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - apigateway.awsctrl.io
+  resources:
+  - vpclinks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - certificatemanager.awsctrl.io
+  resources:
+  - certificates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - certificatemanager.awsctrl.io
+  resources:
+  - certificates/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - cloud9.awsctrl.io
   resources:
   - environmentec2s
@@ -82,6 +462,86 @@ rules:
   - ecr.awsctrl.io
   resources:
   - repositories/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - route53.awsctrl.io
+  resources:
+  - healthchecks
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - route53.awsctrl.io
+  resources:
+  - healthchecks/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - route53.awsctrl.io
+  resources:
+  - hostedzones
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - route53.awsctrl.io
+  resources:
+  - hostedzones/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - route53.awsctrl.io
+  resources:
+  - recordsetgroups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - route53.awsctrl.io
+  resources:
+  - recordsetgroups/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - route53.awsctrl.io
+  resources:
+  - recordsets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - route53.awsctrl.io
+  resources:
+  - recordsets/status
   verbs:
   - get
   - patch

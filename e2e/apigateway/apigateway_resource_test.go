@@ -18,9 +18,7 @@ package e2e_test
 
 import (
 	"context"
-	"fmt"
 	"os"
-	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -38,48 +36,83 @@ import (
 	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
 )
 
-// RunAccountSpecs allows all instance E2E tests to run
-var _ = Describe("Run Apigateway Account Controller", func() {
-	const timeout = time.Second * 60
-	const interval = time.Second * 1
+// RunResourceSpecs allows all instance E2E tests to run
+var _ = Describe("Run Apigateway Resource Controller", func() {
 
-	Context("Without Account{} existing", func() {
+	Context("Without Resource{} existing", func() {
 
-		It("Should create apigateway.Account{}", func() {
+		It("Should create apigateway.Resource{}", func() {
 			var stackID string
 			var stackName string
 			var stack *cloudformationv1alpha1.Stack
 			k8sclient := k8smanager.GetClient()
 			Expect(k8sclient).ToNot(BeNil())
 
-			key := types.NamespacedName{
-				Name:      "sample-name",
-				Namespace: "default",
+			restapi := &apigatewayv1alpha1.RestApi{
+				ObjectMeta: metav1.ObjectMeta{
+					GenerateName: "sample-restapi-",
+					Namespace:    podnamespace,
+				},
+				Spec: apigatewayv1alpha1.RestApiSpec{
+					Name:        "awsctrl",
+					Description: "AWS Controller API Gateway API description",
+				},
+			}
+			By("Creating new Apigateway RestApi")
+			Expect(k8sclient.Create(context.Background(), restapi)).Should(Succeed())
+
+			restapikey := types.NamespacedName{
+				Name:      restapi.GetName(),
+				Namespace: podnamespace,
 			}
 
-			instance := &apigatewayv1alpha1.Account{
+			instance := &apigatewayv1alpha1.Resource{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      key.Name,
-					Namespace: key.Namespace,
+					GenerateName: "sample-apikey-",
+					Namespace:    podnamespace,
 				},
-				Spec: apigatewayv1alpha1.AccountSpec{
-					CloudWatchRoleArn: fmt.Sprintf("arn:aws:iam::%s:role/awsctrl-apigateway-instance", os.Getenv("AWS_ACCOUNT_ID")),
+				Spec: apigatewayv1alpha1.ResourceSpec{
+					PathPart: "stack",
+					Parent: metav1alpha1.ObjectReference{
+						ObjectRef: metav1alpha1.ObjectRef{
+							Kind:       "RestApi",
+							APIVersion: "apigateway.awsctrl.io/v1alpha1",
+							Name:       restapikey.Name,
+							Key:        "RootResourceId",
+						},
+					},
+					RestApi: metav1alpha1.ObjectReference{
+						ObjectRef: metav1alpha1.ObjectRef{
+							Kind:       "RestApi",
+							APIVersion: "apigateway.awsctrl.io/v1alpha1",
+							Name:       restapikey.Name,
+							Key:        "ResourceRef",
+						},
+					},
 				},
 			}
-			By("Creating new Apigateway Account")
+			By("Creating new Apigateway Resource")
 			Expect(k8sclient.Create(context.Background(), instance)).Should(Succeed())
+
+			key := types.NamespacedName{
+				Name:      instance.GetName(),
+				Namespace: podnamespace,
+			}
 
 			By("Expecting CreateComplete")
 			Eventually(func() bool {
-				By("Getting latest Apigateway Account")
-				instance = &apigatewayv1alpha1.Account{}
-				Expect(k8sclient.Get(context.Background(), key, instance)).Should(Succeed())
+				By("Getting latest Apigateway Resource")
+				instance = &apigatewayv1alpha1.Resource{}
+				err := k8sclient.Get(context.Background(), key, instance)
+				if err != nil {
+					return false
+				}
 
 				stackID = instance.GetStackID()
 				stackName = instance.GetStackName()
 
 				return instance.Status.Status == metav1alpha1.CreateCompleteStatus ||
-					(instance.Status.Status == metav1alpha1.UpdateCompleteStatus && os.Getenv("USE_AWS_CLIENT") != "true")
+					(os.Getenv("USE_AWS_CLIENT") != "true" && instance.Status.Status != "")
 			}, timeout, interval).Should(BeTrue())
 
 			By("Checking object OwnerShip")
@@ -90,7 +123,10 @@ var _ = Describe("Run Apigateway Account Controller", func() {
 				}
 
 				stack = &cloudformationv1alpha1.Stack{}
-				Expect(k8sclient.Get(context.Background(), stackkey, stack)).Should(Succeed())
+				err := k8sclient.Get(context.Background(), stackkey, stack)
+				if err != nil {
+					return false
+				}
 
 				expectedOwnerReference := v1.OwnerReference{
 					Kind:       instance.Kind,
@@ -105,18 +141,25 @@ var _ = Describe("Run Apigateway Account Controller", func() {
 				return ownerrefs[0].Name == expectedOwnerReference.Name
 			}, timeout, interval).Should(BeTrue())
 
-			By("Deleting Apigateway Account")
+			By("Deleting Apigateway Resource")
 			Expect(k8sclient.Delete(context.Background(), instance)).Should(Succeed())
 
-			By("Deleting Account Stack")
+			By("Deleting Apigateway RestApi")
+			Expect(k8sclient.Delete(context.Background(), restapi)).Should(Succeed())
+
+			By("Deleting Resource Stack")
 			Expect(k8sclient.Delete(context.Background(), stack)).Should(Succeed())
 
 			By("Expecting metav1alpha1.DeleteCompleteStatus")
 			Eventually(func() bool {
+				if os.Getenv("USE_AWS_CLIENT") != "true" {
+					return true
+				}
+
 				output, err := awsclient.GetClient("us-west-2").DescribeStacks(&cloudformation.DescribeStacksInput{StackName: aws.String(stackID)})
 				Expect(err).To(BeNil())
 				stackoutput := output.Stacks[0].StackStatus
-				return *stackoutput == "DELETE_COMPLETE" || os.Getenv("AWS_ACCOUNT_ID") != "true"
+				return *stackoutput == "DELETE_COMPLETE"
 			}, timeout, interval).Should(BeTrue())
 		})
 	})

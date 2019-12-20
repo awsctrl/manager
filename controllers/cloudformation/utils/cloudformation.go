@@ -24,6 +24,7 @@ import (
 	controllerutils "go.awsctrl.io/manager/controllers/utils"
 
 	awssdk "github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awserr"
 	cfn "github.com/aws/aws-sdk-go/service/cloudformation"
 )
 
@@ -54,14 +55,20 @@ func CreateCFNStack(awsclient aws.AWS, instance *cloudformationv1alpha1.Stack) (
 
 // UpdateCFNStack will update an existing cloudformation stack
 func UpdateCFNStack(awsclient aws.AWS, instance *cloudformationv1alpha1.Stack) error {
-	if instance.Status.ObservedGeneration != instance.Generation {
+	if TemplateVersionChanged(instance) {
 		input := &cfn.UpdateStackInput{}
 
 		updateStackInputs(instance, awsclient.GetNotificationARN(), input)
 		region := instance.Spec.Region
 
 		_, err := awsclient.GetClient(region).UpdateStack(input)
-		return err
+		if err != nil {
+			if err.(awserr.Error).Code() == "ValidationError" {
+				return nil
+			}
+			return err
+		}
+		return nil
 	}
 	return nil
 }

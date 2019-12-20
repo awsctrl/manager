@@ -18,6 +18,7 @@ package testutils
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudformation/cloudformationiface"
@@ -26,12 +27,17 @@ import (
 
 // NewAWS will initialize a mocked AWS Client
 func NewAWS() *AWS {
-	return &AWS{Config: true}
+	return &AWS{
+		Config:  true,
+		clients: map[string]cloudformationiface.CloudFormationAPI{"us-west-2": NewCFN("")},
+	}
 }
 
 // AWS wraps all the test mocking for the AWS Client
 type AWS struct {
-	Config bool
+	Config  bool
+	clients map[string]cloudformationiface.CloudFormationAPI
+	mux     sync.Mutex
 }
 
 // Configured will return nil to simulate a configured client
@@ -49,12 +55,15 @@ func (a *AWS) Configure(*selfv1alpha1.ConfigAWS) error {
 
 // SetClient will add a new AWS Region client so that the controller can span more regions
 func (a *AWS) SetClient(region string, iface cloudformationiface.CloudFormationAPI) bool {
+	a.mux.Lock()
+	defer a.mux.Unlock()
+	a.clients = map[string]cloudformationiface.CloudFormationAPI{"us-west-2": iface}
 	return true
 }
 
-// GetClient will return slice with a single AWS CloudFormation Client for us-west-2
+// GetClients will return slice with a single AWS CloudFormation Client for us-west-2
 func (a *AWS) GetClients() map[string]cloudformationiface.CloudFormationAPI {
-	return map[string]cloudformationiface.CloudFormationAPI{"us-west-2": NewCFN()}
+	return a.clients
 }
 
 // GetClient will return a single AWS CloudFormation Client for us-west-2

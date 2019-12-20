@@ -23,6 +23,7 @@ import (
 	"github.com/go-logr/logr"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/dynamic"
 
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -32,14 +33,10 @@ import (
 	"go.awsctrl.io/manager/controllers/generic"
 )
 
-var (
-	// APIGVStr returns the group version for the resource
-	APIGVStr = v1alpha1.GroupVersion.String()
-)
-
 // RepositoryReconciler reconciles a Repository object
 type RepositoryReconciler struct {
 	client.Client
+	dynamic.Interface
 	Log    logr.Logger
 	Scheme *runtime.Scheme
 }
@@ -67,7 +64,7 @@ func (r *RepositoryReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) 
 	}
 
 	var cfncontroller generic.Generic
-	if cfncontroller, err = generic.New(r.Client, r.Scheme); err != nil {
+	if cfncontroller, err = generic.New(r.Client, r.Interface, r.Scheme); err != nil {
 		return ctrl.Result{}, err
 	}
 

@@ -83,13 +83,12 @@ func (r *StackReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		return ctrl.Result{}, err
 	}
 
-	if instance.Status.Status == metav1alpha1.DeleteCompleteStatus {
-		return ctrl.Result{}, r.removeCFNFinalizer(ctx, &instance)
-	}
-
-	if !instance.DeletionTimestamp.IsZero() {
-		if instance.Status.Status == metav1alpha1.DeleteInProgressStatus {
+	if !instance.DeletionTimestamp.IsZero() && !instance.Spec.TerminationProtection {
+		switch instance.Status.Status {
+		case metav1alpha1.DeleteInProgressStatus:
 			return ctrl.Result{RequeueAfter: waitDuration}, r.describeCFNStackStatus(ctx, &instance)
+		case metav1alpha1.DeleteCompleteStatus:
+			return ctrl.Result{}, r.removeCFNFinalizer(ctx, &instance)
 		}
 
 		log.Info("Deleting CloudFormation Stack")
@@ -108,12 +107,6 @@ func (r *StackReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	if instance.Spec.ClientRequestToken == "" {
 		log.Info("Adding ClientRequestToken")
 		return ctrl.Result{}, r.generateClientRequestToken(ctx, &instance)
-	}
-
-	// TODO: move to defaulting admission webhook
-	if !utils.SliceContains(instance.GetNotificationARNs(), config.Spec.AWS.Queue.TopicARN) {
-		log.Info("Adding controller NotificationARNs")
-		return ctrl.Result{}, r.addNotificationARN(ctx, &instance, &config)
 	}
 
 	if instance.Status.StackID == "" || controllerutils.IsStatusNotActive(instance.Status.Status) {

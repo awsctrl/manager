@@ -1,5 +1,5 @@
 /*
-Copyright © 2019 AWS Controller author
+Copyright © 2019 AWS Controller authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -112,7 +112,6 @@ func (a *awsClient) Configure(config *selfv1alpha1.ConfigAWS) error {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
 	a.rawConfig = config
-	a.notficationARN = config.Queue.TopicARN
 	a.defaultRegion = config.DefaultRegion
 	a.configured = true
 
