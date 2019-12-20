@@ -30,22 +30,26 @@ type mockCloudFormationClient struct {
 	cloudformationiface.CloudFormationAPI
 }
 
+// NewCFN will return a mock CloudFormation client to test with
 func NewCFN() cloudformationiface.CloudFormationAPI {
 	return &mockCloudFormationClient{}
 }
 
+// CreateStack will mock creating a CloudFormation stack and return a fake StackID
 func (m *mockCloudFormationClient) CreateStack(input *cfn.CreateStackInput) (*cfn.CreateStackOutput, error) {
 	output := &cfn.CreateStackOutput{}
 	output.SetStackId(stackID)
 	return output, nil
 }
 
+// UpdateStack will mock updating a CloudFormation stack and return the same StackID
 func (m *mockCloudFormationClient) UpdateStack(input *cfn.UpdateStackInput) (*cfn.UpdateStackOutput, error) {
 	output := &cfn.UpdateStackOutput{}
 	output.SetStackId(stackID)
 	return output, nil
 }
 
+// DescribeStack will mock describing a list of CloudFormation stacks and return an UPDATE_COMPLETE and output of Name=test
 func (m *mockCloudFormationClient) DescribeStacks(input *cfn.DescribeStacksInput) (*cfn.DescribeStacksOutput, error) {
 	describeStackOutput := &cfn.DescribeStacksOutput{}
 	stack := &cfn.Stack{}
@@ -60,10 +64,12 @@ func (m *mockCloudFormationClient) DescribeStacks(input *cfn.DescribeStacksInput
 	return describeStackOutput, nil
 }
 
+// DeleteStack will mock deleting a CloudFormations stack and return an empty response
 func (m *mockCloudFormationClient) DeleteStack(input *cloudformation.DeleteStackInput) (*cloudformation.DeleteStackOutput, error) {
 	return &cloudformation.DeleteStackOutput{}, nil
 }
 
+// WaitUntilStackDeleteComplete will mock waiting until the CloudFormation stack is deleted
 func (m *mockCloudFormationClient) WaitUntilStackDeleteComplete(input *cloudformation.DescribeStacksInput) error {
 	return nil
 }

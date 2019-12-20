@@ -24,18 +24,22 @@ import (
 	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
 )
 
+// NewAWS will initialize a mocked AWS Client
 func NewAWS() *AWS {
 	return &AWS{Config: true}
 }
 
+// AWS wraps all the test mocking for the AWS Client
 type AWS struct {
 	Config bool
 }
 
+// Configured will return nil to simulate a configured client
 func (a *AWS) Configured() error {
 	return nil
 }
 
+// Configure will setup the mocking client using the self.Config Custom Resource
 func (a *AWS) Configure(*selfv1alpha1.ConfigAWS) error {
 	if !a.Config {
 		return fmt.Errorf("error occured")
@@ -43,14 +47,17 @@ func (a *AWS) Configure(*selfv1alpha1.ConfigAWS) error {
 	return nil
 }
 
+// SetClient will add a new AWS Region client so that the controller can span more regions
 func (a *AWS) SetClient(region string, iface cloudformationiface.CloudFormationAPI) bool {
 	return true
 }
 
+// GetClient will return slice with a single AWS CloudFormation Client for us-west-2
 func (a *AWS) GetClients() map[string]cloudformationiface.CloudFormationAPI {
 	return map[string]cloudformationiface.CloudFormationAPI{"us-west-2": NewCFN()}
 }
 
+// GetClient will return a single AWS CloudFormation Client for us-west-2
 func (a *AWS) GetClient(region string) cloudformationiface.CloudFormationAPI {
 	return a.GetClients()["us-west-2"]
 }
@@ -70,10 +77,12 @@ func (a *AWS) GetSession(region string) *session.Session {
 	return a.GetSessions()["us-west-2"]
 }
 
+// GetNotificationARN will return the SQS CloudFormation ARN
 func (a *AWS) GetNotificationARN() string {
 	return "arn:aws:sns::topic/awsctrl"
 }
 
+// GetDefaultRegion will return the base region to deploy into
 func (a *AWS) GetDefaultRegion() string {
 	return "us-west-2"
 }
