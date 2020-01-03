@@ -17,7 +17,7 @@ limitations under the License.
 // Package v1alpha1 contains API Schema definitions for the apigateway v1alpha1 API group
 // +kubebuilder:object:generate=true
 // +groupName=apigateway.awsctrl.io
-package v1alpha1
+package v1alpha1 // import "go.awsctrl.io/manager/apis/apigateway/v1alpha1"
 
 import (
 	"k8s.io/apimachinery/pkg/runtime/schema"

@@ -26,7 +26,7 @@ type RepositorySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
 	// LifecyclePolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-lifecyclepolicy
-	LifecyclePolicy Repository_LifecyclePolicy `json:"lifecyclePolicy,omitempty" cloudformation:"LifecyclePolicy,Parameter"`
+	LifecyclePolicy Repository_LifecyclePolicy `json:"lifecyclePolicy,omitempty" cloudformation:"LifecyclePolicy"`
 
 	// RepositoryName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-repositoryname
 	RepositoryName string `json:"repositoryName,omitempty" cloudformation:"RepositoryName,Parameter"`
@@ -40,13 +40,22 @@ type Repository_LifecyclePolicy struct {
 	// LifecyclePolicyText http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecr-repository-lifecyclepolicy.html#cfn-ecr-repository-lifecyclepolicy-lifecyclepolicytext
 	LifecyclePolicyText string `json:"lifecyclePolicyText,omitempty" cloudformation:"LifecyclePolicyText,Parameter"`
 
-	// RegistryId http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecr-repository-lifecyclepolicy.html#cfn-ecr-repository-lifecyclepolicy-registryid
-	RegistryId string `json:"registryId,omitempty" cloudformation:"RegistryId,Parameter"`
+	// Registry http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecr-repository-lifecyclepolicy.html#cfn-ecr-repository-lifecyclepolicy-registryid
+	Registry metav1alpha1.ObjectReference `json:"registry,omitempty" cloudformation:"RegistryId,Parameter"`
 }
 
 // RepositoryStatus defines the observed state of Repository
 type RepositoryStatus struct {
 	metav1alpha1.StatusMeta `json:",inline"`
+}
+
+// RepositoryOutput defines the stack outputs
+type RepositoryOutput struct {
+	// http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html
+	Ref string `json:"ref,omitempty"`
+
+	// Arn defines the Arn
+	Arn string `json:"arn,omitempty" cloudformation:"Arn,Output"`
 }
 
 // +kubebuilder:object:root=true

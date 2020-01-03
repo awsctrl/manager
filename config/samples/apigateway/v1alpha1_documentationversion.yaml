@@ -1,0 +1,14 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: DocumentationVersion
+metadata:
+  name: documentationpart-sample
+spec:
+  documentationVersion: "v0.0.1"
+  description: |
+    ApiGateway Documentation sample part
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
+

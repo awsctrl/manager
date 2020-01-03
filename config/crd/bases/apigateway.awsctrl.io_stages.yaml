@@ -1,0 +1,338 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: stages.apigateway.awsctrl.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.status
+    description: status of the stack
+    name: Status
+    type: string
+  - JSONPath: .status.message
+    description: reason for the stack status
+    name: Message
+    priority: 1
+    type: string
+  - JSONPath: .status.stackID
+    description: CloudFormation Stack ID
+    name: StackID
+    priority: 2
+    type: string
+  group: apigateway.awsctrl.io
+  names:
+    categories:
+    - aws
+    - apigateway
+    kind: Stage
+    listKind: StageList
+    plural: stages
+    singular: stage
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Stage is the Schema for the apigateway Stage API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: StageSpec defines the desired state of Stage
+          properties:
+            accessLogSetting:
+              description: AccessLogSetting http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-accesslogsetting
+              properties:
+                destination:
+                  description: Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-accesslogsetting.html#cfn-apigateway-stage-accesslogsetting-destinationarn
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    arn:
+                      description: Arn is used if the object expects an Arn
+                      type: string
+                    id:
+                      description: Id is used if the object expects an ID like Security
+                        groups and vpcs
+                      type: string
+                    key:
+                      description: Key of the referent.
+                      type: string
+                    kind:
+                      description: Kind of the referent.
+                      type: string
+                    name:
+                      description: Name of the referent.
+                      type: string
+                    namespace:
+                      description: Namespace of the referent.
+                      type: string
+                  type: object
+                format:
+                  description: Format http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-accesslogsetting.html#cfn-apigateway-stage-accesslogsetting-format
+                  type: string
+              type: object
+            cacheClusterEnabled:
+              description: CacheClusterEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-cacheclusterenabled
+              type: boolean
+            cacheClusterSize:
+              description: CacheClusterSize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-cacheclustersize
+              type: string
+            canarySetting:
+              description: CanarySetting http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-canarysetting
+              properties:
+                deployment:
+                  description: Deployment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-deploymentid
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    arn:
+                      description: Arn is used if the object expects an Arn
+                      type: string
+                    id:
+                      description: Id is used if the object expects an ID like Security
+                        groups and vpcs
+                      type: string
+                    key:
+                      description: Key of the referent.
+                      type: string
+                    kind:
+                      description: Kind of the referent.
+                      type: string
+                    name:
+                      description: Name of the referent.
+                      type: string
+                    namespace:
+                      description: Namespace of the referent.
+                      type: string
+                  type: object
+                percentTraffic:
+                  description: PercentTraffic http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-percenttraffic
+                  type: integer
+                stageVariableOverrides:
+                  additionalProperties:
+                    type: string
+                  description: StageVariableOverrides http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-stagevariableoverrides
+                  type: object
+                useStageCache:
+                  description: UseStageCache http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-usestagecache
+                  type: boolean
+              type: object
+            clientCertificate:
+              description: ClientCertificate http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-clientcertificateid
+              properties:
+                apiVersion:
+                  description: API version of the referent.
+                  type: string
+                arn:
+                  description: Arn is used if the object expects an Arn
+                  type: string
+                id:
+                  description: Id is used if the object expects an ID like Security
+                    groups and vpcs
+                  type: string
+                key:
+                  description: Key of the referent.
+                  type: string
+                kind:
+                  description: Kind of the referent.
+                  type: string
+                name:
+                  description: Name of the referent.
+                  type: string
+                namespace:
+                  description: Namespace of the referent.
+                  type: string
+              type: object
+            deployment:
+              description: Deployment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-deploymentid
+              properties:
+                apiVersion:
+                  description: API version of the referent.
+                  type: string
+                arn:
+                  description: Arn is used if the object expects an Arn
+                  type: string
+                id:
+                  description: Id is used if the object expects an ID like Security
+                    groups and vpcs
+                  type: string
+                key:
+                  description: Key of the referent.
+                  type: string
+                kind:
+                  description: Kind of the referent.
+                  type: string
+                name:
+                  description: Name of the referent.
+                  type: string
+                namespace:
+                  description: Namespace of the referent.
+                  type: string
+              type: object
+            description:
+              description: Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-description
+              type: string
+            documentationVersion:
+              description: DocumentationVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-documentationversion
+              type: string
+            methodSettings:
+              description: MethodSettings http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-methodsettings
+              items:
+                description: Stage_MethodSetting defines the desired state of StageMethodSetting
+                properties:
+                  cacheDataEncrypted:
+                    description: CacheDataEncrypted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-cachedataencrypted
+                    type: boolean
+                  cacheTtlInSeconds:
+                    description: CacheTtlInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-cachettlinseconds
+                    type: integer
+                  cachingEnabled:
+                    description: CachingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-cachingenabled
+                    type: boolean
+                  dataTraceEnabled:
+                    description: DataTraceEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-datatraceenabled
+                    type: boolean
+                  httpMethod:
+                    description: HttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-httpmethod
+                    type: string
+                  loggingLevel:
+                    description: LoggingLevel http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-logginglevel
+                    type: string
+                  metricsEnabled:
+                    description: MetricsEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-metricsenabled
+                    type: boolean
+                  resourcePath:
+                    description: ResourcePath http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-resourcepath
+                    type: string
+                  throttlingBurstLimit:
+                    description: ThrottlingBurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-throttlingburstlimit
+                    type: integer
+                  throttlingRateLimit:
+                    description: ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-throttlingratelimit
+                    type: integer
+                type: object
+              type: array
+            notificationARNs:
+              description: NotificationARNs the Simple Notification Service (SNS)
+                topic ARNs to publish stack related events.
+              items:
+                type: string
+              type: array
+            onFailure:
+              description: 'OnFailure determines what action will be taken if stack
+                creation fails. This must be one of: DO_NOTHING, ROLLBACK, or DELETE.'
+              type: string
+            region:
+              type: string
+            restApi:
+              description: RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-restapiid
+              properties:
+                apiVersion:
+                  description: API version of the referent.
+                  type: string
+                arn:
+                  description: Arn is used if the object expects an Arn
+                  type: string
+                id:
+                  description: Id is used if the object expects an ID like Security
+                    groups and vpcs
+                  type: string
+                key:
+                  description: Key of the referent.
+                  type: string
+                kind:
+                  description: Kind of the referent.
+                  type: string
+                name:
+                  description: Name of the referent.
+                  type: string
+                namespace:
+                  description: Namespace of the referent.
+                  type: string
+              type: object
+            stackName:
+              type: string
+            stageName:
+              description: StageName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-stagename
+              type: string
+            tags:
+              additionalProperties:
+                type: string
+              description: Tags key-value pairs to associate with this stack. AWS
+                CloudFormation also propagates these tags to the resources created
+                in the stack.
+              type: object
+            terminationProtection:
+              description: TerminationProtection whether to enable termination protection
+                on the specified stack. If a user attempts to delete a stack with
+                termination protection enabled, the operation fails and the stack
+                remains unchanged.
+              type: boolean
+            tracingEnabled:
+              description: TracingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-tracingenabled
+              type: boolean
+            variables:
+              additionalProperties:
+                type: string
+              description: Variables http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-variables
+              type: object
+          required:
+          - restApi
+          type: object
+        status:
+          description: StageStatus defines the observed state of Stage
+          properties:
+            generation:
+              description: ObservedGeneration is the version of the manifest which
+                has been applied
+              format: int64
+              type: integer
+            lastHeartbeatTime:
+              format: date-time
+              type: string
+            lastTransitionTime:
+              format: date-time
+              type: string
+            message:
+              type: string
+            outputs:
+              additionalProperties:
+                type: string
+              type: object
+            stackID:
+              type: string
+            stackName:
+              type: string
+            status:
+              description: Status is the status of the condition
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

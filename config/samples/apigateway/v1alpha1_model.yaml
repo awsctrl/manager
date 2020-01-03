@@ -1,0 +1,26 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: Model
+metadata:
+  name: model-sample
+spec:
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
+  contentType: application/json
+  description: Schema for Pets example
+  name: model-sample
+  schema: |
+    $schema: 'http://json-schema.org/draft-04/schema#'
+    title: PetsModelNoFlatten
+    type: array
+    items:
+      type: object
+      properties:
+        number:
+          type: integer
+        class:
+          type: string
+        salesPrice:
+          type: number

@@ -1,0 +1,10 @@
+apiVersion: certificatemanager.awsctrl.io/v1alpha1
+kind: Certificate
+metadata:
+  name: certificate-sample
+spec:
+  validationMethod: DNS
+  domainName: test-cert.awsctrl.io
+  # If this will be used with ApiGateway make sure to use a cert from us-east-1
+  # region: us-east-1
+  # terminationProtection: true

@@ -1,0 +1,15 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: DomainName
+metadata:
+  name: domainname-sample
+spec:
+  domainName: "test-cert.awsctrl.io"  
+  endpointConfiguration:
+    types:
+    - REGIONAL
+  regionalCertificate:
+    kind: Certificate
+    apiVersion: certificatemanager.awsctrl.io/v1alpha1
+    name: certificate-sample
+    key: ResourceRef
+      

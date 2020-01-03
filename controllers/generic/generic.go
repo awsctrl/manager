@@ -25,6 +25,7 @@ import (
 	"go.awsctrl.io/manager/meta"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/dynamic"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -41,14 +42,16 @@ type Generic interface {
 
 type generic struct {
 	client.Client
+	dynamic.Interface
 	Scheme *runtime.Scheme
 }
 
 // New configures a new controller
-func New(c client.Client, scheme *runtime.Scheme) (Generic, error) {
+func New(c client.Client, d dynamic.Interface, scheme *runtime.Scheme) (Generic, error) {
 	return &generic{
-		Client: c,
-		Scheme: scheme,
+		Client:    c,
+		Interface: d,
+		Scheme:    scheme,
 	}, nil
 }
 
@@ -56,6 +59,10 @@ func New(c client.Client, scheme *runtime.Scheme) (Generic, error) {
 func (r *generic) Reconcile(ctx context.Context, log logr.Logger, instance meta.StackObject) (time.Duration, error) {
 	requeueZero := time.Duration(0 * time.Second)
 	requeueLater := time.Duration(2 * time.Second)
+
+	// TODO(christopherhein) Add finalizer if termination protection is enabled
+	// Need to add a new func which implements reading the field from a code generated function
+	// defining the interface in the ./meta/ package and then adding and updating the record
 
 	if instance.GetStackName() == "" {
 		log.Info("Create CloudFormation Stack")
@@ -100,7 +107,7 @@ func (r *generic) updateStack(ctx context.Context, instance meta.StackObject) er
 		return err
 	}
 
-	temp, err := instance.GetTemplate()
+	temp, err := instance.GetTemplate(r.Interface)
 	if err != nil {
 		return err
 	}
@@ -150,7 +157,7 @@ func (r *generic) newStack(instance meta.StackObject) (*cloudformationv1alpha1.S
 		},
 	}
 
-	temp, err := instance.GetTemplate()
+	temp, err := instance.GetTemplate(r.Interface)
 	if err != nil {
 		return stack, err
 	}

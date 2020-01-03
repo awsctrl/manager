@@ -1,0 +1,17 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: Authorizer
+metadata:
+  name: authorizer-sample
+spec: 
+  authorizerCredentials: # make this
+  authorizerResultTtlInSeconds: 300
+  authorizerUri: # make this
+  type: TOKEN
+  identitySource: "method.request.header.Auth"
+  name: DefaultAuthorizer
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
+            

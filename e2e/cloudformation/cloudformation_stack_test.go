@@ -35,8 +35,6 @@ import (
 )
 
 var _ = Describe("Run CloudFormation Stack Controller", func() {
-	const timeout = time.Second * 60
-	const interval = time.Second * 1
 
 	Context("Run directly without existing job", func() {
 		It("Should create successfully", func() {
@@ -46,12 +44,12 @@ var _ = Describe("Run CloudFormation Stack Controller", func() {
 
 	Context("Run a new Stack", func() {
 		It("Should create successfully", func() {
+			var stackID string
 
-			stackkey := types.NamespacedName{Name: "test-stack", Namespace: "default"}
 			stack := &cloudformationv1alpha1.Stack{
 				ObjectMeta: metav1.ObjectMeta{
-					Name:      stackkey.Name,
-					Namespace: stackkey.Namespace,
+					GenerateName: "test-stack-",
+					Namespace:    podnamespace,
 				},
 				Spec: cloudformationv1alpha1.StackSpec{
 					Parameters: map[string]string{},
@@ -74,11 +72,12 @@ var _ = Describe("Run CloudFormation Stack Controller", func() {
 			}
 
 			Expect(k8sclient.Create(context.Background(), stack)).Should(Succeed())
-			time.Sleep(time.Second * 5)
-			defer func() {
-				Expect(k8sclient.Delete(context.Background(), stack)).Should(Succeed())
+			time.Sleep(5 * time.Second)
 
-			}()
+			stackkey := types.NamespacedName{
+				Name:      stack.GetName(),
+				Namespace: podnamespace,
+			}
 
 			By("Adding CFNFinalizer")
 			Eventually(func() bool {
@@ -98,7 +97,7 @@ var _ = Describe("Run CloudFormation Stack Controller", func() {
 			Eventually(func() bool {
 				f := &cloudformationv1alpha1.Stack{}
 				k8sclient.Get(context.Background(), stackkey, f)
-				return len(f.GetNotificationARNs()) == 1
+				return len(f.GetNotificationARNs()) == 0
 			}, timeout, interval).Should(BeTrue())
 
 			By("Creating CFN Stack")
@@ -119,7 +118,8 @@ var _ = Describe("Run CloudFormation Stack Controller", func() {
 			Eventually(func() bool {
 				f := &cloudformationv1alpha1.Stack{}
 				k8sclient.Get(context.Background(), stackkey, f)
-				return f.Status.Status == metav1alpha1.CreateCompleteStatus || os.Getenv("AWS_ACCOUNT_ID") != "true"
+				stackID = f.Status.StackID
+				return f.Status.Status == metav1alpha1.CreateCompleteStatus || os.Getenv("USE_AWS_CLIENT") != "true"
 			}, timeout, interval).Should(BeTrue())
 
 			// By("Describing Completed CFN Stack")
@@ -129,17 +129,19 @@ var _ = Describe("Run CloudFormation Stack Controller", func() {
 			// 	return f.Status.Outputs["Name"] == "test"
 			// }, timeout, interval).Should(BeTrue())
 
-			stackID := stack.Status.StackID
-
 			By("Deleting CFN Stack")
 			Expect(k8sclient.Delete(context.Background(), stack)).Should(Succeed())
 
 			By("Expecting metav1alpha1.DeleteCompleteStatus")
 			Eventually(func() bool {
+				if os.Getenv("USE_AWS_CLIENT") != "true" {
+					return true
+				}
+
 				output, err := awsclient.GetClient("us-west-2").DescribeStacks(&cloudformation.DescribeStacksInput{StackName: aws.String(stackID)})
 				Expect(err).To(BeNil())
 				stackoutput := output.Stacks[0].StackStatus
-				return *stackoutput == "DELETE_COMPLETE" || os.Getenv("AWS_ACCOUNT_ID") != "true"
+				return *stackoutput == "DELETE_COMPLETE"
 			}, timeout, interval).Should(BeTrue())
 		})
 	})

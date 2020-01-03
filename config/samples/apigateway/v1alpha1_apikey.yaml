@@ -1,0 +1,16 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: ApiKey
+metadata:
+  name: apikey-sample
+spec: 
+  name: "sample-apikey"
+	description: |
+    CloudFormation API Key V1"
+  enabled: true
+  stageKeys:
+  - stageName: "Test"
+    restApi:
+      kind: RestApi
+      apiVersion: apigateway.awsctrl.io/v1alpha1
+      name: restapi-sample
+      key: ResourceRef

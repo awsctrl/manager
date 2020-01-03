@@ -18,7 +18,6 @@ package e2e_test
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -28,7 +27,10 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/dynamic/fake"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -47,6 +49,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
+	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
 	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
 )
 
@@ -61,6 +64,8 @@ var (
 	awsclient    aws.AWS
 	configname   string = "config"
 	podnamespace string = "default"
+	timeout             = time.Second * 300
+	interval            = time.Second * 1
 )
 
 func TestAPIs(t *testing.T) {
@@ -76,7 +81,7 @@ var _ = BeforeSuite(func(done Done) {
 
 	By("bootstrapping test environment")
 	testenv = &envtest.Environment{
-		CRDDirectoryPaths: []string{filepath.Join("..", "config", "crd", "bases")},
+		CRDDirectoryPaths: []string{filepath.Join("..", "..", "config", "crd", "bases")},
 	}
 
 	var err error
@@ -128,7 +133,15 @@ var _ = BeforeSuite(func(done Done) {
 	}).SetupWithManager(k8smanager)
 	Expect(err).ToNot(HaveOccurred())
 
-	_, err = controllermanager.SetupControllers(k8smanager)
+	var dynclient dynamic.Interface
+	if os.Getenv("USE_EXISTING_CLUSTER") == "true" {
+		dynclient, err = dynamic.NewForConfig(k8smanager.GetConfig())
+		Expect(err).ToNot(HaveOccurred())
+	} else {
+		dynclient = fake.NewSimpleDynamicClient(scheme.Scheme, []runtime.Object{}...)
+	}
+
+	_, err = controllermanager.SetupControllers(k8smanager, dynclient)
 	Expect(err).ToNot(HaveOccurred())
 
 	go func() {
@@ -156,9 +169,6 @@ var _ = BeforeSuite(func(done Done) {
 				DefaultRegion:    "us-west-2",
 				AccountID:        os.Getenv("AWS_ACCOUNT_ID"),
 				SupportedRegions: []string{"us-west-2"},
-				Queue: selfv1alpha1.ConfigQueue{
-					TopicARN: fmt.Sprintf("arn:aws:sns:us-west-2:%s:awsctrl", os.Getenv("AWS_ACCOUNT_ID")),
-				},
 			},
 		},
 	}
@@ -169,6 +179,41 @@ var _ = BeforeSuite(func(done Done) {
 
 var _ = AfterSuite(func() {
 	By("tearing down the test environment")
+	Eventually(func() bool {
+		stackList := cloudformationv1alpha1.StackList{}
+		if err := k8sclient.List(context.Background(), &stackList); err != nil {
+			return false
+		}
+
+		if len(stackList.Items) == 0 {
+			return true
+		}
+
+		for _, stack := range stackList.Items {
+			if os.Getenv("USE_AWS_CLIENT") == "true" {
+				awsclient.SetClient("us-west-2", testutils.NewCFN("DELETE_COMPLETE"))
+			}
+
+			if stack.Status.Status == metav1alpha1.DeleteInProgressStatus {
+				continue
+			}
+
+			if err := k8sclient.Delete(context.Background(), &stack); err != nil {
+				return false
+			}
+		}
+		return false
+	}, (time.Second * 60), time.Second*1).Should(BeTrue())
+
+	config := &selfv1alpha1.Config{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      configname,
+			Namespace: podnamespace,
+		},
+	}
+
+	Expect(k8sclient.Delete(context.Background(), config)).Should(Succeed())
+
 	gexec.KillAndWait(5 * time.Second)
 	err := testenv.Stop()
 	Expect(err).ToNot(HaveOccurred())

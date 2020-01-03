@@ -1,0 +1,12 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: BasePathMapping
+metadata:
+  name: basepathmapping-sample
+spec: 
+  domainName: test-domain.awsctrl.io
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
+            

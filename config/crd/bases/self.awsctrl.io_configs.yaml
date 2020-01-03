@@ -51,30 +51,6 @@ spec:
                   description: DefaultRegion configures which region a stack should
                     be provisioned into by default
                   type: string
-                queue:
-                  description: Queue will set up the params for the queue system
-                  properties:
-                    name:
-                      description: Name is the name of the SQS queue to be used
-                      type: string
-                    queueARN:
-                      description: QueueARN defines a preconfigured queue vs creating
-                        them on boot
-                      type: string
-                    queueURL:
-                      description: QueueURL defines the URL for the Queue
-                      type: string
-                    region:
-                      description: Region is where SQS and SNS should be provisioned
-                      type: string
-                    subARN:
-                      description: SubARN is the name ARN for sqs to talk to.
-                      type: string
-                    topicARN:
-                      description: TopicARN is the name ARN for cloudformation to
-                        talk to.
-                      type: string
-                  type: object
                 supportedRegions:
                   description: SupportedRegions configures which regions CRDs can
                     deploy into

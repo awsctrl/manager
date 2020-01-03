@@ -1,0 +1,203 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: usageplans.apigateway.awsctrl.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.status
+    description: status of the stack
+    name: Status
+    type: string
+  - JSONPath: .status.message
+    description: reason for the stack status
+    name: Message
+    priority: 1
+    type: string
+  - JSONPath: .status.stackID
+    description: CloudFormation Stack ID
+    name: StackID
+    priority: 2
+    type: string
+  group: apigateway.awsctrl.io
+  names:
+    categories:
+    - aws
+    - apigateway
+    kind: UsagePlan
+    listKind: UsagePlanList
+    plural: usageplans
+    singular: usageplan
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: UsagePlan is the Schema for the apigateway UsagePlan API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: UsagePlanSpec defines the desired state of UsagePlan
+          properties:
+            apiStages:
+              description: ApiStages http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-apistages
+              items:
+                description: UsagePlan_ApiStage defines the desired state of UsagePlanApiStage
+                properties:
+                  api:
+                    description: Api http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-apiid
+                    properties:
+                      apiVersion:
+                        description: API version of the referent.
+                        type: string
+                      arn:
+                        description: Arn is used if the object expects an Arn
+                        type: string
+                      id:
+                        description: Id is used if the object expects an ID like Security
+                          groups and vpcs
+                        type: string
+                      key:
+                        description: Key of the referent.
+                        type: string
+                      kind:
+                        description: Kind of the referent.
+                        type: string
+                      name:
+                        description: Name of the referent.
+                        type: string
+                      namespace:
+                        description: Namespace of the referent.
+                        type: string
+                    type: object
+                  stage:
+                    description: Stage http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-stage
+                    type: string
+                  throttle:
+                    additionalProperties:
+                      description: UsagePlan_ThrottleSettings defines the desired
+                        state of UsagePlanThrottleSettings
+                      properties:
+                        burstLimit:
+                          description: BurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-burstlimit
+                          type: integer
+                        rateLimit:
+                          description: RateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-ratelimit
+                          type: integer
+                      type: object
+                    description: Throttle http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-throttle
+                    type: object
+                type: object
+              type: array
+            description:
+              description: Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-description
+              type: string
+            notificationARNs:
+              description: NotificationARNs the Simple Notification Service (SNS)
+                topic ARNs to publish stack related events.
+              items:
+                type: string
+              type: array
+            onFailure:
+              description: 'OnFailure determines what action will be taken if stack
+                creation fails. This must be one of: DO_NOTHING, ROLLBACK, or DELETE.'
+              type: string
+            quota:
+              description: Quota http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-quota
+              properties:
+                limit:
+                  description: Limit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-quotasettings.html#cfn-apigateway-usageplan-quotasettings-limit
+                  type: integer
+                offset:
+                  description: Offset http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-quotasettings.html#cfn-apigateway-usageplan-quotasettings-offset
+                  type: integer
+                period:
+                  description: Period http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-quotasettings.html#cfn-apigateway-usageplan-quotasettings-period
+                  type: string
+              type: object
+            region:
+              type: string
+            stackName:
+              type: string
+            tags:
+              additionalProperties:
+                type: string
+              description: Tags key-value pairs to associate with this stack. AWS
+                CloudFormation also propagates these tags to the resources created
+                in the stack.
+              type: object
+            terminationProtection:
+              description: TerminationProtection whether to enable termination protection
+                on the specified stack. If a user attempts to delete a stack with
+                termination protection enabled, the operation fails and the stack
+                remains unchanged.
+              type: boolean
+            throttle:
+              description: Throttle http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-throttle
+              properties:
+                burstLimit:
+                  description: BurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-burstlimit
+                  type: integer
+                rateLimit:
+                  description: RateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-ratelimit
+                  type: integer
+              type: object
+            usagePlanName:
+              description: UsagePlanName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-usageplanname
+              type: string
+          type: object
+        status:
+          description: UsagePlanStatus defines the observed state of UsagePlan
+          properties:
+            generation:
+              description: ObservedGeneration is the version of the manifest which
+                has been applied
+              format: int64
+              type: integer
+            lastHeartbeatTime:
+              format: date-time
+              type: string
+            lastTransitionTime:
+              format: date-time
+              type: string
+            message:
+              type: string
+            outputs:
+              additionalProperties:
+                type: string
+              type: object
+            stackID:
+              type: string
+            stackName:
+              type: string
+            status:
+              description: Status is the status of the condition
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

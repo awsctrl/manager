@@ -1,0 +1,20 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: Method
+metadata:
+  name: method-sample
+spec:
+  authorizationType: NONE
+  httpMethod: POST
+  integration:
+    integrationHttpMethod: POST
+    type: MOCK
+  resource: 
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: RootResourceId
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef

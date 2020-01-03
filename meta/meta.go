@@ -21,6 +21,7 @@ import (
 	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/client-go/dynamic"
 )
 
 // StackObject defines defined functions for all stack objects
@@ -32,7 +33,7 @@ type StackObject interface {
 	GetNotificationARNs() []string
 
 	// GetTemplate will return the JSON version of the CFN to use.
-	GetTemplate() (string, error)
+	GetTemplate(dynamic.Interface) (string, error)
 
 	// GenerateStackName will generate a stackName
 	GenerateStackName() string

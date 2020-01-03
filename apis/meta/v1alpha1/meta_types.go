@@ -1,5 +1,5 @@
 /*
-Copyright © 2019 AWS Controller author
+Copyright © 2019 AWS Controller authors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// +kubebuilder:object:root=false
+
 // Tag stores keys and values for tagging
 type Tag struct {
 	// Key labels the tag
@@ -28,6 +30,42 @@ type Tag struct {
 	// Value stores the value for the key
 	Value string `json:"value"`
 }
+
+// +kubebuilder:object:root=false
+
+// ObjectReference contains information about how
+type ObjectReference struct {
+	// ObjectRef references another stack
+	ObjectRef `json:",inline"`
+
+	// Id is used if the object expects an ID like Security groups and vpcs
+	Id string `json:"id,omitempty"`
+
+	// Arn is used if the object expects an Arn
+	Arn string `json:"arn,omitempty"`
+}
+
+// +kubebuilder:object:root=false
+
+// ObjectRef gives pointers to the object key it should use
+type ObjectRef struct {
+	// API version of the referent.
+	APIVersion string `json:"apiVersion,omitempty"`
+
+	// Kind of the referent.
+	Kind string `json:"kind,omitempty"`
+
+	// Name of the referent.
+	Name string `json:"name,omitempty"`
+
+	// Namespace of the referent.
+	Namespace string `json:"namespace,omitempty"`
+
+	// Key of the referent.
+	Key string `json:"key,omitempty"`
+}
+
+// +kubebuilder:object:root=false
 
 // CloudFormationMeta is the default CloudFormation spec metadata
 type CloudFormationMeta struct {
@@ -58,6 +96,8 @@ type CloudFormationMeta struct {
 	// +optional
 	TerminationProtection bool `json:"terminationProtection,omitempty"`
 }
+
+// +kubebuilder:object:root=false
 
 // StatusMeta is the default CloudFormation status metadata
 type StatusMeta struct {

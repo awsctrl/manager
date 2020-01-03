@@ -1,0 +1,16 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: Resource
+metadata:
+  name: resource-sample
+spec:
+  pathPart: stack
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
+  parent:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: RootResourceId

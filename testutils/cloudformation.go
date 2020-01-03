@@ -28,11 +28,15 @@ var (
 
 type mockCloudFormationClient struct {
 	cloudformationiface.CloudFormationAPI
+	DescribeStackOutputValue string
 }
 
 // NewCFN will return a mock CloudFormation client to test with
-func NewCFN() cloudformationiface.CloudFormationAPI {
-	return &mockCloudFormationClient{}
+func NewCFN(output string) cloudformationiface.CloudFormationAPI {
+	if output == "" {
+		output = "UPDATE_COMPLETE"
+	}
+	return &mockCloudFormationClient{DescribeStackOutputValue: output}
 }
 
 // CreateStack will mock creating a CloudFormation stack and return a fake StackID
@@ -53,11 +57,19 @@ func (m *mockCloudFormationClient) UpdateStack(input *cfn.UpdateStackInput) (*cf
 func (m *mockCloudFormationClient) DescribeStacks(input *cfn.DescribeStacksInput) (*cfn.DescribeStacksOutput, error) {
 	describeStackOutput := &cfn.DescribeStacksOutput{}
 	stack := &cfn.Stack{}
-	output := &cfn.Output{}
-	output.SetOutputKey("Name")
-	output.SetOutputValue("test")
-	stack.SetOutputs([]*cfn.Output{output})
-	stack.SetStackStatus("UPDATE_COMPLETE")
+
+	outputs := []*cfn.Output{}
+
+	outputKeys := []string{"ResourceRef", "RootResourceId"}
+	for _, key := range outputKeys {
+		output := &cfn.Output{}
+		output.SetOutputKey(key)
+		output.SetOutputValue("test")
+		outputs = append(outputs, output)
+	}
+
+	stack.SetOutputs(outputs)
+	stack.SetStackStatus(m.DescribeStackOutputValue)
 	stack.SetStackStatusReason("User initiated")
 	stack.SetStackId(stackID)
 	describeStackOutput.SetStacks([]*cfn.Stack{stack})

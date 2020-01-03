@@ -1,0 +1,8 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: ClientCertificate
+metadata:
+  name: clientcertificate-sample
+spec: 
+  description: |
+    A test client certificate
+            

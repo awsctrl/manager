@@ -3,12 +3,10 @@ kind: Config
 metadata:
   name: generator-config
 spec:
-  resources:
-  - apigateway:account
-  # - apigateway:deployment
+  resources: []
   groups:
   # - cloudformation
-  # - apigateway
+  - apigateway
   # - amazonmq
   # - amplify
   # - apigatewayv2
@@ -23,7 +21,7 @@ spec:
   # - backup
   # - batch
   # - budgets
-  # - certificatemanager
+  - certificatemanager
   - cloud9
   # - cloudformation
   # - cloudfront
@@ -92,7 +90,7 @@ spec:
   # - rds
   # - redshift
   # - robomaker
-  # - route53
+  - route53
   # - route53resolver
   # - s3
   # - sagemaker

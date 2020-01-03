@@ -1,0 +1,8 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: RestApi
+metadata:
+  name: restapi-sample
+spec:
+  name: awsctrl
+  description: |
+    AWS Controller API Gateway API description

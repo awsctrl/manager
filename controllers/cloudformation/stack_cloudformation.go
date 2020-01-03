@@ -19,6 +19,7 @@ package cloudformation
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 
 	"k8s.io/apimachinery/pkg/types"
@@ -85,7 +86,13 @@ func (r *StackReconciler) deleteCFNStack(ctx context.Context, log logr.Logger, i
 		return err
 	}
 
-	return r.updateCFNStackStatus(ctx, instance, metav1alpha1.DeleteInProgressStatus, "", instance.Status.StackID, map[string]string{})
+	var status metav1alpha1.ConditionStatus
+	status = metav1alpha1.DeleteInProgressStatus
+	if os.Getenv("USE_EXISTING_CLUSTER") == "true" && os.Getenv("USE_AWS_CLIENT") != "true" {
+		status = metav1alpha1.DeleteCompleteStatus
+	}
+
+	return r.updateCFNStackStatus(ctx, instance, status, "", instance.Status.StackID, map[string]string{})
 }
 
 // describeCFNStackStatus will get the latest from CFN Stacks and update etcd

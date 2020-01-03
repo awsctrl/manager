@@ -25,13 +25,19 @@ import (
 type AccountSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// CloudWatchRoleArn http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-account.html#cfn-apigateway-account-cloudwatchrolearn
-	CloudWatchRoleArn string `json:"cloudWatchRoleArn,omitempty" cloudformation:"CloudWatchRoleArn,Parameter"`
+	// CloudWatchRole http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-account.html#cfn-apigateway-account-cloudwatchrolearn
+	CloudWatchRole metav1alpha1.ObjectReference `json:"cloudWatchRole,omitempty" cloudformation:"CloudWatchRoleArn,Parameter"`
 }
 
 // AccountStatus defines the observed state of Account
 type AccountStatus struct {
 	metav1alpha1.StatusMeta `json:",inline"`
+}
+
+// AccountOutput defines the stack outputs
+type AccountOutput struct {
+	// http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-account.html
+	Ref string `json:"ref,omitempty"`
 }
 
 // +kubebuilder:object:root=true

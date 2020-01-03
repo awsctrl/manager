@@ -1,0 +1,30 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: Stage
+metadata:
+  name: stage-sample
+spec:
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
+  stageName: Prod
+  description: Prod Stage
+  deployment:
+    kind: Deployment
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: deployment-sample
+    key: ResourceRef
+  documentationVersion: ""
+  clientCertificate: 
+    kind: ClientCertificate
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: clientcertificate-sample
+    key: ResourceRef
+  variables:
+    stack: Prod
+  methodSettings:
+  - resourcePath: /
+    httpMethod: GET
+    metricsEnabled: true
+    dataTraceEnabled: true

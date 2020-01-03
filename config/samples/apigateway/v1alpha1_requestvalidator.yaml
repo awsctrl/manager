@@ -1,0 +1,13 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: RequestValidator
+metadata:
+  name: requestvalidator-sample
+spec:
+  name: test-validator
+  validateRequestBody: true
+  validateRequestParameters: true
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef

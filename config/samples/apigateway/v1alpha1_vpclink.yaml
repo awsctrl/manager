@@ -1,0 +1,5 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: VpcLink
+metadata:
+  name: vpclink-sample
+spec: {}

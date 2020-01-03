@@ -20,7 +20,6 @@ import (
 	"context"
 
 	cloudformationv1alpha1 "go.awsctrl.io/manager/apis/cloudformation/v1alpha1"
-	selfv1alpha1 "go.awsctrl.io/manager/apis/self/v1alpha1"
 	cloudformationutils "go.awsctrl.io/manager/controllers/cloudformation/utils"
 	controllerutils "go.awsctrl.io/manager/controllers/utils"
 )
@@ -36,14 +35,6 @@ func (r *StackReconciler) addCFNFinalizer(ctx context.Context, instance *cloudfo
 func (r *StackReconciler) removeCFNFinalizer(ctx context.Context, instance *cloudformationv1alpha1.Stack) error {
 	instanceCopy := instance.DeepCopy()
 	instanceCopy.ObjectMeta = controllerutils.RemoveFinalizer(instanceCopy.ObjectMeta, cloudformationutils.StackDeletionFinalizerName)
-	return r.Update(ctx, instanceCopy)
-}
-
-// addNotificationARN will append the root notifcation arn for updates
-func (r *StackReconciler) addNotificationARN(ctx context.Context, instance *cloudformationv1alpha1.Stack, config *selfv1alpha1.Config) error {
-	instanceCopy := instance.DeepCopy()
-	instanceCopy.Spec.NotificationARNs = append(instanceCopy.Spec.NotificationARNs, &config.Spec.AWS.Queue.TopicARN)
-
 	return r.Update(ctx, instanceCopy)
 }
 

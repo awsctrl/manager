@@ -1,0 +1,15 @@
+apiVersion: apigateway.awsctrl.io/v1alpha1
+kind: DocumentationPart
+metadata:
+  name: documentationpart-sample
+spec: 
+  location:
+    type: METHOD
+    method: GET
+    path: /hello
+  properties: {\"description\":\"Example description\"}
+  restApi:
+    kind: RestApi
+    apiVersion: apigateway.awsctrl.io/v1alpha1
+    name: restapi-sample
+    key: ResourceRef
