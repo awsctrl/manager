@@ -68,40 +68,6 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayDomainName := &apigateway.DomainName{}
 
-	if in.Spec.SecurityPolicy != "" {
-		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayDomainNameCertificateItem := in.Spec.Certificate.DeepCopy()
-
-	if apigatewayDomainNameCertificateItem.ObjectRef.Kind == "" {
-		apigatewayDomainNameCertificateItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayDomainNameCertificateItem.ObjectRef.APIVersion == "" {
-		apigatewayDomainNameCertificateItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if apigatewayDomainNameCertificateItem.ObjectRef.Namespace == "" {
-		apigatewayDomainNameCertificateItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.Certificate = *apigatewayDomainNameCertificateItem
-	certificateArn, err := in.Spec.Certificate.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if certificateArn != "" {
-		apigatewayDomainName.CertificateArn = certificateArn
-	}
-
-	if in.Spec.DomainName != "" {
-		apigatewayDomainName.DomainName = in.Spec.DomainName
-	}
-
 	if !reflect.DeepEqual(in.Spec.EndpointConfiguration, DomainName_EndpointConfiguration{}) {
 		apigatewayDomainNameEndpointConfiguration := apigateway.DomainName_EndpointConfiguration{}
 
@@ -135,6 +101,40 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if regionalCertificateArn != "" {
 		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
+	}
+
+	if in.Spec.SecurityPolicy != "" {
+		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayDomainNameCertificateItem := in.Spec.Certificate.DeepCopy()
+
+	if apigatewayDomainNameCertificateItem.ObjectRef.Kind == "" {
+		apigatewayDomainNameCertificateItem.ObjectRef.Kind = "Deployment"
+	}
+
+	if apigatewayDomainNameCertificateItem.ObjectRef.APIVersion == "" {
+		apigatewayDomainNameCertificateItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
+	}
+
+	if apigatewayDomainNameCertificateItem.ObjectRef.Namespace == "" {
+		apigatewayDomainNameCertificateItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.Certificate = *apigatewayDomainNameCertificateItem
+	certificateArn, err := in.Spec.Certificate.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if certificateArn != "" {
+		apigatewayDomainName.CertificateArn = certificateArn
+	}
+
+	if in.Spec.DomainName != "" {
+		apigatewayDomainName.DomainName = in.Spec.DomainName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

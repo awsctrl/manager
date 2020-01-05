@@ -55,6 +55,10 @@ func (in *RequestValidator) GetTemplate(client dynamic.Interface) (string, error
 
 	apigatewayRequestValidator := &apigateway.RequestValidator{}
 
+	if in.Spec.Name != "" {
+		apigatewayRequestValidator.Name = in.Spec.Name
+	}
+
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayRequestValidatorRestApiItem := in.Spec.RestApi.DeepCopy()
 
@@ -86,10 +90,6 @@ func (in *RequestValidator) GetTemplate(client dynamic.Interface) (string, error
 
 	if in.Spec.ValidateRequestParameters || !in.Spec.ValidateRequestParameters {
 		apigatewayRequestValidator.ValidateRequestParameters = in.Spec.ValidateRequestParameters
-	}
-
-	if in.Spec.Name != "" {
-		apigatewayRequestValidator.Name = in.Spec.Name
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

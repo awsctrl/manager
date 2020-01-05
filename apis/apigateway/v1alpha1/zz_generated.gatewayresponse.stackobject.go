@@ -56,6 +56,14 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 
 	apigatewayGatewayResponse := &apigateway.GatewayResponse{}
 
+	if !reflect.DeepEqual(in.Spec.ResponseTemplates, map[string]string{}) {
+		apigatewayGatewayResponse.ResponseTemplates = in.Spec.ResponseTemplates
+	}
+
+	if in.Spec.ResponseType != "" {
+		apigatewayGatewayResponse.ResponseType = in.Spec.ResponseType
+	}
+
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayGatewayResponseRestApiItem := in.Spec.RestApi.DeepCopy()
 
@@ -87,14 +95,6 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 
 	if !reflect.DeepEqual(in.Spec.ResponseParameters, map[string]string{}) {
 		apigatewayGatewayResponse.ResponseParameters = in.Spec.ResponseParameters
-	}
-
-	if !reflect.DeepEqual(in.Spec.ResponseTemplates, map[string]string{}) {
-		apigatewayGatewayResponse.ResponseTemplates = in.Spec.ResponseTemplates
-	}
-
-	if in.Spec.ResponseType != "" {
-		apigatewayGatewayResponse.ResponseType = in.Spec.ResponseType
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

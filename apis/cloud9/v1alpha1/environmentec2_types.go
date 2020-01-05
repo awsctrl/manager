@@ -25,6 +25,15 @@ import (
 type EnvironmentEC2Spec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Repositories http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-repositories
+	Repositories []EnvironmentEC2_Repository `json:"repositories,omitempty" cloudformation:"Repositories"`
+
+	// Owner http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-ownerarn
+	Owner metav1alpha1.ObjectReference `json:"owner,omitempty" cloudformation:"OwnerArn,Parameter"`
+
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
 	// AutomaticStopTimeMinutes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-automaticstoptimeminutes
 	AutomaticStopTimeMinutes int `json:"automaticStopTimeMinutes,omitempty" cloudformation:"AutomaticStopTimeMinutes,Parameter"`
 
@@ -36,15 +45,6 @@ type EnvironmentEC2Spec struct {
 
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-name
 	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
-
-	// Repositories http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-repositories
-	Repositories []EnvironmentEC2_Repository `json:"repositories,omitempty" cloudformation:"Repositories"`
-
-	// Owner http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-ownerarn
-	Owner metav1alpha1.ObjectReference `json:"owner,omitempty" cloudformation:"OwnerArn,Parameter"`
-
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 }
 
 // EnvironmentEC2_Repository defines the desired state of EnvironmentEC2Repository

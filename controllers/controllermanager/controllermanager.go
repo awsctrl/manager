@@ -63,85 +63,40 @@ func AddAllSchemes(scheme *runtime.Scheme) error {
 // SetupControllers will configure your manager with all controllers
 func SetupControllers(mgr manager.Manager, dynamicClient dynamic.Interface) (reconciler string, err error) {
 
-	if err = (&route53.HostedZoneReconciler{
+	if err = (&apigateway.MethodReconciler{
 		Client:    mgr.GetClient(),
 		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("route53").WithName("hostedzone"),
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("method"),
 		Scheme:    mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		return "route53:hostedzone", err
+		return "apigateway:method", err
 	}
 
-	if err = (&apigateway.AccountReconciler{
+	if err = (&route53.RecordSetGroupReconciler{
 		Client:    mgr.GetClient(),
 		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("account"),
+		Log:       ctrl.Log.WithName("controllers").WithName("route53").WithName("recordsetgroup"),
 		Scheme:    mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:account", err
+		return "route53:recordsetgroup", err
 	}
 
-	if err = (&apigateway.DomainNameReconciler{
+	if err = (&cloud9.EnvironmentEC2Reconciler{
 		Client:    mgr.GetClient(),
 		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("domainname"),
+		Log:       ctrl.Log.WithName("controllers").WithName("cloud9").WithName("environmentec2"),
 		Scheme:    mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:domainname", err
+		return "cloud9:environmentec2", err
 	}
 
-	if err = (&apigateway.ModelReconciler{
+	if err = (&apigateway.DeploymentReconciler{
 		Client:    mgr.GetClient(),
 		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("model"),
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("deployment"),
 		Scheme:    mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:model", err
-	}
-
-	if err = (&apigateway.VpcLinkReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("vpclink"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:vpclink", err
-	}
-
-	if err = (&route53.RecordSetReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("route53").WithName("recordset"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "route53:recordset", err
-	}
-
-	if err = (&ecr.RepositoryReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("ecr").WithName("repository"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "ecr:repository", err
-	}
-
-	if err = (&iam.RoleReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("role"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "iam:role", err
-	}
-
-	if err = (&apigateway.DocumentationPartReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("documentationpart"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:documentationpart", err
+		return "apigateway:deployment", err
 	}
 
 	if err = (&iam.AccessKeyReconciler{
@@ -162,13 +117,22 @@ func SetupControllers(mgr manager.Manager, dynamicClient dynamic.Interface) (rec
 		return "iam:servicelinkedrole", err
 	}
 
-	if err = (&apigateway.AuthorizerReconciler{
+	if err = (&apigateway.StageReconciler{
 		Client:    mgr.GetClient(),
 		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("authorizer"),
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("stage"),
 		Scheme:    mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:authorizer", err
+		return "apigateway:stage", err
+	}
+
+	if err = (&ecr.RepositoryReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("ecr").WithName("repository"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "ecr:repository", err
 	}
 
 	if err = (&iam.InstanceProfileReconciler{
@@ -180,166 +144,13 @@ func SetupControllers(mgr manager.Manager, dynamicClient dynamic.Interface) (rec
 		return "iam:instanceprofile", err
 	}
 
-	if err = (&certificatemanager.CertificateReconciler{
+	if err = (&apigateway.VpcLinkReconciler{
 		Client:    mgr.GetClient(),
 		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("certificatemanager").WithName("certificate"),
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("vpclink"),
 		Scheme:    mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		return "certificatemanager:certificate", err
-	}
-
-	if err = (&apigateway.UsagePlanReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("usageplan"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:usageplan", err
-	}
-
-	if err = (&apigateway.StageReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("stage"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:stage", err
-	}
-
-	if err = (&apigateway.MethodReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("method"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:method", err
-	}
-
-	if err = (&iam.UserToGroupAdditionReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("usertogroupaddition"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "iam:usertogroupaddition", err
-	}
-
-	if err = (&apigateway.RestApiReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("restapi"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:restapi", err
-	}
-
-	if err = (&route53.RecordSetGroupReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("route53").WithName("recordsetgroup"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "route53:recordsetgroup", err
-	}
-
-	if err = (&iam.ManagedPolicyReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("managedpolicy"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "iam:managedpolicy", err
-	}
-
-	if err = (&apigateway.DeploymentReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("deployment"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:deployment", err
-	}
-
-	if err = (&apigateway.ApiKeyReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("apikey"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:apikey", err
-	}
-
-	if err = (&apigateway.ClientCertificateReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("clientcertificate"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:clientcertificate", err
-	}
-
-	if err = (&iam.PolicyReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("policy"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "iam:policy", err
-	}
-
-	if err = (&iam.GroupReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("group"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "iam:group", err
-	}
-
-	if err = (&cloud9.EnvironmentEC2Reconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("cloud9").WithName("environmentec2"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "cloud9:environmentec2", err
-	}
-
-	if err = (&apigateway.UsagePlanKeyReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("usageplankey"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:usageplankey", err
-	}
-
-	if err = (&apigateway.ResourceReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("resource"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:resource", err
-	}
-
-	if err = (&apigateway.GatewayResponseReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("gatewayresponse"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:gatewayresponse", err
-	}
-
-	if err = (&apigateway.DocumentationVersionReconciler{
-		Client:    mgr.GetClient(),
-		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("documentationversion"),
-		Scheme:    mgr.GetScheme(),
-	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:documentationversion", err
+		return "apigateway:vpclink", err
 	}
 
 	if err = (&iam.UserReconciler{
@@ -351,13 +162,22 @@ func SetupControllers(mgr manager.Manager, dynamicClient dynamic.Interface) (rec
 		return "iam:user", err
 	}
 
-	if err = (&route53.HealthCheckReconciler{
+	if err = (&iam.RoleReconciler{
 		Client:    mgr.GetClient(),
 		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("route53").WithName("healthcheck"),
+		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("role"),
 		Scheme:    mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		return "route53:healthcheck", err
+		return "iam:role", err
+	}
+
+	if err = (&apigateway.BasePathMappingReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("basepathmapping"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:basepathmapping", err
 	}
 
 	if err = (&apigateway.RequestValidatorReconciler{
@@ -369,13 +189,193 @@ func SetupControllers(mgr manager.Manager, dynamicClient dynamic.Interface) (rec
 		return "apigateway:requestvalidator", err
 	}
 
-	if err = (&apigateway.BasePathMappingReconciler{
+	if err = (&iam.PolicyReconciler{
 		Client:    mgr.GetClient(),
 		Interface: dynamicClient,
-		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("basepathmapping"),
+		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("policy"),
 		Scheme:    mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		return "apigateway:basepathmapping", err
+		return "iam:policy", err
+	}
+
+	if err = (&apigateway.ApiKeyReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("apikey"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:apikey", err
+	}
+
+	if err = (&apigateway.DocumentationPartReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("documentationpart"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:documentationpart", err
+	}
+
+	if err = (&apigateway.DocumentationVersionReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("documentationversion"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:documentationversion", err
+	}
+
+	if err = (&route53.HealthCheckReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("route53").WithName("healthcheck"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "route53:healthcheck", err
+	}
+
+	if err = (&route53.HostedZoneReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("route53").WithName("hostedzone"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "route53:hostedzone", err
+	}
+
+	if err = (&apigateway.DomainNameReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("domainname"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:domainname", err
+	}
+
+	if err = (&apigateway.ResourceReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("resource"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:resource", err
+	}
+
+	if err = (&apigateway.UsagePlanReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("usageplan"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:usageplan", err
+	}
+
+	if err = (&apigateway.RestApiReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("restapi"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:restapi", err
+	}
+
+	if err = (&route53.RecordSetReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("route53").WithName("recordset"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "route53:recordset", err
+	}
+
+	if err = (&apigateway.UsagePlanKeyReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("usageplankey"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:usageplankey", err
+	}
+
+	if err = (&apigateway.AccountReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("account"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:account", err
+	}
+
+	if err = (&apigateway.GatewayResponseReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("gatewayresponse"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:gatewayresponse", err
+	}
+
+	if err = (&iam.GroupReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("group"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "iam:group", err
+	}
+
+	if err = (&iam.UserToGroupAdditionReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("usertogroupaddition"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "iam:usertogroupaddition", err
+	}
+
+	if err = (&iam.ManagedPolicyReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("iam").WithName("managedpolicy"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "iam:managedpolicy", err
+	}
+
+	if err = (&certificatemanager.CertificateReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("certificatemanager").WithName("certificate"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "certificatemanager:certificate", err
+	}
+
+	if err = (&apigateway.ClientCertificateReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("clientcertificate"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:clientcertificate", err
+	}
+
+	if err = (&apigateway.ModelReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("model"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:model", err
+	}
+
+	if err = (&apigateway.AuthorizerReconciler{
+		Client:    mgr.GetClient(),
+		Interface: dynamicClient,
+		Log:       ctrl.Log.WithName("controllers").WithName("apigateway").WithName("authorizer"),
+		Scheme:    mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		return "apigateway:authorizer", err
 	}
 
 	return reconciler, nil

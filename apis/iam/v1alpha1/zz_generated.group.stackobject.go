@@ -76,10 +76,6 @@ func (in *Group) GetTemplate(client dynamic.Interface) (string, error) {
 	for _, item := range in.Spec.Policies {
 		iamGroupPolicy := iam.Group_Policy{}
 
-		if item.PolicyName != "" {
-			iamGroupPolicy.PolicyName = item.PolicyName
-		}
-
 		if item.PolicyDocument != "" {
 			iamGroupPolicyJSON := make(map[string]interface{})
 			err := json.Unmarshal([]byte(item.PolicyDocument), &iamGroupPolicyJSON)
@@ -87,6 +83,10 @@ func (in *Group) GetTemplate(client dynamic.Interface) (string, error) {
 				return "", err
 			}
 			iamGroupPolicy.PolicyDocument = iamGroupPolicyJSON
+		}
+
+		if item.PolicyName != "" {
+			iamGroupPolicy.PolicyName = item.PolicyName
 		}
 
 	}

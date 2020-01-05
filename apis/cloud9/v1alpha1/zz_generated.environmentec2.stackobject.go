@@ -61,10 +61,6 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 
 	cloud9EnvironmentEC2 := &cloud9.EnvironmentEC2{}
 
-	if in.Spec.Description != "" {
-		cloud9EnvironmentEC2.Description = in.Spec.Description
-	}
-
 	if in.Spec.AutomaticStopTimeMinutes != cloud9EnvironmentEC2.AutomaticStopTimeMinutes {
 		cloud9EnvironmentEC2.AutomaticStopTimeMinutes = in.Spec.AutomaticStopTimeMinutes
 	}
@@ -144,6 +140,10 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 
 	if ownerArn != "" {
 		cloud9EnvironmentEC2.OwnerArn = ownerArn
+	}
+
+	if in.Spec.Description != "" {
+		cloud9EnvironmentEC2.Description = in.Spec.Description
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

@@ -56,6 +56,43 @@ func (in *Stage) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayStage := &apigateway.Stage{}
 
+	if in.Spec.StageName != "" {
+		apigatewayStage.StageName = in.Spec.StageName
+	}
+
+	if in.Spec.CacheClusterSize != "" {
+		apigatewayStage.CacheClusterSize = in.Spec.CacheClusterSize
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayStageDeploymentItem := in.Spec.Deployment.DeepCopy()
+
+	if apigatewayStageDeploymentItem.ObjectRef.Kind == "" {
+		apigatewayStageDeploymentItem.ObjectRef.Kind = "Deployment"
+	}
+
+	if apigatewayStageDeploymentItem.ObjectRef.APIVersion == "" {
+		apigatewayStageDeploymentItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
+	}
+
+	if apigatewayStageDeploymentItem.ObjectRef.Namespace == "" {
+		apigatewayStageDeploymentItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.Deployment = *apigatewayStageDeploymentItem
+	deploymentId, err := in.Spec.Deployment.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if deploymentId != "" {
+		apigatewayStage.DeploymentId = deploymentId
+	}
+
+	if in.Spec.TracingEnabled || !in.Spec.TracingEnabled {
+		apigatewayStage.TracingEnabled = in.Spec.TracingEnabled
+	}
+
 	if !reflect.DeepEqual(in.Spec.AccessLogSetting, Stage_AccessLogSetting{}) {
 		apigatewayStageAccessLogSetting := apigateway.Stage_AccessLogSetting{}
 
@@ -89,72 +126,6 @@ func (in *Stage) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		apigatewayStage.AccessLogSetting = &apigatewayStageAccessLogSetting
-	}
-
-	if in.Spec.DocumentationVersion != "" {
-		apigatewayStage.DocumentationVersion = in.Spec.DocumentationVersion
-	}
-
-	if in.Spec.CacheClusterSize != "" {
-		apigatewayStage.CacheClusterSize = in.Spec.CacheClusterSize
-	}
-
-	if in.Spec.Description != "" {
-		apigatewayStage.Description = in.Spec.Description
-	}
-
-	apigatewayStageMethodSettings := []apigateway.Stage_MethodSetting{}
-
-	for _, item := range in.Spec.MethodSettings {
-		apigatewayStageMethodSetting := apigateway.Stage_MethodSetting{}
-
-		if item.HttpMethod != "" {
-			apigatewayStageMethodSetting.HttpMethod = item.HttpMethod
-		}
-
-		if item.ResourcePath != "" {
-			apigatewayStageMethodSetting.ResourcePath = item.ResourcePath
-		}
-
-		if item.LoggingLevel != "" {
-			apigatewayStageMethodSetting.LoggingLevel = item.LoggingLevel
-		}
-
-		if item.ThrottlingBurstLimit != apigatewayStageMethodSetting.ThrottlingBurstLimit {
-			apigatewayStageMethodSetting.ThrottlingBurstLimit = item.ThrottlingBurstLimit
-		}
-
-		if item.CacheDataEncrypted || !item.CacheDataEncrypted {
-			apigatewayStageMethodSetting.CacheDataEncrypted = item.CacheDataEncrypted
-		}
-
-		if item.CachingEnabled || !item.CachingEnabled {
-			apigatewayStageMethodSetting.CachingEnabled = item.CachingEnabled
-		}
-
-		if item.DataTraceEnabled || !item.DataTraceEnabled {
-			apigatewayStageMethodSetting.DataTraceEnabled = item.DataTraceEnabled
-		}
-
-		if item.MetricsEnabled || !item.MetricsEnabled {
-			apigatewayStageMethodSetting.MetricsEnabled = item.MetricsEnabled
-		}
-
-		if float64(item.ThrottlingRateLimit) != apigatewayStageMethodSetting.ThrottlingRateLimit {
-			apigatewayStageMethodSetting.ThrottlingRateLimit = float64(item.ThrottlingRateLimit)
-		}
-
-		if item.CacheTtlInSeconds != apigatewayStageMethodSetting.CacheTtlInSeconds {
-			apigatewayStageMethodSetting.CacheTtlInSeconds = item.CacheTtlInSeconds
-		}
-
-	}
-
-	if len(apigatewayStageMethodSettings) > 0 {
-		apigatewayStage.MethodSettings = apigatewayStageMethodSettings
-	}
-	if in.Spec.TracingEnabled || !in.Spec.TracingEnabled {
-		apigatewayStage.TracingEnabled = in.Spec.TracingEnabled
 	}
 
 	if !reflect.DeepEqual(in.Spec.CanarySetting, Stage_CanarySetting{}) {
@@ -200,8 +171,96 @@ func (in *Stage) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayStage.CanarySetting = &apigatewayStageCanarySetting
 	}
 
-	if in.Spec.StageName != "" {
-		apigatewayStage.StageName = in.Spec.StageName
+	if in.Spec.Description != "" {
+		apigatewayStage.Description = in.Spec.Description
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayStageRestApiItem := in.Spec.RestApi.DeepCopy()
+
+	if apigatewayStageRestApiItem.ObjectRef.Kind == "" {
+		apigatewayStageRestApiItem.ObjectRef.Kind = "Deployment"
+	}
+
+	if apigatewayStageRestApiItem.ObjectRef.APIVersion == "" {
+		apigatewayStageRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
+	}
+
+	if apigatewayStageRestApiItem.ObjectRef.Namespace == "" {
+		apigatewayStageRestApiItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApi = *apigatewayStageRestApiItem
+	restApiId, err := in.Spec.RestApi.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if restApiId != "" {
+		apigatewayStage.RestApiId = restApiId
+	}
+
+	if !reflect.DeepEqual(in.Spec.Variables, map[string]string{}) {
+		apigatewayStage.Variables = in.Spec.Variables
+	}
+
+	if in.Spec.CacheClusterEnabled || !in.Spec.CacheClusterEnabled {
+		apigatewayStage.CacheClusterEnabled = in.Spec.CacheClusterEnabled
+	}
+
+	apigatewayStageMethodSettings := []apigateway.Stage_MethodSetting{}
+
+	for _, item := range in.Spec.MethodSettings {
+		apigatewayStageMethodSetting := apigateway.Stage_MethodSetting{}
+
+		if item.DataTraceEnabled || !item.DataTraceEnabled {
+			apigatewayStageMethodSetting.DataTraceEnabled = item.DataTraceEnabled
+		}
+
+		if item.ResourcePath != "" {
+			apigatewayStageMethodSetting.ResourcePath = item.ResourcePath
+		}
+
+		if item.ThrottlingBurstLimit != apigatewayStageMethodSetting.ThrottlingBurstLimit {
+			apigatewayStageMethodSetting.ThrottlingBurstLimit = item.ThrottlingBurstLimit
+		}
+
+		if item.CacheDataEncrypted || !item.CacheDataEncrypted {
+			apigatewayStageMethodSetting.CacheDataEncrypted = item.CacheDataEncrypted
+		}
+
+		if item.CachingEnabled || !item.CachingEnabled {
+			apigatewayStageMethodSetting.CachingEnabled = item.CachingEnabled
+		}
+
+		if item.LoggingLevel != "" {
+			apigatewayStageMethodSetting.LoggingLevel = item.LoggingLevel
+		}
+
+		if float64(item.ThrottlingRateLimit) != apigatewayStageMethodSetting.ThrottlingRateLimit {
+			apigatewayStageMethodSetting.ThrottlingRateLimit = float64(item.ThrottlingRateLimit)
+		}
+
+		if item.HttpMethod != "" {
+			apigatewayStageMethodSetting.HttpMethod = item.HttpMethod
+		}
+
+		if item.MetricsEnabled || !item.MetricsEnabled {
+			apigatewayStageMethodSetting.MetricsEnabled = item.MetricsEnabled
+		}
+
+		if item.CacheTtlInSeconds != apigatewayStageMethodSetting.CacheTtlInSeconds {
+			apigatewayStageMethodSetting.CacheTtlInSeconds = item.CacheTtlInSeconds
+		}
+
+	}
+
+	if len(apigatewayStageMethodSettings) > 0 {
+		apigatewayStage.MethodSettings = apigatewayStageMethodSettings
+	}
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.DocumentationVersion != "" {
+		apigatewayStage.DocumentationVersion = in.Spec.DocumentationVersion
 	}
 
 	// TODO(christopherhein) move these to a defaulter
@@ -227,65 +286,6 @@ func (in *Stage) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if clientCertificateId != "" {
 		apigatewayStage.ClientCertificateId = clientCertificateId
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayStageDeploymentItem := in.Spec.Deployment.DeepCopy()
-
-	if apigatewayStageDeploymentItem.ObjectRef.Kind == "" {
-		apigatewayStageDeploymentItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayStageDeploymentItem.ObjectRef.APIVersion == "" {
-		apigatewayStageDeploymentItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if apigatewayStageDeploymentItem.ObjectRef.Namespace == "" {
-		apigatewayStageDeploymentItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.Deployment = *apigatewayStageDeploymentItem
-	deploymentId, err := in.Spec.Deployment.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if deploymentId != "" {
-		apigatewayStage.DeploymentId = deploymentId
-	}
-
-	if in.Spec.CacheClusterEnabled || !in.Spec.CacheClusterEnabled {
-		apigatewayStage.CacheClusterEnabled = in.Spec.CacheClusterEnabled
-	}
-
-	if !reflect.DeepEqual(in.Spec.Variables, map[string]string{}) {
-		apigatewayStage.Variables = in.Spec.Variables
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayStageRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayStageRestApiItem.ObjectRef.Kind == "" {
-		apigatewayStageRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayStageRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayStageRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if apigatewayStageRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayStageRestApiItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RestApi = *apigatewayStageRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayStage.RestApiId = restApiId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

@@ -25,11 +25,20 @@ import (
 type RoleSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-policies
+	Policies []Role_Policy `json:"policies,omitempty" cloudformation:"Policies"`
+
+	// MaxSessionDuration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-maxsessionduration
+	MaxSessionDuration int `json:"maxSessionDuration,omitempty" cloudformation:"MaxSessionDuration,Parameter"`
+
 	// ManagedPolicyArns http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-managepolicyarns
 	ManagedPolicyArns []string `json:"managedPolicyArns,omitempty" cloudformation:"ManagedPolicyArns"`
 
 	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-path
 	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
+
+	// AssumeRolePolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-assumerolepolicydocument
+	AssumeRolePolicyDocument string `json:"assumeRolePolicyDocument" cloudformation:"AssumeRolePolicyDocument,Parameter"`
 
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
@@ -39,15 +48,6 @@ type RoleSpec struct {
 
 	// PermissionsBoundary http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-permissionsboundary
 	PermissionsBoundary string `json:"permissionsBoundary,omitempty" cloudformation:"PermissionsBoundary,Parameter"`
-
-	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-policies
-	Policies []Role_Policy `json:"policies,omitempty" cloudformation:"Policies"`
-
-	// MaxSessionDuration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-maxsessionduration
-	MaxSessionDuration int `json:"maxSessionDuration,omitempty" cloudformation:"MaxSessionDuration,Parameter"`
-
-	// AssumeRolePolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-assumerolepolicydocument
-	AssumeRolePolicyDocument string `json:"assumeRolePolicyDocument" cloudformation:"AssumeRolePolicyDocument,Parameter"`
 }
 
 // Role_Policy defines the desired state of RolePolicy

@@ -74,34 +74,16 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayRestApi.EndpointConfiguration = &apigatewayRestApiEndpointConfiguration
 	}
 
-	if in.Spec.Policy != "" {
-		apigatewayRestApiJSON := make(map[string]interface{})
-		err := json.Unmarshal([]byte(in.Spec.Policy), &apigatewayRestApiJSON)
-		if err != nil {
-			return "", err
-		}
-		apigatewayRestApi.Policy = apigatewayRestApiJSON
+	if in.Spec.Name != "" {
+		apigatewayRestApi.Name = in.Spec.Name
+	}
+
+	if !reflect.DeepEqual(in.Spec.Parameters, map[string]string{}) {
+		apigatewayRestApi.Parameters = in.Spec.Parameters
 	}
 
 	if len(in.Spec.BinaryMediaTypes) > 0 {
 		apigatewayRestApi.BinaryMediaTypes = in.Spec.BinaryMediaTypes
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	if in.Spec.FailOnWarnings || !in.Spec.FailOnWarnings {
-		apigatewayRestApi.FailOnWarnings = in.Spec.FailOnWarnings
-	}
-
-	if in.Spec.MinimumCompressionSize != apigatewayRestApi.MinimumCompressionSize {
-		apigatewayRestApi.MinimumCompressionSize = in.Spec.MinimumCompressionSize
-	}
-
-	if in.Spec.CloneFrom != "" {
-		apigatewayRestApi.CloneFrom = in.Spec.CloneFrom
-	}
-
-	if in.Spec.ApiKeySourceType != "" {
-		apigatewayRestApi.ApiKeySourceType = in.Spec.ApiKeySourceType
 	}
 
 	if in.Spec.Body != "" {
@@ -113,16 +95,20 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayRestApi.Body = apigatewayRestApiJSON
 	}
 
-	if in.Spec.Name != "" {
-		apigatewayRestApi.Name = in.Spec.Name
+	if in.Spec.FailOnWarnings || !in.Spec.FailOnWarnings {
+		apigatewayRestApi.FailOnWarnings = in.Spec.FailOnWarnings
+	}
+
+	if in.Spec.CloneFrom != "" {
+		apigatewayRestApi.CloneFrom = in.Spec.CloneFrom
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayRestApi.Description = in.Spec.Description
 	}
 
 	if !reflect.DeepEqual(in.Spec.BodyS3Location, RestApi_S3Location{}) {
 		apigatewayRestApiS3Location := apigateway.RestApi_S3Location{}
-
-		if in.Spec.BodyS3Location.Bucket != "" {
-			apigatewayRestApiS3Location.Bucket = in.Spec.BodyS3Location.Bucket
-		}
 
 		if in.Spec.BodyS3Location.ETag != "" {
 			apigatewayRestApiS3Location.ETag = in.Spec.BodyS3Location.ETag
@@ -136,16 +122,31 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayRestApiS3Location.Version = in.Spec.BodyS3Location.Version
 		}
 
+		if in.Spec.BodyS3Location.Bucket != "" {
+			apigatewayRestApiS3Location.Bucket = in.Spec.BodyS3Location.Bucket
+		}
+
 		apigatewayRestApi.BodyS3Location = &apigatewayRestApiS3Location
 	}
 
-	if in.Spec.Description != "" {
-		apigatewayRestApi.Description = in.Spec.Description
+	if in.Spec.MinimumCompressionSize != apigatewayRestApi.MinimumCompressionSize {
+		apigatewayRestApi.MinimumCompressionSize = in.Spec.MinimumCompressionSize
 	}
 
-	if !reflect.DeepEqual(in.Spec.Parameters, map[string]string{}) {
-		apigatewayRestApi.Parameters = in.Spec.Parameters
+	if in.Spec.Policy != "" {
+		apigatewayRestApiJSON := make(map[string]interface{})
+		err := json.Unmarshal([]byte(in.Spec.Policy), &apigatewayRestApiJSON)
+		if err != nil {
+			return "", err
+		}
+		apigatewayRestApi.Policy = apigatewayRestApiJSON
 	}
+
+	if in.Spec.ApiKeySourceType != "" {
+		apigatewayRestApi.ApiKeySourceType = in.Spec.ApiKeySourceType
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 
 	template.Resources = map[string]cloudformation.Resource{
 		"RestApi": apigatewayRestApi,

@@ -25,14 +25,14 @@ import (
 type AccessKeySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// UserName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html#cfn-iam-accesskey-username
+	UserName string `json:"userName" cloudformation:"UserName,Parameter"`
+
 	// Serial http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html#cfn-iam-accesskey-serial
 	Serial int `json:"serial,omitempty" cloudformation:"Serial,Parameter"`
 
 	// Status http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html#cfn-iam-accesskey-status
 	Status string `json:"status,omitempty" cloudformation:"Status,Parameter"`
-
-	// UserName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html#cfn-iam-accesskey-username
-	UserName string `json:"userName" cloudformation:"UserName,Parameter"`
 }
 
 // AccessKeyStatus defines the observed state of AccessKey

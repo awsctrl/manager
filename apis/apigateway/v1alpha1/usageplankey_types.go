@@ -25,14 +25,14 @@ import (
 type UsagePlanKeySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// KeyType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplankey.html#cfn-apigateway-usageplankey-keytype
+	KeyType string `json:"keyType" cloudformation:"KeyType,Parameter"`
+
 	// UsagePlan http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplankey.html#cfn-apigateway-usageplankey-usageplanid
 	UsagePlan metav1alpha1.ObjectReference `json:"usagePlan" cloudformation:"UsagePlanId,Parameter"`
 
 	// Key http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplankey.html#cfn-apigateway-usageplankey-keyid
 	Key metav1alpha1.ObjectReference `json:"key" cloudformation:"KeyId,Parameter"`
-
-	// KeyType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplankey.html#cfn-apigateway-usageplankey-keytype
-	KeyType string `json:"keyType" cloudformation:"KeyType,Parameter"`
 }
 
 // UsagePlanKeyStatus defines the observed state of UsagePlanKey

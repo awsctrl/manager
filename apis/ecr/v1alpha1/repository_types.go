@@ -25,23 +25,23 @@ import (
 type RepositorySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// RepositoryPolicyText http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-repositorypolicytext
+	RepositoryPolicyText string `json:"repositoryPolicyText,omitempty" cloudformation:"RepositoryPolicyText,Parameter"`
+
 	// LifecyclePolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-lifecyclepolicy
 	LifecyclePolicy Repository_LifecyclePolicy `json:"lifecyclePolicy,omitempty" cloudformation:"LifecyclePolicy"`
 
 	// RepositoryName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-repositoryname
 	RepositoryName string `json:"repositoryName,omitempty" cloudformation:"RepositoryName,Parameter"`
-
-	// RepositoryPolicyText http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-repositorypolicytext
-	RepositoryPolicyText string `json:"repositoryPolicyText,omitempty" cloudformation:"RepositoryPolicyText,Parameter"`
 }
 
 // Repository_LifecyclePolicy defines the desired state of RepositoryLifecyclePolicy
 type Repository_LifecyclePolicy struct {
-	// LifecyclePolicyText http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecr-repository-lifecyclepolicy.html#cfn-ecr-repository-lifecyclepolicy-lifecyclepolicytext
-	LifecyclePolicyText string `json:"lifecyclePolicyText,omitempty" cloudformation:"LifecyclePolicyText,Parameter"`
-
 	// Registry http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecr-repository-lifecyclepolicy.html#cfn-ecr-repository-lifecyclepolicy-registryid
 	Registry metav1alpha1.ObjectReference `json:"registry,omitempty" cloudformation:"RegistryId,Parameter"`
+
+	// LifecyclePolicyText http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-ecr-repository-lifecyclepolicy.html#cfn-ecr-repository-lifecyclepolicy-lifecyclepolicytext
+	LifecyclePolicyText string `json:"lifecyclePolicyText,omitempty" cloudformation:"LifecyclePolicyText,Parameter"`
 }
 
 // RepositoryStatus defines the observed state of Repository

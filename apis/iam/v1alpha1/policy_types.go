@@ -25,6 +25,9 @@ import (
 type PolicySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-policydocument
+	PolicyDocument string `json:"policyDocument" cloudformation:"PolicyDocument,Parameter"`
+
 	// PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-policyname
 	PolicyName string `json:"policyName" cloudformation:"PolicyName,Parameter"`
 
@@ -36,9 +39,6 @@ type PolicySpec struct {
 
 	// Groups http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-groups
 	Groups []string `json:"groups,omitempty" cloudformation:"Groups"`
-
-	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html#cfn-iam-policy-policydocument
-	PolicyDocument string `json:"policyDocument" cloudformation:"PolicyDocument,Parameter"`
 }
 
 // PolicyStatus defines the observed state of Policy

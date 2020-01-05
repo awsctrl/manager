@@ -25,17 +25,17 @@ import (
 type CertificateSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// SubjectAlternativeNames http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-subjectalternativenames
-	SubjectAlternativeNames []string `json:"subjectAlternativeNames,omitempty" cloudformation:"SubjectAlternativeNames"`
-
-	// ValidationMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-validationmethod
-	ValidationMethod string `json:"validationMethod,omitempty" cloudformation:"ValidationMethod,Parameter"`
-
 	// DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-domainname
 	DomainName string `json:"domainName" cloudformation:"DomainName,Parameter"`
 
 	// DomainValidationOptions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-domainvalidationoptions
 	DomainValidationOptions []Certificate_DomainValidationOption `json:"domainValidationOptions,omitempty" cloudformation:"DomainValidationOptions"`
+
+	// SubjectAlternativeNames http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-subjectalternativenames
+	SubjectAlternativeNames []string `json:"subjectAlternativeNames,omitempty" cloudformation:"SubjectAlternativeNames"`
+
+	// ValidationMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-validationmethod
+	ValidationMethod string `json:"validationMethod,omitempty" cloudformation:"ValidationMethod,Parameter"`
 }
 
 // Certificate_DomainValidationOption defines the desired state of CertificateDomainValidationOption
