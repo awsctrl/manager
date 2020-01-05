@@ -43,53 +43,53 @@ type HealthCheck_HealthCheckTag struct {
 
 // HealthCheck_HealthCheckConfig defines the desired state of HealthCheckHealthCheckConfig
 type HealthCheck_HealthCheckConfig struct {
-	// IPAddress http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-ipaddress
-	IPAddress string `json:"iPAddress,omitempty" cloudformation:"IPAddress,Parameter"`
-
-	// Inverted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-inverted
-	Inverted bool `json:"inverted,omitempty" cloudformation:"Inverted,Parameter"`
-
 	// SearchString http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-searchstring
 	SearchString string `json:"searchString,omitempty" cloudformation:"SearchString,Parameter"`
-
-	// InsufficientDataHealthStatus http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-insufficientdatahealthstatus
-	InsufficientDataHealthStatus string `json:"insufficientDataHealthStatus,omitempty" cloudformation:"InsufficientDataHealthStatus,Parameter"`
 
 	// ResourcePath http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-resourcepath
 	ResourcePath string `json:"resourcePath,omitempty" cloudformation:"ResourcePath,Parameter"`
 
-	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-type
-	Type string `json:"type" cloudformation:"Type,Parameter"`
-
-	// FullyQualifiedDomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-fullyqualifieddomainname
-	FullyQualifiedDomainName string `json:"fullyQualifiedDomainName,omitempty" cloudformation:"FullyQualifiedDomainName,Parameter"`
-
-	// Regions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-regions
-	Regions []string `json:"regions,omitempty" cloudformation:"Regions"`
-
-	// AlarmIdentifier http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-alarmidentifier
-	AlarmIdentifier HealthCheck_AlarmIdentifier `json:"alarmIdentifier,omitempty" cloudformation:"AlarmIdentifier"`
-
-	// RequestInterval http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-requestinterval
-	RequestInterval int `json:"requestInterval,omitempty" cloudformation:"RequestInterval,Parameter"`
-
 	// Port http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-port
 	Port int `json:"port,omitempty" cloudformation:"Port,Parameter"`
+
+	// Inverted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-inverted
+	Inverted bool `json:"inverted,omitempty" cloudformation:"Inverted,Parameter"`
+
+	// MeasureLatency http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-measurelatency
+	MeasureLatency bool `json:"measureLatency,omitempty" cloudformation:"MeasureLatency,Parameter"`
 
 	// HealthThreshold http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-healththreshold
 	HealthThreshold int `json:"healthThreshold,omitempty" cloudformation:"HealthThreshold,Parameter"`
 
-	// ChildHealthChecks http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-childhealthchecks
-	ChildHealthChecks []string `json:"childHealthChecks,omitempty" cloudformation:"ChildHealthChecks"`
+	// AlarmIdentifier http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-alarmidentifier
+	AlarmIdentifier HealthCheck_AlarmIdentifier `json:"alarmIdentifier,omitempty" cloudformation:"AlarmIdentifier"`
 
-	// EnableSNI http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-enablesni
-	EnableSNI bool `json:"enableSNI,omitempty" cloudformation:"EnableSNI,Parameter"`
+	// FullyQualifiedDomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-fullyqualifieddomainname
+	FullyQualifiedDomainName string `json:"fullyQualifiedDomainName,omitempty" cloudformation:"FullyQualifiedDomainName,Parameter"`
 
 	// FailureThreshold http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-failurethreshold
 	FailureThreshold int `json:"failureThreshold,omitempty" cloudformation:"FailureThreshold,Parameter"`
 
-	// MeasureLatency http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-measurelatency
-	MeasureLatency bool `json:"measureLatency,omitempty" cloudformation:"MeasureLatency,Parameter"`
+	// InsufficientDataHealthStatus http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-insufficientdatahealthstatus
+	InsufficientDataHealthStatus string `json:"insufficientDataHealthStatus,omitempty" cloudformation:"InsufficientDataHealthStatus,Parameter"`
+
+	// RequestInterval http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-requestinterval
+	RequestInterval int `json:"requestInterval,omitempty" cloudformation:"RequestInterval,Parameter"`
+
+	// ChildHealthChecks http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-childhealthchecks
+	ChildHealthChecks []string `json:"childHealthChecks,omitempty" cloudformation:"ChildHealthChecks"`
+
+	// Regions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-regions
+	Regions []string `json:"regions,omitempty" cloudformation:"Regions"`
+
+	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-type
+	Type string `json:"type" cloudformation:"Type,Parameter"`
+
+	// IPAddress http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-ipaddress
+	IPAddress string `json:"iPAddress,omitempty" cloudformation:"IPAddress,Parameter"`
+
+	// EnableSNI http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-enablesni
+	EnableSNI bool `json:"enableSNI,omitempty" cloudformation:"EnableSNI,Parameter"`
 }
 
 // HealthCheck_AlarmIdentifier defines the desired state of HealthCheckAlarmIdentifier

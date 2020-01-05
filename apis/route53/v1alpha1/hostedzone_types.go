@@ -25,12 +25,6 @@ import (
 type HostedZoneSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// QueryLoggingConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-queryloggingconfig
-	QueryLoggingConfig HostedZone_QueryLoggingConfig `json:"queryLoggingConfig,omitempty" cloudformation:"QueryLoggingConfig"`
-
-	// VPCs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-vpcs
-	VPCs []HostedZone_VPC `json:"vPCs,omitempty" cloudformation:"VPCs"`
-
 	// HostedZoneConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-hostedzoneconfig
 	HostedZoneConfig HostedZone_HostedZoneConfig `json:"hostedZoneConfig,omitempty" cloudformation:"HostedZoneConfig"`
 
@@ -39,18 +33,27 @@ type HostedZoneSpec struct {
 
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-name
 	Name string `json:"name" cloudformation:"Name,Parameter"`
+
+	// QueryLoggingConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-queryloggingconfig
+	QueryLoggingConfig HostedZone_QueryLoggingConfig `json:"queryLoggingConfig,omitempty" cloudformation:"QueryLoggingConfig"`
+
+	// VPCs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-vpcs
+	VPCs []HostedZone_VPC `json:"vPCs,omitempty" cloudformation:"VPCs"`
+}
+
+// HostedZone_VPC defines the desired state of HostedZoneVPC
+type HostedZone_VPC struct {
+	// VPCRegion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcregion
+	VPCRegion string `json:"vPCRegion" cloudformation:"VPCRegion,Parameter"`
+
+	// VPC http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcid
+	VPC metav1alpha1.ObjectReference `json:"vPC" cloudformation:"VPCId,Parameter"`
 }
 
 // HostedZone_QueryLoggingConfig defines the desired state of HostedZoneQueryLoggingConfig
 type HostedZone_QueryLoggingConfig struct {
 	// CloudWatchLogsLogGroup http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-queryloggingconfig.html#cfn-route53-hostedzone-queryloggingconfig-cloudwatchlogsloggrouparn
 	CloudWatchLogsLogGroup metav1alpha1.ObjectReference `json:"cloudWatchLogsLogGroup" cloudformation:"CloudWatchLogsLogGroupArn,Parameter"`
-}
-
-// HostedZone_HostedZoneConfig defines the desired state of HostedZoneHostedZoneConfig
-type HostedZone_HostedZoneConfig struct {
-	// Comment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-hostedzoneconfig.html#cfn-route53-hostedzone-hostedzoneconfig-comment
-	Comment string `json:"comment,omitempty" cloudformation:"Comment,Parameter"`
 }
 
 // HostedZone_HostedZoneTag defines the desired state of HostedZoneHostedZoneTag
@@ -62,13 +65,10 @@ type HostedZone_HostedZoneTag struct {
 	Value string `json:"value" cloudformation:"Value,Parameter"`
 }
 
-// HostedZone_VPC defines the desired state of HostedZoneVPC
-type HostedZone_VPC struct {
-	// VPC http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcid
-	VPC metav1alpha1.ObjectReference `json:"vPC" cloudformation:"VPCId,Parameter"`
-
-	// VPCRegion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcregion
-	VPCRegion string `json:"vPCRegion" cloudformation:"VPCRegion,Parameter"`
+// HostedZone_HostedZoneConfig defines the desired state of HostedZoneHostedZoneConfig
+type HostedZone_HostedZoneConfig struct {
+	// Comment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-hostedzoneconfig.html#cfn-route53-hostedzone-hostedzoneconfig-comment
+	Comment string `json:"comment,omitempty" cloudformation:"Comment,Parameter"`
 }
 
 // HostedZoneStatus defines the observed state of HostedZone

@@ -66,6 +66,32 @@ func (in *Role) GetTemplate(client dynamic.Interface) (string, error) {
 		iamRole.PermissionsBoundary = in.Spec.PermissionsBoundary
 	}
 
+	if len(in.Spec.ManagedPolicyArns) > 0 {
+		iamRole.ManagedPolicyArns = in.Spec.ManagedPolicyArns
+	}
+
+	if in.Spec.Path != "" {
+		iamRole.Path = in.Spec.Path
+	}
+
+	if in.Spec.AssumeRolePolicyDocument != "" {
+		iamRoleJSON := make(map[string]interface{})
+		err := json.Unmarshal([]byte(in.Spec.AssumeRolePolicyDocument), &iamRoleJSON)
+		if err != nil {
+			return "", err
+		}
+		iamRole.AssumeRolePolicyDocument = iamRoleJSON
+	}
+
+	if in.Spec.Description != "" {
+		iamRole.Description = in.Spec.Description
+	}
+
+	if in.Spec.RoleName != "" {
+		iamRole.RoleName = in.Spec.RoleName
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	iamRolePolicies := []iam.Role_Policy{}
 
 	for _, item := range in.Spec.Policies {
@@ -91,32 +117,6 @@ func (in *Role) GetTemplate(client dynamic.Interface) (string, error) {
 	}
 	if in.Spec.MaxSessionDuration != iamRole.MaxSessionDuration {
 		iamRole.MaxSessionDuration = in.Spec.MaxSessionDuration
-	}
-
-	if in.Spec.AssumeRolePolicyDocument != "" {
-		iamRoleJSON := make(map[string]interface{})
-		err := json.Unmarshal([]byte(in.Spec.AssumeRolePolicyDocument), &iamRoleJSON)
-		if err != nil {
-			return "", err
-		}
-		iamRole.AssumeRolePolicyDocument = iamRoleJSON
-	}
-
-	if len(in.Spec.ManagedPolicyArns) > 0 {
-		iamRole.ManagedPolicyArns = in.Spec.ManagedPolicyArns
-	}
-
-	if in.Spec.Path != "" {
-		iamRole.Path = in.Spec.Path
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	if in.Spec.Description != "" {
-		iamRole.Description = in.Spec.Description
-	}
-
-	if in.Spec.RoleName != "" {
-		iamRole.RoleName = in.Spec.RoleName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

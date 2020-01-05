@@ -25,6 +25,9 @@ import (
 type UserSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-policies
+	Policies []User_Policy `json:"policies,omitempty" cloudformation:"Policies"`
+
 	// UserName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-username
 	UserName string `json:"userName,omitempty" cloudformation:"UserName,Parameter"`
 
@@ -42,18 +45,6 @@ type UserSpec struct {
 
 	// PermissionsBoundary http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-permissionsboundary
 	PermissionsBoundary string `json:"permissionsBoundary,omitempty" cloudformation:"PermissionsBoundary,Parameter"`
-
-	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-policies
-	Policies []User_Policy `json:"policies,omitempty" cloudformation:"Policies"`
-}
-
-// User_LoginProfile defines the desired state of UserLoginProfile
-type User_LoginProfile struct {
-	// Password http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user-loginprofile.html#cfn-iam-user-loginprofile-password
-	Password string `json:"password" cloudformation:"Password,Parameter"`
-
-	// PasswordResetRequired http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user-loginprofile.html#cfn-iam-user-loginprofile-passwordresetrequired
-	PasswordResetRequired bool `json:"passwordResetRequired,omitempty" cloudformation:"PasswordResetRequired,Parameter"`
 }
 
 // User_Policy defines the desired state of UserPolicy
@@ -63,6 +54,15 @@ type User_Policy struct {
 
 	// PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
 	PolicyName string `json:"policyName" cloudformation:"PolicyName,Parameter"`
+}
+
+// User_LoginProfile defines the desired state of UserLoginProfile
+type User_LoginProfile struct {
+	// Password http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user-loginprofile.html#cfn-iam-user-loginprofile-password
+	Password string `json:"password" cloudformation:"Password,Parameter"`
+
+	// PasswordResetRequired http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user-loginprofile.html#cfn-iam-user-loginprofile-passwordresetrequired
+	PasswordResetRequired bool `json:"passwordResetRequired,omitempty" cloudformation:"PasswordResetRequired,Parameter"`
 }
 
 // UserStatus defines the observed state of User

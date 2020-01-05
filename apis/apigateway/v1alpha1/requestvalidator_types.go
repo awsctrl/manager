@@ -25,6 +25,9 @@ import (
 type RequestValidatorSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-requestvalidator.html#cfn-apigateway-requestvalidator-restapiid
+	RestApi metav1alpha1.ObjectReference `json:"restApi" cloudformation:"RestApiId,Parameter"`
+
 	// ValidateRequestBody http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-requestvalidator.html#cfn-apigateway-requestvalidator-validaterequestbody
 	ValidateRequestBody bool `json:"validateRequestBody,omitempty" cloudformation:"ValidateRequestBody,Parameter"`
 
@@ -33,9 +36,6 @@ type RequestValidatorSpec struct {
 
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-requestvalidator.html#cfn-apigateway-requestvalidator-name
 	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
-
-	// RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-requestvalidator.html#cfn-apigateway-requestvalidator-restapiid
-	RestApi metav1alpha1.ObjectReference `json:"restApi" cloudformation:"RestApiId,Parameter"`
 }
 
 // RequestValidatorStatus defines the observed state of RequestValidator

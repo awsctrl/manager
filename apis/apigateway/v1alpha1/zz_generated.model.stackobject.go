@@ -56,6 +56,18 @@ func (in *Model) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayModel := &apigateway.Model{}
 
+	if in.Spec.ContentType != "" {
+		apigatewayModel.ContentType = in.Spec.ContentType
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayModel.Description = in.Spec.Description
+	}
+
+	if in.Spec.Name != "" {
+		apigatewayModel.Name = in.Spec.Name
+	}
+
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayModelRestApiItem := in.Spec.RestApi.DeepCopy()
 
@@ -88,18 +100,6 @@ func (in *Model) GetTemplate(client dynamic.Interface) (string, error) {
 			return "", err
 		}
 		apigatewayModel.Schema = apigatewayModelJSON
-	}
-
-	if in.Spec.ContentType != "" {
-		apigatewayModel.ContentType = in.Spec.ContentType
-	}
-
-	if in.Spec.Description != "" {
-		apigatewayModel.Description = in.Spec.Description
-	}
-
-	if in.Spec.Name != "" {
-		apigatewayModel.Name = in.Spec.Name
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

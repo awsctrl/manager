@@ -60,29 +60,6 @@ func (in *User) GetTemplate(client dynamic.Interface) (string, error) {
 
 	iamUser := &iam.User{}
 
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	if in.Spec.UserName != "" {
-		iamUser.UserName = in.Spec.UserName
-	}
-
-	if len(in.Spec.Groups) > 0 {
-		iamUser.Groups = in.Spec.Groups
-	}
-
-	if !reflect.DeepEqual(in.Spec.LoginProfile, User_LoginProfile{}) {
-		iamUserLoginProfile := iam.User_LoginProfile{}
-
-		if in.Spec.LoginProfile.Password != "" {
-			iamUserLoginProfile.Password = in.Spec.LoginProfile.Password
-		}
-
-		if in.Spec.LoginProfile.PasswordResetRequired || !in.Spec.LoginProfile.PasswordResetRequired {
-			iamUserLoginProfile.PasswordResetRequired = in.Spec.LoginProfile.PasswordResetRequired
-		}
-
-		iamUser.LoginProfile = &iamUserLoginProfile
-	}
-
 	if len(in.Spec.ManagedPolicyArns) > 0 {
 		iamUser.ManagedPolicyArns = in.Spec.ManagedPolicyArns
 	}
@@ -117,6 +94,28 @@ func (in *User) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if len(iamUserPolicies) > 0 {
 		iamUser.Policies = iamUserPolicies
+	}
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.UserName != "" {
+		iamUser.UserName = in.Spec.UserName
+	}
+
+	if len(in.Spec.Groups) > 0 {
+		iamUser.Groups = in.Spec.Groups
+	}
+
+	if !reflect.DeepEqual(in.Spec.LoginProfile, User_LoginProfile{}) {
+		iamUserLoginProfile := iam.User_LoginProfile{}
+
+		if in.Spec.LoginProfile.Password != "" {
+			iamUserLoginProfile.Password = in.Spec.LoginProfile.Password
+		}
+
+		if in.Spec.LoginProfile.PasswordResetRequired || !in.Spec.LoginProfile.PasswordResetRequired {
+			iamUserLoginProfile.PasswordResetRequired = in.Spec.LoginProfile.PasswordResetRequired
+		}
+
+		iamUser.LoginProfile = &iamUserLoginProfile
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

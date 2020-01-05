@@ -71,12 +71,12 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 	for _, item := range in.Spec.HostedZoneTags {
 		route53HostedZoneHostedZoneTag := route53.HostedZone_HostedZoneTag{}
 
-		if item.Value != "" {
-			route53HostedZoneHostedZoneTag.Value = item.Value
-		}
-
 		if item.Key != "" {
 			route53HostedZoneHostedZoneTag.Key = item.Key
+		}
+
+		if item.Value != "" {
+			route53HostedZoneHostedZoneTag.Value = item.Value
 		}
 
 	}
@@ -124,6 +124,10 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 	for _, item := range in.Spec.VPCs {
 		route53HostedZoneVPC := route53.HostedZone_VPC{}
 
+		if item.VPCRegion != "" {
+			route53HostedZoneVPC.VPCRegion = item.VPCRegion
+		}
+
 		// TODO(christopherhein) move these to a defaulter
 		route53HostedZoneVPCVPCItem := item.VPC.DeepCopy()
 
@@ -147,10 +151,6 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 
 		if vPCId != "" {
 			route53HostedZoneVPC.VPCId = vPCId
-		}
-
-		if item.VPCRegion != "" {
-			route53HostedZoneVPC.VPCRegion = item.VPCRegion
 		}
 
 	}
