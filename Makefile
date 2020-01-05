@@ -43,6 +43,7 @@ test-e2e: generate fmt vet manifests
 	@$(MAKE) test-e2e-cloudformation
 	@$(MAKE) test-e2e-ecr
 	@$(MAKE) test-e2e-route53
+	@$(MAKE) test-e2e-iam
 
 
 # Build manager binary

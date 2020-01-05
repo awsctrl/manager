@@ -1,0 +1,8 @@
+apiVersion: iam.awsctrl.io/v1alpha1
+kind: UserToGroupAddition
+metadata:
+  name: usertogroupaddition-sample
+spec: 
+  groupName: sample-group
+  users:
+  - sample-user

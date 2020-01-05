@@ -57,6 +57,13 @@ spec:
             automaticStopTimeMinutes:
               description: AutomaticStopTimeMinutes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-automaticstoptimeminutes
               type: integer
+            capabilities:
+              description: Capabilities In some cases, you must explicity acknowledge
+                that your stack template contains certain capabilities in order for
+                AWS CloudFormation to create the stack.
+              items:
+                type: string
+              type: array
             description:
               description: Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-description
               type: string

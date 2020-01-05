@@ -54,6 +54,13 @@ spec:
         spec:
           description: ResourceSpec defines the desired state of Resource
           properties:
+            capabilities:
+              description: Capabilities In some cases, you must explicity acknowledge
+                that your stack template contains certain capabilities in order for
+                AWS CloudFormation to create the stack.
+              items:
+                type: string
+              type: array
             notificationARNs:
               description: NotificationARNs the Simple Notification Service (SNS)
                 topic ARNs to publish stack related events.

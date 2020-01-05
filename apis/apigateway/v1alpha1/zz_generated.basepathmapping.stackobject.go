@@ -55,14 +55,6 @@ func (in *BasePathMapping) GetTemplate(client dynamic.Interface) (string, error)
 
 	apigatewayBasePathMapping := &apigateway.BasePathMapping{}
 
-	if in.Spec.BasePath != "" {
-		apigatewayBasePathMapping.BasePath = in.Spec.BasePath
-	}
-
-	if in.Spec.DomainName != "" {
-		apigatewayBasePathMapping.DomainName = in.Spec.DomainName
-	}
-
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayBasePathMappingRestApiItem := in.Spec.RestApi.DeepCopy()
 
@@ -90,6 +82,14 @@ func (in *BasePathMapping) GetTemplate(client dynamic.Interface) (string, error)
 
 	if in.Spec.Stage != "" {
 		apigatewayBasePathMapping.Stage = in.Spec.Stage
+	}
+
+	if in.Spec.BasePath != "" {
+		apigatewayBasePathMapping.BasePath = in.Spec.BasePath
+	}
+
+	if in.Spec.DomainName != "" {
+		apigatewayBasePathMapping.DomainName = in.Spec.DomainName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

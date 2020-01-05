@@ -1,0 +1,27 @@
+apiVersion: iam.awsctrl.io/v1alpha1
+kind: Role
+metadata:
+  name: role-sample
+spec:
+  capabilities:
+  - CAPABILITY_IAM
+  assumeRolePolicyDocument: |
+    {
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Principal": {
+            "Service": [
+              "ec2.amazonaws.com"
+            ]
+          },
+          "Action": [
+            "sts:AssumeRole"
+          ]
+        }
+      ]
+    }
+  path: /
+  managedPolicyArns:
+  - arn:aws:iam::aws:policy/AdministratorAccess

@@ -54,6 +54,13 @@ spec:
         spec:
           description: DomainNameSpec defines the desired state of DomainName
           properties:
+            capabilities:
+              description: Capabilities In some cases, you must explicity acknowledge
+                that your stack template contains certain capabilities in order for
+                AWS CloudFormation to create the stack.
+              items:
+                type: string
+              type: array
             certificate:
               description: Certificate http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-certificatearn
               properties:

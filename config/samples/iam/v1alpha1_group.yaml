@@ -1,0 +1,6 @@
+apiVersion: iam.awsctrl.io/v1alpha1
+kind: Group
+metadata:
+  name: group-sample
+spec:
+  groupName: "group-sample"

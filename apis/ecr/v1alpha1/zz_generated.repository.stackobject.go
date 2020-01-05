@@ -63,6 +63,10 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 	if !reflect.DeepEqual(in.Spec.LifecyclePolicy, Repository_LifecyclePolicy{}) {
 		ecrRepositoryLifecyclePolicy := ecr.Repository_LifecyclePolicy{}
 
+		if in.Spec.LifecyclePolicy.LifecyclePolicyText != "" {
+			ecrRepositoryLifecyclePolicy.LifecyclePolicyText = in.Spec.LifecyclePolicy.LifecyclePolicyText
+		}
+
 		// TODO(christopherhein) move these to a defaulter
 		ecrRepositoryLifecyclePolicyRegistryItem := in.Spec.LifecyclePolicy.Registry.DeepCopy()
 
@@ -86,10 +90,6 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 
 		if registryId != "" {
 			ecrRepositoryLifecyclePolicy.RegistryId = registryId
-		}
-
-		if in.Spec.LifecyclePolicy.LifecyclePolicyText != "" {
-			ecrRepositoryLifecyclePolicy.LifecyclePolicyText = in.Spec.LifecyclePolicy.LifecyclePolicyText
 		}
 
 		ecrRepository.LifecyclePolicy = &ecrRepositoryLifecyclePolicy

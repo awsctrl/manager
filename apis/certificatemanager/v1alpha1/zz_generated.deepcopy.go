@@ -102,14 +102,14 @@ func (in *CertificateOutput) DeepCopy() *CertificateOutput {
 func (in *CertificateSpec) DeepCopyInto(out *CertificateSpec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
-	if in.DomainValidationOptions != nil {
-		in, out := &in.DomainValidationOptions, &out.DomainValidationOptions
-		*out = make([]Certificate_DomainValidationOption, len(*in))
-		copy(*out, *in)
-	}
 	if in.SubjectAlternativeNames != nil {
 		in, out := &in.SubjectAlternativeNames, &out.SubjectAlternativeNames
 		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
+	if in.DomainValidationOptions != nil {
+		in, out := &in.DomainValidationOptions, &out.DomainValidationOptions
+		*out = make([]Certificate_DomainValidationOption, len(*in))
 		copy(*out, *in)
 	}
 }

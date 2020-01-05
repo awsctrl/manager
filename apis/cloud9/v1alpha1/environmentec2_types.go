@@ -25,6 +25,12 @@ import (
 type EnvironmentEC2Spec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// AutomaticStopTimeMinutes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-automaticstoptimeminutes
+	AutomaticStopTimeMinutes int `json:"automaticStopTimeMinutes,omitempty" cloudformation:"AutomaticStopTimeMinutes,Parameter"`
+
+	// Subnet http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-subnetid
+	Subnet metav1alpha1.ObjectReference `json:"subnet,omitempty" cloudformation:"SubnetId,Parameter"`
+
 	// InstanceType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-instancetype
 	InstanceType string `json:"instanceType" cloudformation:"InstanceType,Parameter"`
 
@@ -39,21 +45,15 @@ type EnvironmentEC2Spec struct {
 
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
-
-	// AutomaticStopTimeMinutes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-automaticstoptimeminutes
-	AutomaticStopTimeMinutes int `json:"automaticStopTimeMinutes,omitempty" cloudformation:"AutomaticStopTimeMinutes,Parameter"`
-
-	// Subnet http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-subnetid
-	Subnet metav1alpha1.ObjectReference `json:"subnet,omitempty" cloudformation:"SubnetId,Parameter"`
 }
 
 // EnvironmentEC2_Repository defines the desired state of EnvironmentEC2Repository
 type EnvironmentEC2_Repository struct {
-	// RepositoryUrl http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-repositoryurl
-	RepositoryUrl string `json:"repositoryUrl" cloudformation:"RepositoryUrl,Parameter"`
-
 	// PathComponent http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-pathcomponent
 	PathComponent string `json:"pathComponent" cloudformation:"PathComponent,Parameter"`
+
+	// RepositoryUrl http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-cloud9-environmentec2-repository.html#cfn-cloud9-environmentec2-repository-repositoryurl
+	RepositoryUrl string `json:"repositoryUrl" cloudformation:"RepositoryUrl,Parameter"`
 }
 
 // EnvironmentEC2Status defines the observed state of EnvironmentEC2

@@ -56,6 +56,31 @@ func (in *Resource) GetTemplate(client dynamic.Interface) (string, error) {
 	apigatewayResource := &apigateway.Resource{}
 
 	// TODO(christopherhein) move these to a defaulter
+	apigatewayResourceRestApiItem := in.Spec.RestApi.DeepCopy()
+
+	if apigatewayResourceRestApiItem.ObjectRef.Kind == "" {
+		apigatewayResourceRestApiItem.ObjectRef.Kind = "Deployment"
+	}
+
+	if apigatewayResourceRestApiItem.ObjectRef.APIVersion == "" {
+		apigatewayResourceRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
+	}
+
+	if apigatewayResourceRestApiItem.ObjectRef.Namespace == "" {
+		apigatewayResourceRestApiItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApi = *apigatewayResourceRestApiItem
+	restApiId, err := in.Spec.RestApi.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if restApiId != "" {
+		apigatewayResource.RestApiId = restApiId
+	}
+
+	// TODO(christopherhein) move these to a defaulter
 	apigatewayResourceParentItem := in.Spec.Parent.DeepCopy()
 
 	if apigatewayResourceParentItem.ObjectRef.Kind == "" {
@@ -82,31 +107,6 @@ func (in *Resource) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.PathPart != "" {
 		apigatewayResource.PathPart = in.Spec.PathPart
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayResourceRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayResourceRestApiItem.ObjectRef.Kind == "" {
-		apigatewayResourceRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayResourceRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayResourceRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if apigatewayResourceRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayResourceRestApiItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RestApi = *apigatewayResourceRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayResource.RestApiId = restApiId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

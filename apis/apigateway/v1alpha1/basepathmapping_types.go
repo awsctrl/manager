@@ -25,6 +25,9 @@ import (
 type BasePathMappingSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Stage http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-basepathmapping.html#cfn-apigateway-basepathmapping-stage
+	Stage string `json:"stage,omitempty" cloudformation:"Stage,Parameter"`
+
 	// BasePath http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-basepathmapping.html#cfn-apigateway-basepathmapping-basepath
 	BasePath string `json:"basePath,omitempty" cloudformation:"BasePath,Parameter"`
 
@@ -33,9 +36,6 @@ type BasePathMappingSpec struct {
 
 	// RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-basepathmapping.html#cfn-apigateway-basepathmapping-restapiid
 	RestApi metav1alpha1.ObjectReference `json:"restApi,omitempty" cloudformation:"RestApiId,Parameter"`
-
-	// Stage http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-basepathmapping.html#cfn-apigateway-basepathmapping-stage
-	Stage string `json:"stage,omitempty" cloudformation:"Stage,Parameter"`
 }
 
 // BasePathMappingStatus defines the observed state of BasePathMapping

@@ -1,0 +1,10 @@
+apiVersion: iam.awsctrl.io/v1alpha1
+kind: AccessKey
+metadata:
+  name: accesskey-sample
+spec:
+  capabilities:
+  - CAPABILITY_IAM
+  userName: christopherhein
+  serial: 1
+  status: Inactive

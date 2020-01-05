@@ -1,0 +1,9 @@
+apiVersion: iam.awsctrl.io/v1alpha1
+kind: ServiceLinkedRole
+metadata:
+  name: servicelinkedrole-sample
+spec:
+  # TODO(christopherhein) fix code generation for names
+  aWSServiceName: autoscaling.amazonaws.com
+  Description: Test SLR description
+  CustomSuffix: TestSuffix
