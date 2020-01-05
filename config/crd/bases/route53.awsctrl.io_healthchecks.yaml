@@ -54,6 +54,13 @@ spec:
         spec:
           description: HealthCheckSpec defines the desired state of HealthCheck
           properties:
+            capabilities:
+              description: Capabilities In some cases, you must explicity acknowledge
+                that your stack template contains certain capabilities in order for
+                AWS CloudFormation to create the stack.
+              items:
+                type: string
+              type: array
             healthCheckConfig:
               description: HealthCheckConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-healthcheck.html#cfn-route53-healthcheck-healthcheckconfig
               properties:

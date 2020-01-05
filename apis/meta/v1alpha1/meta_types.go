@@ -80,6 +80,12 @@ type CloudFormationMeta struct {
 	// publish stack related events.
 	NotificationARNs []*string `json:"notificationARNs,omitempty"`
 
+	// Capabilities In some cases, you must explicity acknowledge that your stack
+	// template contains certain capabilities in order for AWS CloudFormation to
+	// create the stack.
+	// +optional
+	Capabilities []*string `json:"capabilities,omitempty"`
+
 	// +optional
 	// OnFailure determines what action will be taken if stack creation fails.
 	// This must be one of: DO_NOTHING, ROLLBACK, or DELETE.

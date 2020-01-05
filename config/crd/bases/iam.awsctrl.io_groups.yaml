@@ -1,0 +1,158 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: groups.iam.awsctrl.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.status
+    description: status of the stack
+    name: Status
+    type: string
+  - JSONPath: .status.message
+    description: reason for the stack status
+    name: Message
+    priority: 1
+    type: string
+  - JSONPath: .status.stackID
+    description: CloudFormation Stack ID
+    name: StackID
+    priority: 2
+    type: string
+  group: iam.awsctrl.io
+  names:
+    categories:
+    - aws
+    - iam
+    kind: Group
+    listKind: GroupList
+    plural: groups
+    singular: group
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Group is the Schema for the iam Group API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: GroupSpec defines the desired state of Group
+          properties:
+            capabilities:
+              description: Capabilities In some cases, you must explicity acknowledge
+                that your stack template contains certain capabilities in order for
+                AWS CloudFormation to create the stack.
+              items:
+                type: string
+              type: array
+            groupName:
+              description: GroupName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-groupname
+              type: string
+            managedPolicyArns:
+              description: ManagedPolicyArns http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-managepolicyarns
+              items:
+                type: string
+              type: array
+            notificationARNs:
+              description: NotificationARNs the Simple Notification Service (SNS)
+                topic ARNs to publish stack related events.
+              items:
+                type: string
+              type: array
+            onFailure:
+              description: 'OnFailure determines what action will be taken if stack
+                creation fails. This must be one of: DO_NOTHING, ROLLBACK, or DELETE.'
+              type: string
+            path:
+              description: Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-path
+              type: string
+            policies:
+              description: Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-policies
+              items:
+                description: Group_Policy defines the desired state of GroupPolicy
+                properties:
+                  policyDocument:
+                    description: PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policydocument
+                    type: string
+                  policyName:
+                    description: PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
+                    type: string
+                required:
+                - policyDocument
+                - policyName
+                type: object
+              type: array
+            region:
+              type: string
+            stackName:
+              type: string
+            tags:
+              additionalProperties:
+                type: string
+              description: Tags key-value pairs to associate with this stack. AWS
+                CloudFormation also propagates these tags to the resources created
+                in the stack.
+              type: object
+            terminationProtection:
+              description: TerminationProtection whether to enable termination protection
+                on the specified stack. If a user attempts to delete a stack with
+                termination protection enabled, the operation fails and the stack
+                remains unchanged.
+              type: boolean
+          type: object
+        status:
+          description: GroupStatus defines the observed state of Group
+          properties:
+            generation:
+              description: ObservedGeneration is the version of the manifest which
+                has been applied
+              format: int64
+              type: integer
+            lastHeartbeatTime:
+              format: date-time
+              type: string
+            lastTransitionTime:
+              format: date-time
+              type: string
+            message:
+              type: string
+            outputs:
+              additionalProperties:
+                type: string
+              type: object
+            stackID:
+              type: string
+            stackName:
+              type: string
+            status:
+              description: Status is the status of the condition
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

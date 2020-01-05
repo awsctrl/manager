@@ -9,7 +9,7 @@ spec:
   - "104.198.14.52"
   tTL: '300'
   hostedZone:
-    kind: hostedZone
+    kind: HostedZone
     apiVersion: route53.awsctrl.io/v1alpha1
     name: hostedzone-sample
     key: ResourceRef

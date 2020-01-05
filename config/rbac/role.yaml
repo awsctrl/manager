@@ -467,6 +467,186 @@ rules:
   - patch
   - update
 - apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - accesskeys
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - accesskeys/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - groups
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - groups/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - instanceprofiles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - instanceprofiles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - managedpolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - managedpolicies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - policies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - policies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - roles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - roles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - servicelinkedroles
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - servicelinkedroles/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - users
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - users/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - usertogroupadditions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - iam.awsctrl.io
+  resources:
+  - usertogroupadditions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - route53.awsctrl.io
   resources:
   - healthchecks

@@ -25,14 +25,14 @@ import (
 type ResourceSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// PathPart http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-pathpart
-	PathPart string `json:"pathPart" cloudformation:"PathPart,Parameter"`
-
 	// RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-restapiid
 	RestApi metav1alpha1.ObjectReference `json:"restApi" cloudformation:"RestApiId,Parameter"`
 
 	// Parent http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-parentid
 	Parent metav1alpha1.ObjectReference `json:"parent" cloudformation:"ParentId,Parameter"`
+
+	// PathPart http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-pathpart
+	PathPart string `json:"pathPart" cloudformation:"PathPart,Parameter"`
 }
 
 // ResourceStatus defines the observed state of Resource

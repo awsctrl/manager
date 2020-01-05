@@ -51,58 +51,15 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("EnvironmentEC2"),
 		},
-		"Name": map[string]interface{}{
-			"Value": cloudformation.GetAtt("EnvironmentEC2", "Name"),
-		},
 		"Arn": map[string]interface{}{
 			"Value": cloudformation.GetAtt("EnvironmentEC2", "Arn"),
+		},
+		"Name": map[string]interface{}{
+			"Value": cloudformation.GetAtt("EnvironmentEC2", "Name"),
 		},
 	}
 
 	cloud9EnvironmentEC2 := &cloud9.EnvironmentEC2{}
-
-	cloud9EnvironmentEC2Repositories := []cloud9.EnvironmentEC2_Repository{}
-
-	for _, item := range in.Spec.Repositories {
-		cloud9EnvironmentEC2Repository := cloud9.EnvironmentEC2_Repository{}
-
-		if item.RepositoryUrl != "" {
-			cloud9EnvironmentEC2Repository.RepositoryUrl = item.RepositoryUrl
-		}
-
-		if item.PathComponent != "" {
-			cloud9EnvironmentEC2Repository.PathComponent = item.PathComponent
-		}
-
-	}
-
-	if len(cloud9EnvironmentEC2Repositories) > 0 {
-		cloud9EnvironmentEC2.Repositories = cloud9EnvironmentEC2Repositories
-	}
-	// TODO(christopherhein) move these to a defaulter
-	cloud9EnvironmentEC2OwnerItem := in.Spec.Owner.DeepCopy()
-
-	if cloud9EnvironmentEC2OwnerItem.ObjectRef.Kind == "" {
-		cloud9EnvironmentEC2OwnerItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if cloud9EnvironmentEC2OwnerItem.ObjectRef.APIVersion == "" {
-		cloud9EnvironmentEC2OwnerItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if cloud9EnvironmentEC2OwnerItem.ObjectRef.Namespace == "" {
-		cloud9EnvironmentEC2OwnerItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.Owner = *cloud9EnvironmentEC2OwnerItem
-	ownerArn, err := in.Spec.Owner.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if ownerArn != "" {
-		cloud9EnvironmentEC2.OwnerArn = ownerArn
-	}
 
 	if in.Spec.Description != "" {
 		cloud9EnvironmentEC2.Description = in.Spec.Description
@@ -144,6 +101,49 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.Name != "" {
 		cloud9EnvironmentEC2.Name = in.Spec.Name
+	}
+
+	cloud9EnvironmentEC2Repositories := []cloud9.EnvironmentEC2_Repository{}
+
+	for _, item := range in.Spec.Repositories {
+		cloud9EnvironmentEC2Repository := cloud9.EnvironmentEC2_Repository{}
+
+		if item.PathComponent != "" {
+			cloud9EnvironmentEC2Repository.PathComponent = item.PathComponent
+		}
+
+		if item.RepositoryUrl != "" {
+			cloud9EnvironmentEC2Repository.RepositoryUrl = item.RepositoryUrl
+		}
+
+	}
+
+	if len(cloud9EnvironmentEC2Repositories) > 0 {
+		cloud9EnvironmentEC2.Repositories = cloud9EnvironmentEC2Repositories
+	}
+	// TODO(christopherhein) move these to a defaulter
+	cloud9EnvironmentEC2OwnerItem := in.Spec.Owner.DeepCopy()
+
+	if cloud9EnvironmentEC2OwnerItem.ObjectRef.Kind == "" {
+		cloud9EnvironmentEC2OwnerItem.ObjectRef.Kind = "Deployment"
+	}
+
+	if cloud9EnvironmentEC2OwnerItem.ObjectRef.APIVersion == "" {
+		cloud9EnvironmentEC2OwnerItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
+	}
+
+	if cloud9EnvironmentEC2OwnerItem.ObjectRef.Namespace == "" {
+		cloud9EnvironmentEC2OwnerItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.Owner = *cloud9EnvironmentEC2OwnerItem
+	ownerArn, err := in.Spec.Owner.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if ownerArn != "" {
+		cloud9EnvironmentEC2.OwnerArn = ownerArn
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

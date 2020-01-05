@@ -41,46 +41,43 @@ type DeploymentSpec struct {
 	StageName string `json:"stageName,omitempty" cloudformation:"StageName,Parameter"`
 }
 
-// Deployment_MethodSetting defines the desired state of DeploymentMethodSetting
-type Deployment_MethodSetting struct {
-	// ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-throttlingratelimit
-	ThrottlingRateLimit int `json:"throttlingRateLimit,omitempty" cloudformation:"ThrottlingRateLimit,Parameter"`
+// Deployment_AccessLogSetting defines the desired state of DeploymentAccessLogSetting
+type Deployment_AccessLogSetting struct {
+	// Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-accesslogsetting.html#cfn-apigateway-deployment-accesslogsetting-destinationarn
+	Destination metav1alpha1.ObjectReference `json:"destination,omitempty" cloudformation:"DestinationArn,Parameter"`
 
-	// ThrottlingBurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-throttlingburstlimit
-	ThrottlingBurstLimit int `json:"throttlingBurstLimit,omitempty" cloudformation:"ThrottlingBurstLimit,Parameter"`
-
-	// CachingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-cachingenabled
-	CachingEnabled bool `json:"cachingEnabled,omitempty" cloudformation:"CachingEnabled,Parameter"`
-
-	// HttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-httpmethod
-	HttpMethod string `json:"httpMethod,omitempty" cloudformation:"HttpMethod,Parameter"`
-
-	// MetricsEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-metricsenabled
-	MetricsEnabled bool `json:"metricsEnabled,omitempty" cloudformation:"MetricsEnabled,Parameter"`
-
-	// ResourcePath http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-resourcepath
-	ResourcePath string `json:"resourcePath,omitempty" cloudformation:"ResourcePath,Parameter"`
-
-	// CacheTtlInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-cachettlinseconds
-	CacheTtlInSeconds int `json:"cacheTtlInSeconds,omitempty" cloudformation:"CacheTtlInSeconds,Parameter"`
-
-	// DataTraceEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-datatraceenabled
-	DataTraceEnabled bool `json:"dataTraceEnabled,omitempty" cloudformation:"DataTraceEnabled,Parameter"`
-
-	// LoggingLevel http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-logginglevel
-	LoggingLevel string `json:"loggingLevel,omitempty" cloudformation:"LoggingLevel,Parameter"`
-
-	// CacheDataEncrypted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-cachedataencrypted
-	CacheDataEncrypted bool `json:"cacheDataEncrypted,omitempty" cloudformation:"CacheDataEncrypted,Parameter"`
+	// Format http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-accesslogsetting.html#cfn-apigateway-deployment-accesslogsetting-format
+	Format string `json:"format,omitempty" cloudformation:"Format,Parameter"`
 }
 
 // Deployment_StageDescription defines the desired state of DeploymentStageDescription
 type Deployment_StageDescription struct {
-	// LoggingLevel http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-logginglevel
-	LoggingLevel string `json:"loggingLevel,omitempty" cloudformation:"LoggingLevel,Parameter"`
+	// CachingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cachingenabled
+	CachingEnabled bool `json:"cachingEnabled,omitempty" cloudformation:"CachingEnabled,Parameter"`
 
-	// DocumentationVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-documentationversion
-	DocumentationVersion string `json:"documentationVersion,omitempty" cloudformation:"DocumentationVersion,Parameter"`
+	// Variables http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-variables
+	Variables map[string]string `json:"variables,omitempty" cloudformation:"Variables"`
+
+	// CacheClusterSize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cacheclustersize
+	CacheClusterSize string `json:"cacheClusterSize,omitempty" cloudformation:"CacheClusterSize,Parameter"`
+
+	// MethodSettings http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-methodsettings
+	MethodSettings []Deployment_MethodSetting `json:"methodSettings,omitempty" cloudformation:"MethodSettings"`
+
+	// ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-throttlingratelimit
+	ThrottlingRateLimit int `json:"throttlingRateLimit,omitempty" cloudformation:"ThrottlingRateLimit,Parameter"`
+
+	// ThrottlingBurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-throttlingburstlimit
+	ThrottlingBurstLimit int `json:"throttlingBurstLimit,omitempty" cloudformation:"ThrottlingBurstLimit,Parameter"`
+
+	// CacheDataEncrypted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cachedataencrypted
+	CacheDataEncrypted bool `json:"cacheDataEncrypted,omitempty" cloudformation:"CacheDataEncrypted,Parameter"`
+
+	// TracingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-tracingenabled
+	TracingEnabled bool `json:"tracingEnabled,omitempty" cloudformation:"TracingEnabled,Parameter"`
+
+	// MetricsEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-metricsenabled
+	MetricsEnabled bool `json:"metricsEnabled,omitempty" cloudformation:"MetricsEnabled,Parameter"`
 
 	// AccessLogSetting http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-accesslogsetting
 	AccessLogSetting Deployment_AccessLogSetting `json:"accessLogSetting,omitempty" cloudformation:"AccessLogSetting"`
@@ -88,47 +85,59 @@ type Deployment_StageDescription struct {
 	// CanarySetting http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-canarysetting
 	CanarySetting Deployment_CanarySetting `json:"canarySetting,omitempty" cloudformation:"CanarySetting"`
 
-	// DataTraceEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-datatraceenabled
-	DataTraceEnabled bool `json:"dataTraceEnabled,omitempty" cloudformation:"DataTraceEnabled,Parameter"`
-
-	// CacheClusterEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cacheclusterenabled
-	CacheClusterEnabled bool `json:"cacheClusterEnabled,omitempty" cloudformation:"CacheClusterEnabled,Parameter"`
-
-	// ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-throttlingratelimit
-	ThrottlingRateLimit int `json:"throttlingRateLimit,omitempty" cloudformation:"ThrottlingRateLimit,Parameter"`
+	// CacheTtlInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cachettlinseconds
+	CacheTtlInSeconds int `json:"cacheTtlInSeconds,omitempty" cloudformation:"CacheTtlInSeconds,Parameter"`
 
 	// ClientCertificate http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-clientcertificateid
 	ClientCertificate metav1alpha1.ObjectReference `json:"clientCertificate,omitempty" cloudformation:"ClientCertificateId,Parameter"`
 
-	// CacheClusterSize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cacheclustersize
-	CacheClusterSize string `json:"cacheClusterSize,omitempty" cloudformation:"CacheClusterSize,Parameter"`
+	// DataTraceEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-datatraceenabled
+	DataTraceEnabled bool `json:"dataTraceEnabled,omitempty" cloudformation:"DataTraceEnabled,Parameter"`
 
-	// TracingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-tracingenabled
-	TracingEnabled bool `json:"tracingEnabled,omitempty" cloudformation:"TracingEnabled,Parameter"`
+	// LoggingLevel http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-logginglevel
+	LoggingLevel string `json:"loggingLevel,omitempty" cloudformation:"LoggingLevel,Parameter"`
 
-	// CacheDataEncrypted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cachedataencrypted
-	CacheDataEncrypted bool `json:"cacheDataEncrypted,omitempty" cloudformation:"CacheDataEncrypted,Parameter"`
-
-	// CachingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cachingenabled
-	CachingEnabled bool `json:"cachingEnabled,omitempty" cloudformation:"CachingEnabled,Parameter"`
+	// DocumentationVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-documentationversion
+	DocumentationVersion string `json:"documentationVersion,omitempty" cloudformation:"DocumentationVersion,Parameter"`
 
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 
-	// ThrottlingBurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-throttlingburstlimit
-	ThrottlingBurstLimit int `json:"throttlingBurstLimit,omitempty" cloudformation:"ThrottlingBurstLimit,Parameter"`
+	// CacheClusterEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cacheclusterenabled
+	CacheClusterEnabled bool `json:"cacheClusterEnabled,omitempty" cloudformation:"CacheClusterEnabled,Parameter"`
+}
 
-	// Variables http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-variables
-	Variables map[string]string `json:"variables,omitempty" cloudformation:"Variables"`
-
-	// CacheTtlInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-cachettlinseconds
+// Deployment_MethodSetting defines the desired state of DeploymentMethodSetting
+type Deployment_MethodSetting struct {
+	// CacheTtlInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-cachettlinseconds
 	CacheTtlInSeconds int `json:"cacheTtlInSeconds,omitempty" cloudformation:"CacheTtlInSeconds,Parameter"`
 
-	// MetricsEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-metricsenabled
+	// CachingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-cachingenabled
+	CachingEnabled bool `json:"cachingEnabled,omitempty" cloudformation:"CachingEnabled,Parameter"`
+
+	// DataTraceEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-datatraceenabled
+	DataTraceEnabled bool `json:"dataTraceEnabled,omitempty" cloudformation:"DataTraceEnabled,Parameter"`
+
+	// MetricsEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-metricsenabled
 	MetricsEnabled bool `json:"metricsEnabled,omitempty" cloudformation:"MetricsEnabled,Parameter"`
 
-	// MethodSettings http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-methodsettings
-	MethodSettings []Deployment_MethodSetting `json:"methodSettings,omitempty" cloudformation:"MethodSettings"`
+	// ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-throttlingratelimit
+	ThrottlingRateLimit int `json:"throttlingRateLimit,omitempty" cloudformation:"ThrottlingRateLimit,Parameter"`
+
+	// CacheDataEncrypted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-cachedataencrypted
+	CacheDataEncrypted bool `json:"cacheDataEncrypted,omitempty" cloudformation:"CacheDataEncrypted,Parameter"`
+
+	// HttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-httpmethod
+	HttpMethod string `json:"httpMethod,omitempty" cloudformation:"HttpMethod,Parameter"`
+
+	// ResourcePath http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-resourcepath
+	ResourcePath string `json:"resourcePath,omitempty" cloudformation:"ResourcePath,Parameter"`
+
+	// ThrottlingBurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-throttlingburstlimit
+	ThrottlingBurstLimit int `json:"throttlingBurstLimit,omitempty" cloudformation:"ThrottlingBurstLimit,Parameter"`
+
+	// LoggingLevel http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-logginglevel
+	LoggingLevel string `json:"loggingLevel,omitempty" cloudformation:"LoggingLevel,Parameter"`
 }
 
 // Deployment_CanarySetting defines the desired state of DeploymentCanarySetting
@@ -143,25 +152,16 @@ type Deployment_CanarySetting struct {
 	UseStageCache bool `json:"useStageCache,omitempty" cloudformation:"UseStageCache,Parameter"`
 }
 
-// Deployment_AccessLogSetting defines the desired state of DeploymentAccessLogSetting
-type Deployment_AccessLogSetting struct {
-	// Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-accesslogsetting.html#cfn-apigateway-deployment-accesslogsetting-destinationarn
-	Destination metav1alpha1.ObjectReference `json:"destination,omitempty" cloudformation:"DestinationArn,Parameter"`
-
-	// Format http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-accesslogsetting.html#cfn-apigateway-deployment-accesslogsetting-format
-	Format string `json:"format,omitempty" cloudformation:"Format,Parameter"`
-}
-
 // Deployment_DeploymentCanarySettings defines the desired state of DeploymentDeploymentCanarySettings
 type Deployment_DeploymentCanarySettings struct {
+	// UseStageCache http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-deploymentcanarysettings.html#cfn-apigateway-deployment-deploymentcanarysettings-usestagecache
+	UseStageCache bool `json:"useStageCache,omitempty" cloudformation:"UseStageCache,Parameter"`
+
 	// PercentTraffic http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-deploymentcanarysettings.html#cfn-apigateway-deployment-deploymentcanarysettings-percenttraffic
 	PercentTraffic int `json:"percentTraffic,omitempty" cloudformation:"PercentTraffic,Parameter"`
 
 	// StageVariableOverrides http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-deploymentcanarysettings.html#cfn-apigateway-deployment-deploymentcanarysettings-stagevariableoverrides
 	StageVariableOverrides map[string]string `json:"stageVariableOverrides,omitempty" cloudformation:"StageVariableOverrides"`
-
-	// UseStageCache http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-deploymentcanarysettings.html#cfn-apigateway-deployment-deploymentcanarysettings-usestagecache
-	UseStageCache bool `json:"useStageCache,omitempty" cloudformation:"UseStageCache,Parameter"`
 }
 
 // DeploymentStatus defines the observed state of Deployment

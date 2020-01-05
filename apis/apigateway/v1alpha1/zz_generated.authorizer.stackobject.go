@@ -55,6 +55,10 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayAuthorizer := &apigateway.Authorizer{}
 
+	if len(in.Spec.ProviderARNs) > 0 {
+		apigatewayAuthorizer.ProviderARNs = in.Spec.ProviderARNs
+	}
+
 	if in.Spec.AuthorizerCredentials != "" {
 		apigatewayAuthorizer.AuthorizerCredentials = in.Spec.AuthorizerCredentials
 	}
@@ -92,8 +96,12 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayAuthorizer.AuthorizerResultTtlInSeconds = in.Spec.AuthorizerResultTtlInSeconds
 	}
 
-	if len(in.Spec.ProviderARNs) > 0 {
-		apigatewayAuthorizer.ProviderARNs = in.Spec.ProviderARNs
+	if in.Spec.IdentitySource != "" {
+		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
+	}
+
+	if in.Spec.Name != "" {
+		apigatewayAuthorizer.Name = in.Spec.Name
 	}
 
 	if in.Spec.Type != "" {
@@ -106,14 +114,6 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.AuthorizerUri != "" {
 		apigatewayAuthorizer.AuthorizerUri = in.Spec.AuthorizerUri
-	}
-
-	if in.Spec.IdentitySource != "" {
-		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
-	}
-
-	if in.Spec.Name != "" {
-		apigatewayAuthorizer.Name = in.Spec.Name
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

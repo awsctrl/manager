@@ -1,0 +1,23 @@
+apiVersion: iam.awsctrl.io/v1alpha1
+kind: Policy
+metadata:
+  name: policy-sample
+spec:
+  policyName: "sample-policy"
+  policyDocument: |
+    {
+      "Version": "2012-10-17T00:00:00.000Z",
+      "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": [
+                "cloudformation:Describe*",
+                "cloudformation:List*",
+                "cloudformation:Get*"
+            ]
+          }
+      ],
+      "Resource": "*"
+    }
+  groups:
+  - "sample-group"

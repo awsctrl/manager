@@ -55,10 +55,6 @@ func (in *DocumentationVersion) GetTemplate(client dynamic.Interface) (string, e
 
 	apigatewayDocumentationVersion := &apigateway.DocumentationVersion{}
 
-	if in.Spec.Description != "" {
-		apigatewayDocumentationVersion.Description = in.Spec.Description
-	}
-
 	if in.Spec.DocumentationVersion != "" {
 		apigatewayDocumentationVersion.DocumentationVersion = in.Spec.DocumentationVersion
 	}
@@ -86,6 +82,10 @@ func (in *DocumentationVersion) GetTemplate(client dynamic.Interface) (string, e
 
 	if restApiId != "" {
 		apigatewayDocumentationVersion.RestApiId = restApiId
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayDocumentationVersion.Description = in.Spec.Description
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

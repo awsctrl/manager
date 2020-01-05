@@ -81,6 +81,13 @@ spec:
                   description: Version http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-s3location.html#cfn-apigateway-restapi-s3location-version
                   type: string
               type: object
+            capabilities:
+              description: Capabilities In some cases, you must explicity acknowledge
+                that your stack template contains certain capabilities in order for
+                AWS CloudFormation to create the stack.
+              items:
+                type: string
+              type: array
             cloneFrom:
               description: CloneFrom http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-clonefrom
               type: string

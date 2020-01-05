@@ -68,6 +68,10 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayDomainName := &apigateway.DomainName{}
 
+	if in.Spec.SecurityPolicy != "" {
+		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
+	}
+
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayDomainNameCertificateItem := in.Spec.Certificate.DeepCopy()
@@ -131,10 +135,6 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if regionalCertificateArn != "" {
 		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
-	}
-
-	if in.Spec.SecurityPolicy != "" {
-		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

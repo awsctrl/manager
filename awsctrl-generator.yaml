@@ -59,7 +59,7 @@ spec:
   # - glue
   # - greengrass
   # - guardduty
-  # - iam
+  - iam
   # - inspector
   # - iot
   # - iot1click

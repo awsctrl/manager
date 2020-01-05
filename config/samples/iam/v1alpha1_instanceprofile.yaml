@@ -1,0 +1,9 @@
+apiVersion: iam.awsctrl.io/v1alpha1
+kind: InstanceProfile
+metadata:
+  name: instanceprofile-sample
+spec:
+  instanceProfileName: "christopherhein",
+  path: "/",
+  roles:
+  - role-sample

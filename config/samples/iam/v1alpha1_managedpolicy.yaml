@@ -1,0 +1,35 @@
+apiVersion: iam.awsctrl.io/v1alpha1
+kind: ManagedPolicy
+metadata:
+  name: managedpolicy-sample
+spec:
+  description: Policy for creating a test database
+  path: /
+  Groups:
+    - sample-group
+  policyDocument: |
+    {
+      "Version": "2012-10-17T00:00:00.000Z",
+      "Statement": [
+          {
+            "Effect": "Allow",
+            "Action": "rds:CreateDBInstance",
+            "Resource": null,
+            "Condition": {
+                "StringEquals": {
+                  "rds:DatabaseEngine": "mysql"
+                }
+            }
+          },
+          {
+            "Effect": "Allow",
+            "Action": "rds:CreateDBInstance",
+            "Resource": null,
+            "Condition": {
+                "StringEquals": {
+                  "rds:DatabaseClass": "db.t2.micro"
+                }
+            }
+          }
+      ]
+    }

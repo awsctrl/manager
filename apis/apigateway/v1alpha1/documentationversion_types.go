@@ -25,14 +25,14 @@ import (
 type DocumentationVersionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationversion.html#cfn-apigateway-documentationversion-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
-
 	// DocumentationVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationversion.html#cfn-apigateway-documentationversion-documentationversion
 	DocumentationVersion string `json:"documentationVersion" cloudformation:"DocumentationVersion,Parameter"`
 
 	// RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationversion.html#cfn-apigateway-documentationversion-restapiid
 	RestApi metav1alpha1.ObjectReference `json:"restApi" cloudformation:"RestApiId,Parameter"`
+
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationversion.html#cfn-apigateway-documentationversion-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 }
 
 // DocumentationVersionStatus defines the observed state of DocumentationVersion

@@ -58,6 +58,13 @@ spec:
             basePath:
               description: BasePath http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-basepathmapping.html#cfn-apigateway-basepathmapping-basepath
               type: string
+            capabilities:
+              description: Capabilities In some cases, you must explicity acknowledge
+                that your stack template contains certain capabilities in order for
+                AWS CloudFormation to create the stack.
+              items:
+                type: string
+              type: array
             domainName:
               description: DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-basepathmapping.html#cfn-apigateway-basepathmapping-domainname
               type: string

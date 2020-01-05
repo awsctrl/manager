@@ -59,10 +59,6 @@ func (in *DocumentationPart) GetTemplate(client dynamic.Interface) (string, erro
 	if !reflect.DeepEqual(in.Spec.Location, DocumentationPart_Location{}) {
 		apigatewayDocumentationPartLocation := apigateway.DocumentationPart_Location{}
 
-		if in.Spec.Location.Name != "" {
-			apigatewayDocumentationPartLocation.Name = in.Spec.Location.Name
-		}
-
 		if in.Spec.Location.Path != "" {
 			apigatewayDocumentationPartLocation.Path = in.Spec.Location.Path
 		}
@@ -77,6 +73,10 @@ func (in *DocumentationPart) GetTemplate(client dynamic.Interface) (string, erro
 
 		if in.Spec.Location.Method != "" {
 			apigatewayDocumentationPartLocation.Method = in.Spec.Location.Method
+		}
+
+		if in.Spec.Location.Name != "" {
+			apigatewayDocumentationPartLocation.Name = in.Spec.Location.Name
 		}
 
 		apigatewayDocumentationPart.Location = &apigatewayDocumentationPartLocation

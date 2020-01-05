@@ -25,12 +25,6 @@ import (
 type StackSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Capabilities In some cases, you must explicity acknowledge that your stack
-	// template contains certain capabilities in order for AWS CloudFormation to
-	// create the stack.
-	// +optional
-	Capabilities []*string `json:"capabilities,omitempty"`
-
 	// Parameters A list of Parameter structures that specify input parameters for
 	// the stack. For more information, see the Parameter data type.
 	Parameters map[string]string `json:"parameters"`
