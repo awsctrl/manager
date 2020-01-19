@@ -25,6 +25,9 @@ import (
 type DomainNameSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// SecurityPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-securitypolicy
+	SecurityPolicy string `json:"securityPolicy,omitempty" cloudformation:"SecurityPolicy,Parameter"`
+
 	// Certificate http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-certificatearn
 	Certificate metav1alpha1.ObjectReference `json:"certificate,omitempty" cloudformation:"CertificateArn,Parameter"`
 
@@ -36,9 +39,6 @@ type DomainNameSpec struct {
 
 	// RegionalCertificate http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-regionalcertificatearn
 	RegionalCertificate metav1alpha1.ObjectReference `json:"regionalCertificate,omitempty" cloudformation:"RegionalCertificateArn,Parameter"`
-
-	// SecurityPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-securitypolicy
-	SecurityPolicy string `json:"securityPolicy,omitempty" cloudformation:"SecurityPolicy,Parameter"`
 }
 
 // DomainName_EndpointConfiguration defines the desired state of DomainNameEndpointConfiguration

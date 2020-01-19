@@ -25,18 +25,24 @@ import (
 type DocumentationPartSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Location http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationpart.html#cfn-apigateway-documentationpart-location
-	Location DocumentationPart_Location `json:"location" cloudformation:"Location"`
-
 	// Properties http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationpart.html#cfn-apigateway-documentationpart-properties
 	Properties string `json:"properties" cloudformation:"Properties,Parameter"`
 
 	// RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationpart.html#cfn-apigateway-documentationpart-restapiid
 	RestApi metav1alpha1.ObjectReference `json:"restApi" cloudformation:"RestApiId,Parameter"`
+
+	// Location http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationpart.html#cfn-apigateway-documentationpart-location
+	Location DocumentationPart_Location `json:"location" cloudformation:"Location"`
 }
 
 // DocumentationPart_Location defines the desired state of DocumentationPartLocation
 type DocumentationPart_Location struct {
+	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-documentationpart-location.html#cfn-apigateway-documentationpart-location-path
+	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
+
+	// StatusCode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-documentationpart-location.html#cfn-apigateway-documentationpart-location-statuscode
+	StatusCode string `json:"statusCode,omitempty" cloudformation:"StatusCode,Parameter"`
+
 	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-documentationpart-location.html#cfn-apigateway-documentationpart-location-type
 	Type string `json:"type,omitempty" cloudformation:"Type,Parameter"`
 
@@ -45,12 +51,6 @@ type DocumentationPart_Location struct {
 
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-documentationpart-location.html#cfn-apigateway-documentationpart-location-name
 	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
-
-	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-documentationpart-location.html#cfn-apigateway-documentationpart-location-path
-	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
-
-	// StatusCode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-documentationpart-location.html#cfn-apigateway-documentationpart-location-statuscode
-	StatusCode string `json:"statusCode,omitempty" cloudformation:"StatusCode,Parameter"`
 }
 
 // DocumentationPartStatus defines the observed state of DocumentationPart

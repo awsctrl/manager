@@ -66,7 +66,7 @@ spec:
               properties:
                 percentTraffic:
                   description: PercentTraffic http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-deploymentcanarysettings.html#cfn-apigateway-deployment-deploymentcanarysettings-percenttraffic
-                  type: integer
+                  type: string
                 stageVariableOverrides:
                   additionalProperties:
                     type: string
@@ -175,7 +175,7 @@ spec:
                   properties:
                     percentTraffic:
                       description: PercentTraffic http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-canarysetting.html#cfn-apigateway-deployment-canarysetting-percenttraffic
-                      type: integer
+                      type: string
                     stageVariableOverrides:
                       additionalProperties:
                         type: string
@@ -258,7 +258,7 @@ spec:
                         type: integer
                       throttlingRateLimit:
                         description: ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription-methodsetting.html#cfn-apigateway-deployment-stagedescription-methodsetting-throttlingratelimit
-                        type: integer
+                        type: string
                     type: object
                   type: array
                 metricsEnabled:
@@ -269,7 +269,7 @@ spec:
                   type: integer
                 throttlingRateLimit:
                   description: ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-throttlingratelimit
-                  type: integer
+                  type: string
                 tracingEnabled:
                   description: TracingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-deployment-stagedescription.html#cfn-apigateway-deployment-stagedescription-tracingenabled
                   type: boolean

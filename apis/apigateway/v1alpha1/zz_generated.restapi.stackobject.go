@@ -60,32 +60,7 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayRestApi := &apigateway.RestApi{}
 
-	if !reflect.DeepEqual(in.Spec.EndpointConfiguration, RestApi_EndpointConfiguration{}) {
-		apigatewayRestApiEndpointConfiguration := apigateway.RestApi_EndpointConfiguration{}
-
-		if len(in.Spec.EndpointConfiguration.Types) > 0 {
-			apigatewayRestApiEndpointConfiguration.Types = in.Spec.EndpointConfiguration.Types
-		}
-
-		if len(in.Spec.EndpointConfiguration.VpcEndpointIds) > 0 {
-			apigatewayRestApiEndpointConfiguration.VpcEndpointIds = in.Spec.EndpointConfiguration.VpcEndpointIds
-		}
-
-		apigatewayRestApi.EndpointConfiguration = &apigatewayRestApiEndpointConfiguration
-	}
-
-	if in.Spec.Name != "" {
-		apigatewayRestApi.Name = in.Spec.Name
-	}
-
-	if !reflect.DeepEqual(in.Spec.Parameters, map[string]string{}) {
-		apigatewayRestApi.Parameters = in.Spec.Parameters
-	}
-
-	if len(in.Spec.BinaryMediaTypes) > 0 {
-		apigatewayRestApi.BinaryMediaTypes = in.Spec.BinaryMediaTypes
-	}
-
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.Body != "" {
 		apigatewayRestApiJSON := make(map[string]interface{})
 		err := json.Unmarshal([]byte(in.Spec.Body), &apigatewayRestApiJSON)
@@ -95,24 +70,8 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayRestApi.Body = apigatewayRestApiJSON
 	}
 
-	if in.Spec.FailOnWarnings || !in.Spec.FailOnWarnings {
-		apigatewayRestApi.FailOnWarnings = in.Spec.FailOnWarnings
-	}
-
-	if in.Spec.CloneFrom != "" {
-		apigatewayRestApi.CloneFrom = in.Spec.CloneFrom
-	}
-
-	if in.Spec.Description != "" {
-		apigatewayRestApi.Description = in.Spec.Description
-	}
-
 	if !reflect.DeepEqual(in.Spec.BodyS3Location, RestApi_S3Location{}) {
 		apigatewayRestApiS3Location := apigateway.RestApi_S3Location{}
-
-		if in.Spec.BodyS3Location.ETag != "" {
-			apigatewayRestApiS3Location.ETag = in.Spec.BodyS3Location.ETag
-		}
 
 		if in.Spec.BodyS3Location.Key != "" {
 			apigatewayRestApiS3Location.Key = in.Spec.BodyS3Location.Key
@@ -126,11 +85,64 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayRestApiS3Location.Bucket = in.Spec.BodyS3Location.Bucket
 		}
 
+		if in.Spec.BodyS3Location.ETag != "" {
+			apigatewayRestApiS3Location.ETag = in.Spec.BodyS3Location.ETag
+		}
+
 		apigatewayRestApi.BodyS3Location = &apigatewayRestApiS3Location
+	}
+
+	if !reflect.DeepEqual(in.Spec.Parameters, map[string]string{}) {
+		apigatewayRestApi.Parameters = in.Spec.Parameters
 	}
 
 	if in.Spec.MinimumCompressionSize != apigatewayRestApi.MinimumCompressionSize {
 		apigatewayRestApi.MinimumCompressionSize = in.Spec.MinimumCompressionSize
+	}
+
+	if in.Spec.CloneFrom != "" {
+		apigatewayRestApi.CloneFrom = in.Spec.CloneFrom
+	}
+
+	if !reflect.DeepEqual(in.Spec.EndpointConfiguration, RestApi_EndpointConfiguration{}) {
+		apigatewayRestApiEndpointConfiguration := apigateway.RestApi_EndpointConfiguration{}
+
+		if len(in.Spec.EndpointConfiguration.Types) > 0 {
+			apigatewayRestApiEndpointConfiguration.Types = in.Spec.EndpointConfiguration.Types
+		}
+
+		if len(in.Spec.EndpointConfiguration.VpcEndpoint) > 0 {
+			apigatewayRestApiEndpointConfigurationVpcEndpoint := []string{}
+
+			for _, item := range in.Spec.EndpointConfiguration.VpcEndpoint {
+				apigatewayRestApiEndpointConfigurationVpcEndpointItem := item.DeepCopy()
+
+				if apigatewayRestApiEndpointConfigurationVpcEndpointItem.ObjectRef.Namespace == "" {
+					apigatewayRestApiEndpointConfigurationVpcEndpointItem.ObjectRef.Namespace = in.Namespace
+				}
+
+			}
+
+			apigatewayRestApiEndpointConfiguration.VpcEndpointIds = apigatewayRestApiEndpointConfigurationVpcEndpoint
+		}
+
+		apigatewayRestApi.EndpointConfiguration = &apigatewayRestApiEndpointConfiguration
+	}
+
+	if in.Spec.FailOnWarnings || !in.Spec.FailOnWarnings {
+		apigatewayRestApi.FailOnWarnings = in.Spec.FailOnWarnings
+	}
+
+	if in.Spec.ApiKeySourceType != "" {
+		apigatewayRestApi.ApiKeySourceType = in.Spec.ApiKeySourceType
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayRestApi.Description = in.Spec.Description
+	}
+
+	if in.Spec.Name != "" {
+		apigatewayRestApi.Name = in.Spec.Name
 	}
 
 	if in.Spec.Policy != "" {
@@ -142,11 +154,9 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayRestApi.Policy = apigatewayRestApiJSON
 	}
 
-	if in.Spec.ApiKeySourceType != "" {
-		apigatewayRestApi.ApiKeySourceType = in.Spec.ApiKeySourceType
+	if len(in.Spec.BinaryMediaTypes) > 0 {
+		apigatewayRestApi.BinaryMediaTypes = in.Spec.BinaryMediaTypes
 	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 
 	template.Resources = map[string]cloudformation.Resource{
 		"RestApi": apigatewayRestApi,

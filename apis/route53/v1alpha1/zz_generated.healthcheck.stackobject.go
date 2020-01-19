@@ -56,31 +56,61 @@ func (in *HealthCheck) GetTemplate(client dynamic.Interface) (string, error) {
 
 	route53HealthCheck := &route53.HealthCheck{}
 
+	route53HealthCheckHealthCheckTags := []route53.HealthCheck_HealthCheckTag{}
+
+	for _, item := range in.Spec.HealthCheckTags {
+		route53HealthCheckHealthCheckTag := route53.HealthCheck_HealthCheckTag{}
+
+		if item.Key != "" {
+			route53HealthCheckHealthCheckTag.Key = item.Key
+		}
+
+		if item.Value != "" {
+			route53HealthCheckHealthCheckTag.Value = item.Value
+		}
+
+	}
+
+	if len(route53HealthCheckHealthCheckTags) > 0 {
+		route53HealthCheck.HealthCheckTags = route53HealthCheckHealthCheckTags
+	}
 	if !reflect.DeepEqual(in.Spec.HealthCheckConfig, HealthCheck_HealthCheckConfig{}) {
 		route53HealthCheckHealthCheckConfig := route53.HealthCheck_HealthCheckConfig{}
 
-		if in.Spec.HealthCheckConfig.SearchString != "" {
-			route53HealthCheckHealthCheckConfig.SearchString = in.Spec.HealthCheckConfig.SearchString
-		}
-
-		if in.Spec.HealthCheckConfig.ResourcePath != "" {
-			route53HealthCheckHealthCheckConfig.ResourcePath = in.Spec.HealthCheckConfig.ResourcePath
-		}
-
-		if in.Spec.HealthCheckConfig.Port != route53HealthCheckHealthCheckConfig.Port {
-			route53HealthCheckHealthCheckConfig.Port = in.Spec.HealthCheckConfig.Port
-		}
-
-		if in.Spec.HealthCheckConfig.Inverted || !in.Spec.HealthCheckConfig.Inverted {
-			route53HealthCheckHealthCheckConfig.Inverted = in.Spec.HealthCheckConfig.Inverted
+		if in.Spec.HealthCheckConfig.IPAddress != "" {
+			route53HealthCheckHealthCheckConfig.IPAddress = in.Spec.HealthCheckConfig.IPAddress
 		}
 
 		if in.Spec.HealthCheckConfig.MeasureLatency || !in.Spec.HealthCheckConfig.MeasureLatency {
 			route53HealthCheckHealthCheckConfig.MeasureLatency = in.Spec.HealthCheckConfig.MeasureLatency
 		}
 
+		if in.Spec.HealthCheckConfig.FullyQualifiedDomainName != "" {
+			route53HealthCheckHealthCheckConfig.FullyQualifiedDomainName = in.Spec.HealthCheckConfig.FullyQualifiedDomainName
+		}
+
+		if in.Spec.HealthCheckConfig.EnableSNI || !in.Spec.HealthCheckConfig.EnableSNI {
+			route53HealthCheckHealthCheckConfig.EnableSNI = in.Spec.HealthCheckConfig.EnableSNI
+		}
+
 		if in.Spec.HealthCheckConfig.HealthThreshold != route53HealthCheckHealthCheckConfig.HealthThreshold {
 			route53HealthCheckHealthCheckConfig.HealthThreshold = in.Spec.HealthCheckConfig.HealthThreshold
+		}
+
+		if in.Spec.HealthCheckConfig.RequestInterval != route53HealthCheckHealthCheckConfig.RequestInterval {
+			route53HealthCheckHealthCheckConfig.RequestInterval = in.Spec.HealthCheckConfig.RequestInterval
+		}
+
+		if in.Spec.HealthCheckConfig.InsufficientDataHealthStatus != "" {
+			route53HealthCheckHealthCheckConfig.InsufficientDataHealthStatus = in.Spec.HealthCheckConfig.InsufficientDataHealthStatus
+		}
+
+		if in.Spec.HealthCheckConfig.Inverted || !in.Spec.HealthCheckConfig.Inverted {
+			route53HealthCheckHealthCheckConfig.Inverted = in.Spec.HealthCheckConfig.Inverted
+		}
+
+		if in.Spec.HealthCheckConfig.Type != "" {
+			route53HealthCheckHealthCheckConfig.Type = in.Spec.HealthCheckConfig.Type
 		}
 
 		if !reflect.DeepEqual(in.Spec.HealthCheckConfig.AlarmIdentifier, HealthCheck_AlarmIdentifier{}) {
@@ -97,62 +127,31 @@ func (in *HealthCheck) GetTemplate(client dynamic.Interface) (string, error) {
 			route53HealthCheckHealthCheckConfig.AlarmIdentifier = &route53HealthCheckHealthCheckConfigAlarmIdentifier
 		}
 
-		if in.Spec.HealthCheckConfig.FullyQualifiedDomainName != "" {
-			route53HealthCheckHealthCheckConfig.FullyQualifiedDomainName = in.Spec.HealthCheckConfig.FullyQualifiedDomainName
-		}
-
-		if in.Spec.HealthCheckConfig.FailureThreshold != route53HealthCheckHealthCheckConfig.FailureThreshold {
-			route53HealthCheckHealthCheckConfig.FailureThreshold = in.Spec.HealthCheckConfig.FailureThreshold
-		}
-
-		if in.Spec.HealthCheckConfig.InsufficientDataHealthStatus != "" {
-			route53HealthCheckHealthCheckConfig.InsufficientDataHealthStatus = in.Spec.HealthCheckConfig.InsufficientDataHealthStatus
-		}
-
-		if in.Spec.HealthCheckConfig.RequestInterval != route53HealthCheckHealthCheckConfig.RequestInterval {
-			route53HealthCheckHealthCheckConfig.RequestInterval = in.Spec.HealthCheckConfig.RequestInterval
-		}
-
-		if len(in.Spec.HealthCheckConfig.ChildHealthChecks) > 0 {
-			route53HealthCheckHealthCheckConfig.ChildHealthChecks = in.Spec.HealthCheckConfig.ChildHealthChecks
+		if in.Spec.HealthCheckConfig.Port != route53HealthCheckHealthCheckConfig.Port {
+			route53HealthCheckHealthCheckConfig.Port = in.Spec.HealthCheckConfig.Port
 		}
 
 		if len(in.Spec.HealthCheckConfig.Regions) > 0 {
 			route53HealthCheckHealthCheckConfig.Regions = in.Spec.HealthCheckConfig.Regions
 		}
 
-		if in.Spec.HealthCheckConfig.Type != "" {
-			route53HealthCheckHealthCheckConfig.Type = in.Spec.HealthCheckConfig.Type
+		if len(in.Spec.HealthCheckConfig.ChildHealthChecks) > 0 {
+			route53HealthCheckHealthCheckConfig.ChildHealthChecks = in.Spec.HealthCheckConfig.ChildHealthChecks
 		}
 
-		if in.Spec.HealthCheckConfig.IPAddress != "" {
-			route53HealthCheckHealthCheckConfig.IPAddress = in.Spec.HealthCheckConfig.IPAddress
+		if in.Spec.HealthCheckConfig.ResourcePath != "" {
+			route53HealthCheckHealthCheckConfig.ResourcePath = in.Spec.HealthCheckConfig.ResourcePath
 		}
 
-		if in.Spec.HealthCheckConfig.EnableSNI || !in.Spec.HealthCheckConfig.EnableSNI {
-			route53HealthCheckHealthCheckConfig.EnableSNI = in.Spec.HealthCheckConfig.EnableSNI
+		if in.Spec.HealthCheckConfig.FailureThreshold != route53HealthCheckHealthCheckConfig.FailureThreshold {
+			route53HealthCheckHealthCheckConfig.FailureThreshold = in.Spec.HealthCheckConfig.FailureThreshold
+		}
+
+		if in.Spec.HealthCheckConfig.SearchString != "" {
+			route53HealthCheckHealthCheckConfig.SearchString = in.Spec.HealthCheckConfig.SearchString
 		}
 
 		route53HealthCheck.HealthCheckConfig = &route53HealthCheckHealthCheckConfig
-	}
-
-	route53HealthCheckHealthCheckTags := []route53.HealthCheck_HealthCheckTag{}
-
-	for _, item := range in.Spec.HealthCheckTags {
-		route53HealthCheckHealthCheckTag := route53.HealthCheck_HealthCheckTag{}
-
-		if item.Value != "" {
-			route53HealthCheckHealthCheckTag.Value = item.Value
-		}
-
-		if item.Key != "" {
-			route53HealthCheckHealthCheckTag.Key = item.Key
-		}
-
-	}
-
-	if len(route53HealthCheckHealthCheckTags) > 0 {
-		route53HealthCheck.HealthCheckTags = route53HealthCheckHealthCheckTags
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

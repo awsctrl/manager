@@ -25,9 +25,6 @@ import (
 type ApiKeySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Enabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-enabled
-	Enabled bool `json:"enabled,omitempty" cloudformation:"Enabled,Parameter"`
-
 	// GenerateDistinctId http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-generatedistinctid
 	GenerateDistinctId bool `json:"generateDistinctId,omitempty" cloudformation:"GenerateDistinctId,Parameter"`
 
@@ -45,6 +42,9 @@ type ApiKeySpec struct {
 
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
+	// Enabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-enabled
+	Enabled bool `json:"enabled,omitempty" cloudformation:"Enabled,Parameter"`
 }
 
 // ApiKey_StageKey defines the desired state of ApiKeyStageKey

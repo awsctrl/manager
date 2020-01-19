@@ -56,12 +56,25 @@ func (in *DocumentationPart) GetTemplate(client dynamic.Interface) (string, erro
 
 	apigatewayDocumentationPart := &apigateway.DocumentationPart{}
 
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayDocumentationPartRestApiItem := in.Spec.RestApi.DeepCopy()
+
+	if apigatewayDocumentationPartRestApiItem.ObjectRef.Namespace == "" {
+		apigatewayDocumentationPartRestApiItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApi = *apigatewayDocumentationPartRestApiItem
+	restApiId, err := in.Spec.RestApi.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if restApiId != "" {
+		apigatewayDocumentationPart.RestApiId = restApiId
+	}
+
 	if !reflect.DeepEqual(in.Spec.Location, DocumentationPart_Location{}) {
 		apigatewayDocumentationPartLocation := apigateway.DocumentationPart_Location{}
-
-		if in.Spec.Location.Type != "" {
-			apigatewayDocumentationPartLocation.Type = in.Spec.Location.Type
-		}
 
 		if in.Spec.Location.Method != "" {
 			apigatewayDocumentationPartLocation.Method = in.Spec.Location.Method
@@ -79,36 +92,15 @@ func (in *DocumentationPart) GetTemplate(client dynamic.Interface) (string, erro
 			apigatewayDocumentationPartLocation.StatusCode = in.Spec.Location.StatusCode
 		}
 
+		if in.Spec.Location.Type != "" {
+			apigatewayDocumentationPartLocation.Type = in.Spec.Location.Type
+		}
+
 		apigatewayDocumentationPart.Location = &apigatewayDocumentationPartLocation
 	}
 
 	if in.Spec.Properties != "" {
 		apigatewayDocumentationPart.Properties = in.Spec.Properties
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayDocumentationPartRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayDocumentationPartRestApiItem.ObjectRef.Kind == "" {
-		apigatewayDocumentationPartRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayDocumentationPartRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayDocumentationPartRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if apigatewayDocumentationPartRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayDocumentationPartRestApiItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RestApi = *apigatewayDocumentationPartRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayDocumentationPart.RestApiId = restApiId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

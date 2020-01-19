@@ -25,6 +25,9 @@ import (
 type UsagePlanSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Throttle http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-throttle
+	Throttle UsagePlan_ThrottleSettings `json:"throttle,omitempty" cloudformation:"Throttle"`
+
 	// UsagePlanName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-usageplanname
 	UsagePlanName string `json:"usagePlanName,omitempty" cloudformation:"UsagePlanName,Parameter"`
 
@@ -36,33 +39,30 @@ type UsagePlanSpec struct {
 
 	// Quota http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-quota
 	Quota UsagePlan_QuotaSettings `json:"quota,omitempty" cloudformation:"Quota"`
-
-	// Throttle http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-throttle
-	Throttle UsagePlan_ThrottleSettings `json:"throttle,omitempty" cloudformation:"Throttle"`
 }
 
 // UsagePlan_ApiStage defines the desired state of UsagePlanApiStage
 type UsagePlan_ApiStage struct {
-	// Api http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-apiid
-	Api metav1alpha1.ObjectReference `json:"api,omitempty" cloudformation:"ApiId,Parameter"`
-
 	// Stage http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-stage
 	Stage string `json:"stage,omitempty" cloudformation:"Stage,Parameter"`
 
 	// Throttle http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-throttle
 	Throttle map[string]UsagePlan_ThrottleSettings `json:"throttle,omitempty" cloudformation:"Throttle"`
+
+	// Api http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-apiid
+	Api metav1alpha1.ObjectReference `json:"api,omitempty" cloudformation:"ApiId,Parameter"`
 }
 
 // UsagePlan_QuotaSettings defines the desired state of UsagePlanQuotaSettings
 type UsagePlan_QuotaSettings struct {
+	// Period http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-quotasettings.html#cfn-apigateway-usageplan-quotasettings-period
+	Period string `json:"period,omitempty" cloudformation:"Period,Parameter"`
+
 	// Limit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-quotasettings.html#cfn-apigateway-usageplan-quotasettings-limit
 	Limit int `json:"limit,omitempty" cloudformation:"Limit,Parameter"`
 
 	// Offset http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-quotasettings.html#cfn-apigateway-usageplan-quotasettings-offset
 	Offset int `json:"offset,omitempty" cloudformation:"Offset,Parameter"`
-
-	// Period http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-quotasettings.html#cfn-apigateway-usageplan-quotasettings-period
-	Period string `json:"period,omitempty" cloudformation:"Period,Parameter"`
 }
 
 // UsagePlan_ThrottleSettings defines the desired state of UsagePlanThrottleSettings
@@ -71,7 +71,7 @@ type UsagePlan_ThrottleSettings struct {
 	BurstLimit int `json:"burstLimit,omitempty" cloudformation:"BurstLimit,Parameter"`
 
 	// RateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-ratelimit
-	RateLimit int `json:"rateLimit,omitempty" cloudformation:"RateLimit,Parameter"`
+	RateLimit string `json:"rateLimit,omitempty" cloudformation:"RateLimit,Parameter"`
 }
 
 // UsagePlanStatus defines the observed state of UsagePlan

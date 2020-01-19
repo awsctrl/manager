@@ -58,14 +58,6 @@ func (in *Resource) GetTemplate(client dynamic.Interface) (string, error) {
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayResourceParentItem := in.Spec.Parent.DeepCopy()
 
-	if apigatewayResourceParentItem.ObjectRef.Kind == "" {
-		apigatewayResourceParentItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayResourceParentItem.ObjectRef.APIVersion == "" {
-		apigatewayResourceParentItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
 	if apigatewayResourceParentItem.ObjectRef.Namespace == "" {
 		apigatewayResourceParentItem.ObjectRef.Namespace = in.Namespace
 	}
@@ -86,14 +78,6 @@ func (in *Resource) GetTemplate(client dynamic.Interface) (string, error) {
 
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayResourceRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayResourceRestApiItem.ObjectRef.Kind == "" {
-		apigatewayResourceRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayResourceRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayResourceRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
 
 	if apigatewayResourceRestApiItem.ObjectRef.Namespace == "" {
 		apigatewayResourceRestApiItem.ObjectRef.Namespace = in.Namespace

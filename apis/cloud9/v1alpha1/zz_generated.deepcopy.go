@@ -102,12 +102,12 @@ func (in *EnvironmentEC2Output) DeepCopy() *EnvironmentEC2Output {
 func (in *EnvironmentEC2Spec) DeepCopyInto(out *EnvironmentEC2Spec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
+	out.Owner = in.Owner
 	if in.Repositories != nil {
 		in, out := &in.Repositories, &out.Repositories
 		*out = make([]EnvironmentEC2_Repository, len(*in))
 		copy(*out, *in)
 	}
-	out.Owner = in.Owner
 	out.Subnet = in.Subnet
 }
 

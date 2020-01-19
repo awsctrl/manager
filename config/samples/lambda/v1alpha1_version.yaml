@@ -1,0 +1,7 @@
+apiVersion: lambda.awsctrl.io/v1alpha1
+kind: Version
+metadata:
+  name: version-1-sample
+spec: 
+  functionName: function-sample
+  description: v1

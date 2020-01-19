@@ -55,6 +55,15 @@ func (in *Certificate) GetTemplate(client dynamic.Interface) (string, error) {
 
 	certificatemanagerCertificate := &certificatemanager.Certificate{}
 
+	if len(in.Spec.SubjectAlternativeNames) > 0 {
+		certificatemanagerCertificate.SubjectAlternativeNames = in.Spec.SubjectAlternativeNames
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.ValidationMethod != "" {
+		certificatemanagerCertificate.ValidationMethod = in.Spec.ValidationMethod
+	}
+
 	if in.Spec.DomainName != "" {
 		certificatemanagerCertificate.DomainName = in.Spec.DomainName
 	}
@@ -76,14 +85,6 @@ func (in *Certificate) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if len(certificatemanagerCertificateDomainValidationOptions) > 0 {
 		certificatemanagerCertificate.DomainValidationOptions = certificatemanagerCertificateDomainValidationOptions
-	}
-	if len(in.Spec.SubjectAlternativeNames) > 0 {
-		certificatemanagerCertificate.SubjectAlternativeNames = in.Spec.SubjectAlternativeNames
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	if in.Spec.ValidationMethod != "" {
-		certificatemanagerCertificate.ValidationMethod = in.Spec.ValidationMethod
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

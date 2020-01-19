@@ -102,10 +102,34 @@ spec:
                   items:
                     type: string
                   type: array
-                vpcEndpointIds:
-                  description: VpcEndpointIds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-endpointconfiguration.html#cfn-apigateway-restapi-endpointconfiguration-vpcendpointids
+                vpcEndpoint:
+                  description: VpcEndpoint http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-endpointconfiguration.html#cfn-apigateway-restapi-endpointconfiguration-vpcendpointids
                   items:
-                    type: string
+                    description: ObjectReference contains information about how
+                    properties:
+                      apiVersion:
+                        description: API version of the referent.
+                        type: string
+                      arn:
+                        description: Arn is used if the object expects an Arn
+                        type: string
+                      id:
+                        description: Id is used if the object expects an ID like Security
+                          groups and vpcs
+                        type: string
+                      key:
+                        description: Key of the referent.
+                        type: string
+                      kind:
+                        description: Kind of the referent.
+                        type: string
+                      name:
+                        description: Name of the referent.
+                        type: string
+                      namespace:
+                        description: Namespace of the referent.
+                        type: string
+                    type: object
                   type: array
               type: object
             failOnWarnings:

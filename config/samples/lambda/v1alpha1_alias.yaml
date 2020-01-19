@@ -1,0 +1,8 @@
+apiVersion: lambda.awsctrl.io/v1alpha1
+kind: Alias
+metadata:
+  name: alias-sample
+spec: 
+  functionName: function-sample
+  functionVersion: "5"
+  name: BLUE

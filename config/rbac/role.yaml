@@ -647,6 +647,166 @@ rules:
   - patch
   - update
 - apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - aliases
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - aliases/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - eventinvokeconfigs
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - eventinvokeconfigs/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - eventsourcemappings
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - eventsourcemappings/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - functions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - functions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - layerversionpermissions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - layerversionpermissions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - layerversions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - layerversions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - permissions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - permissions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - versions
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - lambda.awsctrl.io
+  resources:
+  - versions/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - route53.awsctrl.io
   resources:
   - healthchecks

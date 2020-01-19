@@ -55,12 +55,23 @@ func (in *VpcLink) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayVpcLink := &apigateway.VpcLink{}
 
-	if in.Spec.Description != "" {
-		apigatewayVpcLink.Description = in.Spec.Description
+	if len(in.Spec.Target) > 0 {
+		apigatewayVpcLinkTarget := []string{}
+
+		for _, item := range in.Spec.Target {
+			apigatewayVpcLinkTargetItem := item.DeepCopy()
+
+			if apigatewayVpcLinkTargetItem.ObjectRef.Namespace == "" {
+				apigatewayVpcLinkTargetItem.ObjectRef.Namespace = in.Namespace
+			}
+
+		}
+
+		apigatewayVpcLink.TargetArns = apigatewayVpcLinkTarget
 	}
 
-	if len(in.Spec.TargetArns) > 0 {
-		apigatewayVpcLink.TargetArns = in.Spec.TargetArns
+	if in.Spec.Description != "" {
+		apigatewayVpcLink.Description = in.Spec.Description
 	}
 
 	if in.Spec.Name != "" {

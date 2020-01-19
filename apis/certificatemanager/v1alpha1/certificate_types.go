@@ -25,9 +25,6 @@ import (
 type CertificateSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-domainname
-	DomainName string `json:"domainName" cloudformation:"DomainName,Parameter"`
-
 	// DomainValidationOptions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-domainvalidationoptions
 	DomainValidationOptions []Certificate_DomainValidationOption `json:"domainValidationOptions,omitempty" cloudformation:"DomainValidationOptions"`
 
@@ -36,6 +33,9 @@ type CertificateSpec struct {
 
 	// ValidationMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-validationmethod
 	ValidationMethod string `json:"validationMethod,omitempty" cloudformation:"ValidationMethod,Parameter"`
+
+	// DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-domainname
+	DomainName string `json:"domainName" cloudformation:"DomainName,Parameter"`
 }
 
 // Certificate_DomainValidationOption defines the desired state of CertificateDomainValidationOption

@@ -21,6 +21,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -208,9 +209,9 @@ func (in *GroupOutput) DeepCopy() *GroupOutput {
 func (in *GroupSpec) DeepCopyInto(out *GroupSpec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
-	if in.ManagedPolicyArns != nil {
-		in, out := &in.ManagedPolicyArns, &out.ManagedPolicyArns
-		*out = make([]string, len(*in))
+	if in.ManagedPolicy != nil {
+		in, out := &in.ManagedPolicy, &out.ManagedPolicy
+		*out = make([]metav1alpha1.ObjectReference, len(*in))
 		copy(*out, *in)
 	}
 	if in.Policies != nil {
@@ -450,11 +451,6 @@ func (in *ManagedPolicyOutput) DeepCopy() *ManagedPolicyOutput {
 func (in *ManagedPolicySpec) DeepCopyInto(out *ManagedPolicySpec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
-	if in.Roles != nil {
-		in, out := &in.Roles, &out.Roles
-		*out = make([]string, len(*in))
-		copy(*out, *in)
-	}
 	if in.Users != nil {
 		in, out := &in.Users, &out.Users
 		*out = make([]string, len(*in))
@@ -462,6 +458,11 @@ func (in *ManagedPolicySpec) DeepCopyInto(out *ManagedPolicySpec) {
 	}
 	if in.Groups != nil {
 		in, out := &in.Groups, &out.Groups
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
+	if in.Roles != nil {
+		in, out := &in.Roles, &out.Roles
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
@@ -697,9 +698,9 @@ func (in *RoleSpec) DeepCopyInto(out *RoleSpec) {
 		*out = make([]Role_Policy, len(*in))
 		copy(*out, *in)
 	}
-	if in.ManagedPolicyArns != nil {
-		in, out := &in.ManagedPolicyArns, &out.ManagedPolicyArns
-		*out = make([]string, len(*in))
+	if in.ManagedPolicy != nil {
+		in, out := &in.ManagedPolicy, &out.ManagedPolicy
+		*out = make([]metav1alpha1.ObjectReference, len(*in))
 		copy(*out, *in)
 	}
 }
@@ -940,9 +941,9 @@ func (in *UserSpec) DeepCopyInto(out *UserSpec) {
 		copy(*out, *in)
 	}
 	out.LoginProfile = in.LoginProfile
-	if in.ManagedPolicyArns != nil {
-		in, out := &in.ManagedPolicyArns, &out.ManagedPolicyArns
-		*out = make([]string, len(*in))
+	if in.ManagedPolicy != nil {
+		in, out := &in.ManagedPolicy, &out.ManagedPolicy
+		*out = make([]metav1alpha1.ObjectReference, len(*in))
 		copy(*out, *in)
 	}
 }

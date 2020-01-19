@@ -98,7 +98,7 @@ spec:
                           type: integer
                         rateLimit:
                           description: RateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-ratelimit
-                          type: integer
+                          type: string
                       type: object
                     description: Throttle http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-throttle
                     type: object
@@ -162,7 +162,7 @@ spec:
                   type: integer
                 rateLimit:
                   description: RateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-ratelimit
-                  type: integer
+                  type: string
               type: object
             usagePlanName:
               description: UsagePlanName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-usageplanname

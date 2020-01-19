@@ -25,9 +25,6 @@ import (
 type GatewayResponseSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// ResponseTemplates http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-gatewayresponse.html#cfn-apigateway-gatewayresponse-responsetemplates
-	ResponseTemplates map[string]string `json:"responseTemplates,omitempty" cloudformation:"ResponseTemplates"`
-
 	// ResponseType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-gatewayresponse.html#cfn-apigateway-gatewayresponse-responsetype
 	ResponseType string `json:"responseType" cloudformation:"ResponseType,Parameter"`
 
@@ -39,6 +36,9 @@ type GatewayResponseSpec struct {
 
 	// ResponseParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-gatewayresponse.html#cfn-apigateway-gatewayresponse-responseparameters
 	ResponseParameters map[string]string `json:"responseParameters,omitempty" cloudformation:"ResponseParameters"`
+
+	// ResponseTemplates http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-gatewayresponse.html#cfn-apigateway-gatewayresponse-responsetemplates
+	ResponseTemplates map[string]string `json:"responseTemplates,omitempty" cloudformation:"ResponseTemplates"`
 }
 
 // GatewayResponseStatus defines the observed state of GatewayResponse

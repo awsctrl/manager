@@ -58,14 +58,6 @@ func (in *Account) GetTemplate(client dynamic.Interface) (string, error) {
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayAccountCloudWatchRoleItem := in.Spec.CloudWatchRole.DeepCopy()
 
-	if apigatewayAccountCloudWatchRoleItem.ObjectRef.Kind == "" {
-		apigatewayAccountCloudWatchRoleItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayAccountCloudWatchRoleItem.ObjectRef.APIVersion == "" {
-		apigatewayAccountCloudWatchRoleItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
 	if apigatewayAccountCloudWatchRoleItem.ObjectRef.Namespace == "" {
 		apigatewayAccountCloudWatchRoleItem.ObjectRef.Namespace = in.Namespace
 	}

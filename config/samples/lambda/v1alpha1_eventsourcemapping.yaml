@@ -1,0 +1,8 @@
+apiVersion: lambda.awsctrl.io/v1alpha1
+kind: EventSourceMapping
+metadata:
+  name: eventsourcemapping-sample
+spec:
+  eventSource:
+    arn: arn:aws:sqs:us-west-2:860055033182:lambda-invoke
+  functionName: function-sample

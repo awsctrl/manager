@@ -55,20 +55,20 @@ func (in *RequestValidator) GetTemplate(client dynamic.Interface) (string, error
 
 	apigatewayRequestValidator := &apigateway.RequestValidator{}
 
+	if in.Spec.ValidateRequestBody || !in.Spec.ValidateRequestBody {
+		apigatewayRequestValidator.ValidateRequestBody = in.Spec.ValidateRequestBody
+	}
+
+	if in.Spec.ValidateRequestParameters || !in.Spec.ValidateRequestParameters {
+		apigatewayRequestValidator.ValidateRequestParameters = in.Spec.ValidateRequestParameters
+	}
+
 	if in.Spec.Name != "" {
 		apigatewayRequestValidator.Name = in.Spec.Name
 	}
 
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayRequestValidatorRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayRequestValidatorRestApiItem.ObjectRef.Kind == "" {
-		apigatewayRequestValidatorRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayRequestValidatorRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayRequestValidatorRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
 
 	if apigatewayRequestValidatorRestApiItem.ObjectRef.Namespace == "" {
 		apigatewayRequestValidatorRestApiItem.ObjectRef.Namespace = in.Namespace
@@ -82,14 +82,6 @@ func (in *RequestValidator) GetTemplate(client dynamic.Interface) (string, error
 
 	if restApiId != "" {
 		apigatewayRequestValidator.RestApiId = restApiId
-	}
-
-	if in.Spec.ValidateRequestBody || !in.Spec.ValidateRequestBody {
-		apigatewayRequestValidator.ValidateRequestBody = in.Spec.ValidateRequestBody
-	}
-
-	if in.Spec.ValidateRequestParameters || !in.Spec.ValidateRequestParameters {
-		apigatewayRequestValidator.ValidateRequestParameters = in.Spec.ValidateRequestParameters
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

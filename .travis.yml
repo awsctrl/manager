@@ -18,8 +18,9 @@ env:
   - TEST_SUITE=e2e- FLAG=cloud9
   - TEST_SUITE=e2e- FLAG=cloudformation
   - TEST_SUITE=e2e- FLAG=ecr
-  - TEST_SUITE=e2e- FLAG=route53
   - TEST_SUITE=e2e- FLAG=iam
+  - TEST_SUITE=e2e- FLAG=lambda
+  - TEST_SUITE=e2e- FLAG=route53
 
 install: true
 
