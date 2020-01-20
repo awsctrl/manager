@@ -56,6 +56,10 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 
 	apigatewayGatewayResponse := &apigateway.GatewayResponse{}
 
+	if !reflect.DeepEqual(in.Spec.ResponseParameters, map[string]string{}) {
+		apigatewayGatewayResponse.ResponseParameters = in.Spec.ResponseParameters
+	}
+
 	if !reflect.DeepEqual(in.Spec.ResponseTemplates, map[string]string{}) {
 		apigatewayGatewayResponse.ResponseTemplates = in.Spec.ResponseTemplates
 	}
@@ -66,14 +70,6 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayGatewayResponseRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayGatewayResponseRestApiItem.ObjectRef.Kind == "" {
-		apigatewayGatewayResponseRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayGatewayResponseRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayGatewayResponseRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
 
 	if apigatewayGatewayResponseRestApiItem.ObjectRef.Namespace == "" {
 		apigatewayGatewayResponseRestApiItem.ObjectRef.Namespace = in.Namespace
@@ -91,10 +87,6 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 
 	if in.Spec.StatusCode != "" {
 		apigatewayGatewayResponse.StatusCode = in.Spec.StatusCode
-	}
-
-	if !reflect.DeepEqual(in.Spec.ResponseParameters, map[string]string{}) {
-		apigatewayGatewayResponse.ResponseParameters = in.Spec.ResponseParameters
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

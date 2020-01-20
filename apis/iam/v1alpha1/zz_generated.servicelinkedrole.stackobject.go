@@ -55,16 +55,16 @@ func (in *ServiceLinkedRole) GetTemplate(client dynamic.Interface) (string, erro
 
 	iamServiceLinkedRole := &iam.ServiceLinkedRole{}
 
+	if in.Spec.AWSServiceName != "" {
+		iamServiceLinkedRole.AWSServiceName = in.Spec.AWSServiceName
+	}
+
 	if in.Spec.CustomSuffix != "" {
 		iamServiceLinkedRole.CustomSuffix = in.Spec.CustomSuffix
 	}
 
 	if in.Spec.Description != "" {
 		iamServiceLinkedRole.Description = in.Spec.Description
-	}
-
-	if in.Spec.AWSServiceName != "" {
-		iamServiceLinkedRole.AWSServiceName = in.Spec.AWSServiceName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

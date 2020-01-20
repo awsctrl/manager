@@ -52,9 +52,6 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("DomainName"),
 		},
-		"RegionalHostedZoneId": map[string]interface{}{
-			"Value": cloudformation.GetAtt("DomainName", "RegionalHostedZoneId"),
-		},
 		"DistributionDomainName": map[string]interface{}{
 			"Value": cloudformation.GetAtt("DomainName", "DistributionDomainName"),
 		},
@@ -64,60 +61,16 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 		"RegionalDomainName": map[string]interface{}{
 			"Value": cloudformation.GetAtt("DomainName", "RegionalDomainName"),
 		},
+		"RegionalHostedZoneId": map[string]interface{}{
+			"Value": cloudformation.GetAtt("DomainName", "RegionalHostedZoneId"),
+		},
 	}
 
 	apigatewayDomainName := &apigateway.DomainName{}
 
-	if !reflect.DeepEqual(in.Spec.EndpointConfiguration, DomainName_EndpointConfiguration{}) {
-		apigatewayDomainNameEndpointConfiguration := apigateway.DomainName_EndpointConfiguration{}
-
-		if len(in.Spec.EndpointConfiguration.Types) > 0 {
-			apigatewayDomainNameEndpointConfiguration.Types = in.Spec.EndpointConfiguration.Types
-		}
-
-		apigatewayDomainName.EndpointConfiguration = &apigatewayDomainNameEndpointConfiguration
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayDomainNameRegionalCertificateItem := in.Spec.RegionalCertificate.DeepCopy()
-
-	if apigatewayDomainNameRegionalCertificateItem.ObjectRef.Kind == "" {
-		apigatewayDomainNameRegionalCertificateItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayDomainNameRegionalCertificateItem.ObjectRef.APIVersion == "" {
-		apigatewayDomainNameRegionalCertificateItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if apigatewayDomainNameRegionalCertificateItem.ObjectRef.Namespace == "" {
-		apigatewayDomainNameRegionalCertificateItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RegionalCertificate = *apigatewayDomainNameRegionalCertificateItem
-	regionalCertificateArn, err := in.Spec.RegionalCertificate.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if regionalCertificateArn != "" {
-		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
-	}
-
-	if in.Spec.SecurityPolicy != "" {
-		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
-	}
-
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayDomainNameCertificateItem := in.Spec.Certificate.DeepCopy()
-
-	if apigatewayDomainNameCertificateItem.ObjectRef.Kind == "" {
-		apigatewayDomainNameCertificateItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayDomainNameCertificateItem.ObjectRef.APIVersion == "" {
-		apigatewayDomainNameCertificateItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
 
 	if apigatewayDomainNameCertificateItem.ObjectRef.Namespace == "" {
 		apigatewayDomainNameCertificateItem.ObjectRef.Namespace = in.Namespace
@@ -135,6 +88,37 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.DomainName != "" {
 		apigatewayDomainName.DomainName = in.Spec.DomainName
+	}
+
+	if !reflect.DeepEqual(in.Spec.EndpointConfiguration, DomainName_EndpointConfiguration{}) {
+		apigatewayDomainNameEndpointConfiguration := apigateway.DomainName_EndpointConfiguration{}
+
+		if len(in.Spec.EndpointConfiguration.Types) > 0 {
+			apigatewayDomainNameEndpointConfiguration.Types = in.Spec.EndpointConfiguration.Types
+		}
+
+		apigatewayDomainName.EndpointConfiguration = &apigatewayDomainNameEndpointConfiguration
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayDomainNameRegionalCertificateItem := in.Spec.RegionalCertificate.DeepCopy()
+
+	if apigatewayDomainNameRegionalCertificateItem.ObjectRef.Namespace == "" {
+		apigatewayDomainNameRegionalCertificateItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RegionalCertificate = *apigatewayDomainNameRegionalCertificateItem
+	regionalCertificateArn, err := in.Spec.RegionalCertificate.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if regionalCertificateArn != "" {
+		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
+	}
+
+	if in.Spec.SecurityPolicy != "" {
+		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

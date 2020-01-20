@@ -58,14 +58,6 @@ func (in *UsagePlanKey) GetTemplate(client dynamic.Interface) (string, error) {
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayUsagePlanKeyKeyItem := in.Spec.Key.DeepCopy()
 
-	if apigatewayUsagePlanKeyKeyItem.ObjectRef.Kind == "" {
-		apigatewayUsagePlanKeyKeyItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayUsagePlanKeyKeyItem.ObjectRef.APIVersion == "" {
-		apigatewayUsagePlanKeyKeyItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
 	if apigatewayUsagePlanKeyKeyItem.ObjectRef.Namespace == "" {
 		apigatewayUsagePlanKeyKeyItem.ObjectRef.Namespace = in.Namespace
 	}
@@ -86,14 +78,6 @@ func (in *UsagePlanKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayUsagePlanKeyUsagePlanItem := in.Spec.UsagePlan.DeepCopy()
-
-	if apigatewayUsagePlanKeyUsagePlanItem.ObjectRef.Kind == "" {
-		apigatewayUsagePlanKeyUsagePlanItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayUsagePlanKeyUsagePlanItem.ObjectRef.APIVersion == "" {
-		apigatewayUsagePlanKeyUsagePlanItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
 
 	if apigatewayUsagePlanKeyUsagePlanItem.ObjectRef.Namespace == "" {
 		apigatewayUsagePlanKeyUsagePlanItem.ObjectRef.Namespace = in.Namespace

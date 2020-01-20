@@ -1,0 +1,14 @@
+apiVersion: lambda.awsctrl.io/v1alpha1
+kind: EventInvokeConfig
+metadata:
+  name: eventinvokeconfig-sample
+spec: 
+  destinationConfig:
+    onFailure:
+      destination: arn:aws:sqs:us-west-2:860055033182:lambda-invoke
+    onSuccess:
+      destination: arn:aws:sqs:us-west-2:860055033182:lambda-invoke
+  functionName: function-sample
+  maximumEventAgeInSeconds: 300
+  maximumRetryAttempts: 1
+  qualifier: "5"

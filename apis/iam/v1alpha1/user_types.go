@@ -25,6 +25,12 @@ import (
 type UserSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-path
+	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
+
+	// PermissionsBoundary http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-permissionsboundary
+	PermissionsBoundary string `json:"permissionsBoundary,omitempty" cloudformation:"PermissionsBoundary,Parameter"`
+
 	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-policies
 	Policies []User_Policy `json:"policies,omitempty" cloudformation:"Policies"`
 
@@ -37,14 +43,8 @@ type UserSpec struct {
 	// LoginProfile http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-loginprofile
 	LoginProfile User_LoginProfile `json:"loginProfile,omitempty" cloudformation:"LoginProfile"`
 
-	// ManagedPolicyArns http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-managepolicyarns
-	ManagedPolicyArns []string `json:"managedPolicyArns,omitempty" cloudformation:"ManagedPolicyArns"`
-
-	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-path
-	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
-
-	// PermissionsBoundary http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-permissionsboundary
-	PermissionsBoundary string `json:"permissionsBoundary,omitempty" cloudformation:"PermissionsBoundary,Parameter"`
+	// ManagedPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-managepolicyarns
+	ManagedPolicy []metav1alpha1.ObjectReference `json:"managedPolicy,omitempty" cloudformation:"ManagedPolicyArns"`
 }
 
 // User_Policy defines the desired state of UserPolicy

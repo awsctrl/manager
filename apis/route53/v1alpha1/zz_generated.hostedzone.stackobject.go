@@ -56,6 +56,37 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 
 	route53HostedZone := &route53.HostedZone{}
 
+	route53HostedZoneVPCs := []route53.HostedZone_VPC{}
+
+	for _, item := range in.Spec.VPCs {
+		route53HostedZoneVPC := route53.HostedZone_VPC{}
+
+		// TODO(christopherhein) move these to a defaulter
+		route53HostedZoneVPCVPCItem := item.VPC.DeepCopy()
+
+		if route53HostedZoneVPCVPCItem.ObjectRef.Namespace == "" {
+			route53HostedZoneVPCVPCItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		item.VPC = *route53HostedZoneVPCVPCItem
+		vPCId, err := item.VPC.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if vPCId != "" {
+			route53HostedZoneVPC.VPCId = vPCId
+		}
+
+		if item.VPCRegion != "" {
+			route53HostedZoneVPC.VPCRegion = item.VPCRegion
+		}
+
+	}
+
+	if len(route53HostedZoneVPCs) > 0 {
+		route53HostedZone.VPCs = route53HostedZoneVPCs
+	}
 	if !reflect.DeepEqual(in.Spec.HostedZoneConfig, HostedZone_HostedZoneConfig{}) {
 		route53HostedZoneHostedZoneConfig := route53.HostedZone_HostedZoneConfig{}
 
@@ -94,14 +125,6 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 		// TODO(christopherhein) move these to a defaulter
 		route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem := in.Spec.QueryLoggingConfig.CloudWatchLogsLogGroup.DeepCopy()
 
-		if route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem.ObjectRef.Kind == "" {
-			route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem.ObjectRef.Kind = "Deployment"
-		}
-
-		if route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem.ObjectRef.APIVersion == "" {
-			route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-		}
-
 		if route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem.ObjectRef.Namespace == "" {
 			route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem.ObjectRef.Namespace = in.Namespace
 		}
@@ -117,46 +140,6 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		route53HostedZone.QueryLoggingConfig = &route53HostedZoneQueryLoggingConfig
-	}
-
-	route53HostedZoneVPCs := []route53.HostedZone_VPC{}
-
-	for _, item := range in.Spec.VPCs {
-		route53HostedZoneVPC := route53.HostedZone_VPC{}
-
-		if item.VPCRegion != "" {
-			route53HostedZoneVPC.VPCRegion = item.VPCRegion
-		}
-
-		// TODO(christopherhein) move these to a defaulter
-		route53HostedZoneVPCVPCItem := item.VPC.DeepCopy()
-
-		if route53HostedZoneVPCVPCItem.ObjectRef.Kind == "" {
-			route53HostedZoneVPCVPCItem.ObjectRef.Kind = "Deployment"
-		}
-
-		if route53HostedZoneVPCVPCItem.ObjectRef.APIVersion == "" {
-			route53HostedZoneVPCVPCItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-		}
-
-		if route53HostedZoneVPCVPCItem.ObjectRef.Namespace == "" {
-			route53HostedZoneVPCVPCItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		item.VPC = *route53HostedZoneVPCVPCItem
-		vPCId, err := item.VPC.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if vPCId != "" {
-			route53HostedZoneVPC.VPCId = vPCId
-		}
-
-	}
-
-	if len(route53HostedZoneVPCs) > 0 {
-		route53HostedZone.VPCs = route53HostedZoneVPCs
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

@@ -51,52 +51,48 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("EnvironmentEC2"),
 		},
-		"Arn": map[string]interface{}{
-			"Value": cloudformation.GetAtt("EnvironmentEC2", "Arn"),
-		},
 		"Name": map[string]interface{}{
 			"Value": cloudformation.GetAtt("EnvironmentEC2", "Name"),
+		},
+		"Arn": map[string]interface{}{
+			"Value": cloudformation.GetAtt("EnvironmentEC2", "Arn"),
 		},
 	}
 
 	cloud9EnvironmentEC2 := &cloud9.EnvironmentEC2{}
 
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.AutomaticStopTimeMinutes != cloud9EnvironmentEC2.AutomaticStopTimeMinutes {
 		cloud9EnvironmentEC2.AutomaticStopTimeMinutes = in.Spec.AutomaticStopTimeMinutes
 	}
 
-	// TODO(christopherhein) move these to a defaulter
-	cloud9EnvironmentEC2SubnetItem := in.Spec.Subnet.DeepCopy()
-
-	if cloud9EnvironmentEC2SubnetItem.ObjectRef.Kind == "" {
-		cloud9EnvironmentEC2SubnetItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if cloud9EnvironmentEC2SubnetItem.ObjectRef.APIVersion == "" {
-		cloud9EnvironmentEC2SubnetItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if cloud9EnvironmentEC2SubnetItem.ObjectRef.Namespace == "" {
-		cloud9EnvironmentEC2SubnetItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.Subnet = *cloud9EnvironmentEC2SubnetItem
-	subnetId, err := in.Spec.Subnet.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if subnetId != "" {
-		cloud9EnvironmentEC2.SubnetId = subnetId
+	if in.Spec.Description != "" {
+		cloud9EnvironmentEC2.Description = in.Spec.Description
 	}
 
 	if in.Spec.InstanceType != "" {
 		cloud9EnvironmentEC2.InstanceType = in.Spec.InstanceType
 	}
 
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.Name != "" {
 		cloud9EnvironmentEC2.Name = in.Spec.Name
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	cloud9EnvironmentEC2OwnerItem := in.Spec.Owner.DeepCopy()
+
+	if cloud9EnvironmentEC2OwnerItem.ObjectRef.Namespace == "" {
+		cloud9EnvironmentEC2OwnerItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.Owner = *cloud9EnvironmentEC2OwnerItem
+	ownerArn, err := in.Spec.Owner.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if ownerArn != "" {
+		cloud9EnvironmentEC2.OwnerArn = ownerArn
 	}
 
 	cloud9EnvironmentEC2Repositories := []cloud9.EnvironmentEC2_Repository{}
@@ -118,32 +114,20 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 		cloud9EnvironmentEC2.Repositories = cloud9EnvironmentEC2Repositories
 	}
 	// TODO(christopherhein) move these to a defaulter
-	cloud9EnvironmentEC2OwnerItem := in.Spec.Owner.DeepCopy()
+	cloud9EnvironmentEC2SubnetItem := in.Spec.Subnet.DeepCopy()
 
-	if cloud9EnvironmentEC2OwnerItem.ObjectRef.Kind == "" {
-		cloud9EnvironmentEC2OwnerItem.ObjectRef.Kind = "Deployment"
+	if cloud9EnvironmentEC2SubnetItem.ObjectRef.Namespace == "" {
+		cloud9EnvironmentEC2SubnetItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	if cloud9EnvironmentEC2OwnerItem.ObjectRef.APIVersion == "" {
-		cloud9EnvironmentEC2OwnerItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if cloud9EnvironmentEC2OwnerItem.ObjectRef.Namespace == "" {
-		cloud9EnvironmentEC2OwnerItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.Owner = *cloud9EnvironmentEC2OwnerItem
-	ownerArn, err := in.Spec.Owner.String(client)
+	in.Spec.Subnet = *cloud9EnvironmentEC2SubnetItem
+	subnetId, err := in.Spec.Subnet.String(client)
 	if err != nil {
 		return "", err
 	}
 
-	if ownerArn != "" {
-		cloud9EnvironmentEC2.OwnerArn = ownerArn
-	}
-
-	if in.Spec.Description != "" {
-		cloud9EnvironmentEC2.Description = in.Spec.Description
+	if subnetId != "" {
+		cloud9EnvironmentEC2.SubnetId = subnetId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

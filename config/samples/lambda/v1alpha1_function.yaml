@@ -1,0 +1,25 @@
+apiVersion: lambda.awsctrl.io/v1alpha1
+kind: Function
+metadata:
+  name: function-sample
+spec:
+  functionName: function-sample
+  handler: index.handler
+  role: arn:aws:iam::860055033182:role/lambda-role
+  runtime: nodejs12.x
+  # vpcConfig:
+    # securityGroups:
+    # - kind: SecurityGroup
+    #   apiVersion: vpc.awsctrl.io/v1alpha1
+    #   name: securitygroup-sample
+    #   key: ResourceRef
+  code:
+    zipFile: |
+      exports.handler = function(event){
+          console.log(JSON.stringify(event, null, 2))
+          const response = {
+              statusCode: 200,
+              body: JSON.stringify('Hello again from Lambda!')
+          }
+          return response
+      }

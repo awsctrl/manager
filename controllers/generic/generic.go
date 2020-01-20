@@ -23,6 +23,7 @@ import (
 
 	"github.com/go-logr/logr"
 	"go.awsctrl.io/manager/meta"
+	apierrs "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/dynamic"
@@ -91,7 +92,7 @@ func (r *generic) addStack(ctx context.Context, instance meta.StackObject) error
 		return err
 	}
 
-	if err := r.Create(ctx, stack); err != nil {
+	if err := r.Create(ctx, stack); err != nil && !apierrs.IsAlreadyExists(err) {
 		return err
 	}
 

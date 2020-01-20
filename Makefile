@@ -42,8 +42,9 @@ test-e2e: generate fmt vet manifests
 	@$(MAKE) test-e2e-cloud9
 	@$(MAKE) test-e2e-cloudformation
 	@$(MAKE) test-e2e-ecr
-	@$(MAKE) test-e2e-route53
 	@$(MAKE) test-e2e-iam
+	@$(MAKE) test-e2e-lambda
+	@$(MAKE) test-e2e-route53
 
 
 # Build manager binary
@@ -51,7 +52,7 @@ manager: generate fmt vet
 	go build -o bin/awsctrl main.go
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
-run: generate fmt vet manifests
+run: generate fmt vet manifests install
 	go run ./main.go start
 
 # Install CRDs into a cluster

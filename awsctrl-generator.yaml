@@ -72,7 +72,7 @@ spec:
   # - kinesisfirehose
   # - kms
   # - lakeformation
-  # - lambda
+  - lambda
   # - logs
   # - managedblockchain
   # - mediaconvert

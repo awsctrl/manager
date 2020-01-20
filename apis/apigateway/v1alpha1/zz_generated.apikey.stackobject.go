@@ -55,31 +55,6 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayApiKey := &apigateway.ApiKey{}
 
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayApiKeyCustomerItem := in.Spec.Customer.DeepCopy()
-
-	if apigatewayApiKeyCustomerItem.ObjectRef.Kind == "" {
-		apigatewayApiKeyCustomerItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayApiKeyCustomerItem.ObjectRef.APIVersion == "" {
-		apigatewayApiKeyCustomerItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
-	if apigatewayApiKeyCustomerItem.ObjectRef.Namespace == "" {
-		apigatewayApiKeyCustomerItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.Customer = *apigatewayApiKeyCustomerItem
-	customerId, err := in.Spec.Customer.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if customerId != "" {
-		apigatewayApiKey.CustomerId = customerId
-	}
-
 	if in.Spec.Description != "" {
 		apigatewayApiKey.Description = in.Spec.Description
 	}
@@ -103,14 +78,6 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 		// TODO(christopherhein) move these to a defaulter
 		apigatewayApiKeyStageKeyRestApiItem := item.RestApi.DeepCopy()
-
-		if apigatewayApiKeyStageKeyRestApiItem.ObjectRef.Kind == "" {
-			apigatewayApiKeyStageKeyRestApiItem.ObjectRef.Kind = "Deployment"
-		}
-
-		if apigatewayApiKeyStageKeyRestApiItem.ObjectRef.APIVersion == "" {
-			apigatewayApiKeyStageKeyRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-		}
 
 		if apigatewayApiKeyStageKeyRestApiItem.ObjectRef.Namespace == "" {
 			apigatewayApiKeyStageKeyRestApiItem.ObjectRef.Namespace = in.Namespace
@@ -138,6 +105,23 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.Value != "" {
 		apigatewayApiKey.Value = in.Spec.Value
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayApiKeyCustomerItem := in.Spec.Customer.DeepCopy()
+
+	if apigatewayApiKeyCustomerItem.ObjectRef.Namespace == "" {
+		apigatewayApiKeyCustomerItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.Customer = *apigatewayApiKeyCustomerItem
+	customerId, err := in.Spec.Customer.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if customerId != "" {
+		apigatewayApiKey.CustomerId = customerId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

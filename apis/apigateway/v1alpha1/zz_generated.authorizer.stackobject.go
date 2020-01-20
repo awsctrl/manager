@@ -55,40 +55,20 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayAuthorizer := &apigateway.Authorizer{}
 
-	if in.Spec.AuthorizerCredentials != "" {
-		apigatewayAuthorizer.AuthorizerCredentials = in.Spec.AuthorizerCredentials
+	if in.Spec.IdentitySource != "" {
+		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
 	}
 
-	if in.Spec.AuthType != "" {
-		apigatewayAuthorizer.AuthType = in.Spec.AuthType
-	}
-
-	if in.Spec.AuthorizerResultTtlInSeconds != apigatewayAuthorizer.AuthorizerResultTtlInSeconds {
-		apigatewayAuthorizer.AuthorizerResultTtlInSeconds = in.Spec.AuthorizerResultTtlInSeconds
-	}
-
-	if in.Spec.Type != "" {
-		apigatewayAuthorizer.Type = in.Spec.Type
+	if in.Spec.IdentityValidationExpression != "" {
+		apigatewayAuthorizer.IdentityValidationExpression = in.Spec.IdentityValidationExpression
 	}
 
 	if in.Spec.Name != "" {
 		apigatewayAuthorizer.Name = in.Spec.Name
 	}
 
-	if len(in.Spec.ProviderARNs) > 0 {
-		apigatewayAuthorizer.ProviderARNs = in.Spec.ProviderARNs
-	}
-
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayAuthorizerRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayAuthorizerRestApiItem.ObjectRef.Kind == "" {
-		apigatewayAuthorizerRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayAuthorizerRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayAuthorizerRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
 
 	if apigatewayAuthorizerRestApiItem.ObjectRef.Namespace == "" {
 		apigatewayAuthorizerRestApiItem.ObjectRef.Namespace = in.Namespace
@@ -104,16 +84,28 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayAuthorizer.RestApiId = restApiId
 	}
 
+	if in.Spec.AuthType != "" {
+		apigatewayAuthorizer.AuthType = in.Spec.AuthType
+	}
+
+	if in.Spec.Type != "" {
+		apigatewayAuthorizer.Type = in.Spec.Type
+	}
+
+	if in.Spec.AuthorizerCredentials != "" {
+		apigatewayAuthorizer.AuthorizerCredentials = in.Spec.AuthorizerCredentials
+	}
+
+	if in.Spec.AuthorizerResultTtlInSeconds != apigatewayAuthorizer.AuthorizerResultTtlInSeconds {
+		apigatewayAuthorizer.AuthorizerResultTtlInSeconds = in.Spec.AuthorizerResultTtlInSeconds
+	}
+
 	if in.Spec.AuthorizerUri != "" {
 		apigatewayAuthorizer.AuthorizerUri = in.Spec.AuthorizerUri
 	}
 
-	if in.Spec.IdentitySource != "" {
-		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
-	}
-
-	if in.Spec.IdentityValidationExpression != "" {
-		apigatewayAuthorizer.IdentityValidationExpression = in.Spec.IdentityValidationExpression
+	if len(in.Spec.ProviderARNs) > 0 {
+		apigatewayAuthorizer.ProviderARNs = in.Spec.ProviderARNs
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

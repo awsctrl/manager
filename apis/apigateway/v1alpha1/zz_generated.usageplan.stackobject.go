@@ -19,6 +19,7 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
@@ -56,6 +57,25 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayUsagePlan := &apigateway.UsagePlan{}
 
+	if !reflect.DeepEqual(in.Spec.Quota, UsagePlan_QuotaSettings{}) {
+		apigatewayUsagePlanQuotaSettings := apigateway.UsagePlan_QuotaSettings{}
+
+		if in.Spec.Quota.Limit != apigatewayUsagePlanQuotaSettings.Limit {
+			apigatewayUsagePlanQuotaSettings.Limit = in.Spec.Quota.Limit
+		}
+
+		if in.Spec.Quota.Offset != apigatewayUsagePlanQuotaSettings.Offset {
+			apigatewayUsagePlanQuotaSettings.Offset = in.Spec.Quota.Offset
+		}
+
+		if in.Spec.Quota.Period != "" {
+			apigatewayUsagePlanQuotaSettings.Period = in.Spec.Quota.Period
+		}
+
+		apigatewayUsagePlan.Quota = &apigatewayUsagePlanQuotaSettings
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if !reflect.DeepEqual(in.Spec.Throttle, UsagePlan_ThrottleSettings{}) {
 		apigatewayUsagePlanThrottleSettings := apigateway.UsagePlan_ThrottleSettings{}
 
@@ -63,8 +83,9 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayUsagePlanThrottleSettings.BurstLimit = in.Spec.Throttle.BurstLimit
 		}
 
-		if float64(in.Spec.Throttle.RateLimit) != apigatewayUsagePlanThrottleSettings.RateLimit {
-			apigatewayUsagePlanThrottleSettings.RateLimit = float64(in.Spec.Throttle.RateLimit)
+		if f, _ := strconv.ParseFloat(in.Spec.Throttle.RateLimit, 64); f != apigatewayUsagePlanThrottleSettings.RateLimit {
+			f, _ := strconv.ParseFloat(in.Spec.Throttle.RateLimit, 64)
+			apigatewayUsagePlanThrottleSettings.RateLimit = f
 		}
 
 		apigatewayUsagePlan.Throttle = &apigatewayUsagePlanThrottleSettings
@@ -86,8 +107,9 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 					apigatewayUsagePlanApiStageThrottleSettings.BurstLimit = prop.BurstLimit
 				}
 
-				if float64(prop.RateLimit) != apigatewayUsagePlanApiStageThrottleSettings.RateLimit {
-					apigatewayUsagePlanApiStageThrottleSettings.RateLimit = float64(prop.RateLimit)
+				if f, _ := strconv.ParseFloat(prop.RateLimit, 64); f != apigatewayUsagePlanApiStageThrottleSettings.RateLimit {
+					f, _ := strconv.ParseFloat(prop.RateLimit, 64)
+					apigatewayUsagePlanApiStageThrottleSettings.RateLimit = f
 				}
 
 				apigatewayUsagePlanApiStage.Throttle[key] = apigatewayUsagePlanApiStageThrottleSettings
@@ -96,14 +118,6 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 
 		// TODO(christopherhein) move these to a defaulter
 		apigatewayUsagePlanApiStageApiItem := item.Api.DeepCopy()
-
-		if apigatewayUsagePlanApiStageApiItem.ObjectRef.Kind == "" {
-			apigatewayUsagePlanApiStageApiItem.ObjectRef.Kind = "Deployment"
-		}
-
-		if apigatewayUsagePlanApiStageApiItem.ObjectRef.APIVersion == "" {
-			apigatewayUsagePlanApiStageApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-		}
 
 		if apigatewayUsagePlanApiStageApiItem.ObjectRef.Namespace == "" {
 			apigatewayUsagePlanApiStageApiItem.ObjectRef.Namespace = in.Namespace
@@ -131,26 +145,6 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 	if in.Spec.Description != "" {
 		apigatewayUsagePlan.Description = in.Spec.Description
 	}
-
-	if !reflect.DeepEqual(in.Spec.Quota, UsagePlan_QuotaSettings{}) {
-		apigatewayUsagePlanQuotaSettings := apigateway.UsagePlan_QuotaSettings{}
-
-		if in.Spec.Quota.Limit != apigatewayUsagePlanQuotaSettings.Limit {
-			apigatewayUsagePlanQuotaSettings.Limit = in.Spec.Quota.Limit
-		}
-
-		if in.Spec.Quota.Offset != apigatewayUsagePlanQuotaSettings.Offset {
-			apigatewayUsagePlanQuotaSettings.Offset = in.Spec.Quota.Offset
-		}
-
-		if in.Spec.Quota.Period != "" {
-			apigatewayUsagePlanQuotaSettings.Period = in.Spec.Quota.Period
-		}
-
-		apigatewayUsagePlan.Quota = &apigatewayUsagePlanQuotaSettings
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 
 	template.Resources = map[string]cloudformation.Resource{
 		"UsagePlan": apigatewayUsagePlan,

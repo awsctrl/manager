@@ -62,14 +62,6 @@ func (in *BasePathMapping) GetTemplate(client dynamic.Interface) (string, error)
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayBasePathMappingRestApiItem := in.Spec.RestApi.DeepCopy()
 
-	if apigatewayBasePathMappingRestApiItem.ObjectRef.Kind == "" {
-		apigatewayBasePathMappingRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayBasePathMappingRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayBasePathMappingRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
 	if apigatewayBasePathMappingRestApiItem.ObjectRef.Namespace == "" {
 		apigatewayBasePathMappingRestApiItem.ObjectRef.Namespace = in.Namespace
 	}

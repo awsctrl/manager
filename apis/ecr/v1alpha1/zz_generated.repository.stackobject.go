@@ -71,14 +71,6 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 		// TODO(christopherhein) move these to a defaulter
 		ecrRepositoryLifecyclePolicyRegistryItem := in.Spec.LifecyclePolicy.Registry.DeepCopy()
 
-		if ecrRepositoryLifecyclePolicyRegistryItem.ObjectRef.Kind == "" {
-			ecrRepositoryLifecyclePolicyRegistryItem.ObjectRef.Kind = "Deployment"
-		}
-
-		if ecrRepositoryLifecyclePolicyRegistryItem.ObjectRef.APIVersion == "" {
-			ecrRepositoryLifecyclePolicyRegistryItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-		}
-
 		if ecrRepositoryLifecyclePolicyRegistryItem.ObjectRef.Namespace == "" {
 			ecrRepositoryLifecyclePolicyRegistryItem.ObjectRef.Namespace = in.Namespace
 		}

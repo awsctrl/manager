@@ -1,0 +1,315 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.2.4
+  creationTimestamp: null
+  name: functions.lambda.awsctrl.io
+spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.status
+    description: status of the stack
+    name: Status
+    type: string
+  - JSONPath: .status.message
+    description: reason for the stack status
+    name: Message
+    priority: 1
+    type: string
+  - JSONPath: .status.stackID
+    description: CloudFormation Stack ID
+    name: StackID
+    priority: 2
+    type: string
+  group: lambda.awsctrl.io
+  names:
+    categories:
+    - aws
+    - lambda
+    kind: Function
+    listKind: FunctionList
+    plural: functions
+    singular: function
+  scope: Namespaced
+  subresources:
+    status: {}
+  validation:
+    openAPIV3Schema:
+      description: Function is the Schema for the lambda Function API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: FunctionSpec defines the desired state of Function
+          properties:
+            capabilities:
+              description: Capabilities In some cases, you must explicity acknowledge
+                that your stack template contains certain capabilities in order for
+                AWS CloudFormation to create the stack.
+              items:
+                type: string
+              type: array
+            code:
+              description: Code http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-code
+              properties:
+                s3Bucket:
+                  description: S3Bucket http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-s3bucket
+                  type: string
+                s3Key:
+                  description: S3Key http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-s3key
+                  type: string
+                s3ObjectVersion:
+                  description: S3ObjectVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-s3objectversion
+                  type: string
+                zipFile:
+                  description: ZipFile http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-zipfile
+                  type: string
+              type: object
+            deadLetterConfig:
+              description: DeadLetterConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-deadletterconfig
+              properties:
+                target:
+                  description: Target http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-deadletterconfig.html#cfn-lambda-function-deadletterconfig-targetarn
+                  properties:
+                    apiVersion:
+                      description: API version of the referent.
+                      type: string
+                    arn:
+                      description: Arn is used if the object expects an Arn
+                      type: string
+                    id:
+                      description: Id is used if the object expects an ID like Security
+                        groups and vpcs
+                      type: string
+                    key:
+                      description: Key of the referent.
+                      type: string
+                    kind:
+                      description: Kind of the referent.
+                      type: string
+                    name:
+                      description: Name of the referent.
+                      type: string
+                    namespace:
+                      description: Namespace of the referent.
+                      type: string
+                  type: object
+              type: object
+            description:
+              description: Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-description
+              type: string
+            environment:
+              description: Environment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-environment
+              properties:
+                variables:
+                  additionalProperties:
+                    type: string
+                  description: Variables http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-environment.html#cfn-lambda-function-environment-variables
+                  type: object
+              type: object
+            functionName:
+              description: FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-functionname
+              type: string
+            handler:
+              description: Handler http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-handler
+              type: string
+            kmsKey:
+              description: KmsKey http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-kmskeyarn
+              properties:
+                apiVersion:
+                  description: API version of the referent.
+                  type: string
+                arn:
+                  description: Arn is used if the object expects an Arn
+                  type: string
+                id:
+                  description: Id is used if the object expects an ID like Security
+                    groups and vpcs
+                  type: string
+                key:
+                  description: Key of the referent.
+                  type: string
+                kind:
+                  description: Kind of the referent.
+                  type: string
+                name:
+                  description: Name of the referent.
+                  type: string
+                namespace:
+                  description: Namespace of the referent.
+                  type: string
+              type: object
+            layers:
+              description: Layers http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-layers
+              items:
+                type: string
+              type: array
+            memorySize:
+              description: MemorySize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-memorysize
+              type: integer
+            notificationARNs:
+              description: NotificationARNs the Simple Notification Service (SNS)
+                topic ARNs to publish stack related events.
+              items:
+                type: string
+              type: array
+            onFailure:
+              description: 'OnFailure determines what action will be taken if stack
+                creation fails. This must be one of: DO_NOTHING, ROLLBACK, or DELETE.'
+              type: string
+            region:
+              type: string
+            reservedConcurrentExecutions:
+              description: ReservedConcurrentExecutions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-reservedconcurrentexecutions
+              type: integer
+            role:
+              description: Role http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-role
+              type: string
+            runtime:
+              description: Runtime http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-runtime
+              type: string
+            stackName:
+              type: string
+            tags:
+              additionalProperties:
+                type: string
+              description: Tags key-value pairs to associate with this stack. AWS
+                CloudFormation also propagates these tags to the resources created
+                in the stack.
+              type: object
+            terminationProtection:
+              description: TerminationProtection whether to enable termination protection
+                on the specified stack. If a user attempts to delete a stack with
+                termination protection enabled, the operation fails and the stack
+                remains unchanged.
+              type: boolean
+            timeout:
+              description: Timeout http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-timeout
+              type: integer
+            tracingConfig:
+              description: TracingConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-tracingconfig
+              properties:
+                mode:
+                  description: Mode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-tracingconfig.html#cfn-lambda-function-tracingconfig-mode
+                  type: string
+              type: object
+            vpcConfig:
+              description: VpcConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-vpcconfig
+              properties:
+                securityGroup:
+                  description: SecurityGroup http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-securitygroupids
+                  items:
+                    description: ObjectReference contains information about how
+                    properties:
+                      apiVersion:
+                        description: API version of the referent.
+                        type: string
+                      arn:
+                        description: Arn is used if the object expects an Arn
+                        type: string
+                      id:
+                        description: Id is used if the object expects an ID like Security
+                          groups and vpcs
+                        type: string
+                      key:
+                        description: Key of the referent.
+                        type: string
+                      kind:
+                        description: Kind of the referent.
+                        type: string
+                      name:
+                        description: Name of the referent.
+                        type: string
+                      namespace:
+                        description: Namespace of the referent.
+                        type: string
+                    type: object
+                  type: array
+                subnet:
+                  description: Subnet http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-subnetids
+                  items:
+                    description: ObjectReference contains information about how
+                    properties:
+                      apiVersion:
+                        description: API version of the referent.
+                        type: string
+                      arn:
+                        description: Arn is used if the object expects an Arn
+                        type: string
+                      id:
+                        description: Id is used if the object expects an ID like Security
+                          groups and vpcs
+                        type: string
+                      key:
+                        description: Key of the referent.
+                        type: string
+                      kind:
+                        description: Kind of the referent.
+                        type: string
+                      name:
+                        description: Name of the referent.
+                        type: string
+                      namespace:
+                        description: Namespace of the referent.
+                        type: string
+                    type: object
+                  type: array
+              type: object
+          required:
+          - code
+          - handler
+          - role
+          - runtime
+          type: object
+        status:
+          description: FunctionStatus defines the observed state of Function
+          properties:
+            generation:
+              description: ObservedGeneration is the version of the manifest which
+                has been applied
+              format: int64
+              type: integer
+            lastHeartbeatTime:
+              format: date-time
+              type: string
+            lastTransitionTime:
+              format: date-time
+              type: string
+            message:
+              type: string
+            outputs:
+              additionalProperties:
+                type: string
+              type: object
+            stackID:
+              type: string
+            stackName:
+              type: string
+            status:
+              description: Status is the status of the condition
+              type: string
+          type: object
+      type: object
+  version: v1alpha1
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

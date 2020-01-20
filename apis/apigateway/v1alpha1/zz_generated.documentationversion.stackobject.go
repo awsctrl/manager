@@ -55,24 +55,8 @@ func (in *DocumentationVersion) GetTemplate(client dynamic.Interface) (string, e
 
 	apigatewayDocumentationVersion := &apigateway.DocumentationVersion{}
 
-	if in.Spec.Description != "" {
-		apigatewayDocumentationVersion.Description = in.Spec.Description
-	}
-
-	if in.Spec.DocumentationVersion != "" {
-		apigatewayDocumentationVersion.DocumentationVersion = in.Spec.DocumentationVersion
-	}
-
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayDocumentationVersionRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayDocumentationVersionRestApiItem.ObjectRef.Kind == "" {
-		apigatewayDocumentationVersionRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayDocumentationVersionRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayDocumentationVersionRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
 
 	if apigatewayDocumentationVersionRestApiItem.ObjectRef.Namespace == "" {
 		apigatewayDocumentationVersionRestApiItem.ObjectRef.Namespace = in.Namespace
@@ -86,6 +70,14 @@ func (in *DocumentationVersion) GetTemplate(client dynamic.Interface) (string, e
 
 	if restApiId != "" {
 		apigatewayDocumentationVersion.RestApiId = restApiId
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayDocumentationVersion.Description = in.Spec.Description
+	}
+
+	if in.Spec.DocumentationVersion != "" {
+		apigatewayDocumentationVersion.DocumentationVersion = in.Spec.DocumentationVersion
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

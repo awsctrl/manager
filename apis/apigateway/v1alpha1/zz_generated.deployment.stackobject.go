@@ -19,6 +19,7 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
@@ -56,11 +57,194 @@ func (in *Deployment) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayDeployment := &apigateway.Deployment{}
 
+	if !reflect.DeepEqual(in.Spec.StageDescription, Deployment_StageDescription{}) {
+		apigatewayDeploymentStageDescription := apigateway.Deployment_StageDescription{}
+
+		if in.Spec.StageDescription.LoggingLevel != "" {
+			apigatewayDeploymentStageDescription.LoggingLevel = in.Spec.StageDescription.LoggingLevel
+		}
+
+		// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+		if !reflect.DeepEqual(in.Spec.StageDescription.Variables, map[string]string{}) {
+			apigatewayDeploymentStageDescription.Variables = in.Spec.StageDescription.Variables
+		}
+
+		if in.Spec.StageDescription.DocumentationVersion != "" {
+			apigatewayDeploymentStageDescription.DocumentationVersion = in.Spec.StageDescription.DocumentationVersion
+		}
+
+		// TODO(christopherhein) move these to a defaulter
+		apigatewayDeploymentStageDescriptionClientCertificateItem := in.Spec.StageDescription.ClientCertificate.DeepCopy()
+
+		if apigatewayDeploymentStageDescriptionClientCertificateItem.ObjectRef.Namespace == "" {
+			apigatewayDeploymentStageDescriptionClientCertificateItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		in.Spec.StageDescription.ClientCertificate = *apigatewayDeploymentStageDescriptionClientCertificateItem
+		clientCertificateId, err := in.Spec.StageDescription.ClientCertificate.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if clientCertificateId != "" {
+			apigatewayDeploymentStageDescription.ClientCertificateId = clientCertificateId
+		}
+
+		if !reflect.DeepEqual(in.Spec.StageDescription.AccessLogSetting, Deployment_AccessLogSetting{}) {
+			apigatewayDeploymentStageDescriptionAccessLogSetting := apigateway.Deployment_AccessLogSetting{}
+
+			if in.Spec.StageDescription.AccessLogSetting.Format != "" {
+				apigatewayDeploymentStageDescriptionAccessLogSetting.Format = in.Spec.StageDescription.AccessLogSetting.Format
+			}
+
+			// TODO(christopherhein) move these to a defaulter
+			apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem := in.Spec.StageDescription.AccessLogSetting.Destination.DeepCopy()
+
+			if apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem.ObjectRef.Namespace == "" {
+				apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem.ObjectRef.Namespace = in.Namespace
+			}
+
+			in.Spec.StageDescription.AccessLogSetting.Destination = *apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem
+			destinationArn, err := in.Spec.StageDescription.AccessLogSetting.Destination.String(client)
+			if err != nil {
+				return "", err
+			}
+
+			if destinationArn != "" {
+				apigatewayDeploymentStageDescriptionAccessLogSetting.DestinationArn = destinationArn
+			}
+
+			apigatewayDeploymentStageDescription.AccessLogSetting = &apigatewayDeploymentStageDescriptionAccessLogSetting
+		}
+
+		if in.Spec.StageDescription.CachingEnabled || !in.Spec.StageDescription.CachingEnabled {
+			apigatewayDeploymentStageDescription.CachingEnabled = in.Spec.StageDescription.CachingEnabled
+		}
+
+		if in.Spec.StageDescription.CacheClusterSize != "" {
+			apigatewayDeploymentStageDescription.CacheClusterSize = in.Spec.StageDescription.CacheClusterSize
+		}
+
+		if in.Spec.StageDescription.DataTraceEnabled || !in.Spec.StageDescription.DataTraceEnabled {
+			apigatewayDeploymentStageDescription.DataTraceEnabled = in.Spec.StageDescription.DataTraceEnabled
+		}
+
+		if in.Spec.StageDescription.TracingEnabled || !in.Spec.StageDescription.TracingEnabled {
+			apigatewayDeploymentStageDescription.TracingEnabled = in.Spec.StageDescription.TracingEnabled
+		}
+
+		if in.Spec.StageDescription.MetricsEnabled || !in.Spec.StageDescription.MetricsEnabled {
+			apigatewayDeploymentStageDescription.MetricsEnabled = in.Spec.StageDescription.MetricsEnabled
+		}
+
+		if in.Spec.StageDescription.CacheDataEncrypted || !in.Spec.StageDescription.CacheDataEncrypted {
+			apigatewayDeploymentStageDescription.CacheDataEncrypted = in.Spec.StageDescription.CacheDataEncrypted
+		}
+
+		if in.Spec.StageDescription.CacheTtlInSeconds != apigatewayDeploymentStageDescription.CacheTtlInSeconds {
+			apigatewayDeploymentStageDescription.CacheTtlInSeconds = in.Spec.StageDescription.CacheTtlInSeconds
+		}
+
+		apigatewayDeploymentStageDescriptionMethodSettings := []apigateway.Deployment_MethodSetting{}
+
+		for _, item := range in.Spec.StageDescription.MethodSettings {
+			apigatewayDeploymentStageDescriptionMethodSetting := apigateway.Deployment_MethodSetting{}
+
+			if item.DataTraceEnabled || !item.DataTraceEnabled {
+				apigatewayDeploymentStageDescriptionMethodSetting.DataTraceEnabled = item.DataTraceEnabled
+			}
+
+			if item.CacheDataEncrypted || !item.CacheDataEncrypted {
+				apigatewayDeploymentStageDescriptionMethodSetting.CacheDataEncrypted = item.CacheDataEncrypted
+			}
+
+			if item.HttpMethod != "" {
+				apigatewayDeploymentStageDescriptionMethodSetting.HttpMethod = item.HttpMethod
+			}
+
+			if item.ResourcePath != "" {
+				apigatewayDeploymentStageDescriptionMethodSetting.ResourcePath = item.ResourcePath
+			}
+
+			if item.ThrottlingBurstLimit != apigatewayDeploymentStageDescriptionMethodSetting.ThrottlingBurstLimit {
+				apigatewayDeploymentStageDescriptionMethodSetting.ThrottlingBurstLimit = item.ThrottlingBurstLimit
+			}
+
+			if item.CachingEnabled || !item.CachingEnabled {
+				apigatewayDeploymentStageDescriptionMethodSetting.CachingEnabled = item.CachingEnabled
+			}
+
+			if item.LoggingLevel != "" {
+				apigatewayDeploymentStageDescriptionMethodSetting.LoggingLevel = item.LoggingLevel
+			}
+
+			if item.MetricsEnabled || !item.MetricsEnabled {
+				apigatewayDeploymentStageDescriptionMethodSetting.MetricsEnabled = item.MetricsEnabled
+			}
+
+			if item.CacheTtlInSeconds != apigatewayDeploymentStageDescriptionMethodSetting.CacheTtlInSeconds {
+				apigatewayDeploymentStageDescriptionMethodSetting.CacheTtlInSeconds = item.CacheTtlInSeconds
+			}
+
+			if f, _ := strconv.ParseFloat(item.ThrottlingRateLimit, 64); f != apigatewayDeploymentStageDescriptionMethodSetting.ThrottlingRateLimit {
+				f, _ := strconv.ParseFloat(item.ThrottlingRateLimit, 64)
+				apigatewayDeploymentStageDescriptionMethodSetting.ThrottlingRateLimit = f
+			}
+
+		}
+
+		if len(apigatewayDeploymentStageDescriptionMethodSettings) > 0 {
+			apigatewayDeploymentStageDescription.MethodSettings = apigatewayDeploymentStageDescriptionMethodSettings
+		}
+		if in.Spec.StageDescription.CacheClusterEnabled || !in.Spec.StageDescription.CacheClusterEnabled {
+			apigatewayDeploymentStageDescription.CacheClusterEnabled = in.Spec.StageDescription.CacheClusterEnabled
+		}
+
+		if !reflect.DeepEqual(in.Spec.StageDescription.CanarySetting, Deployment_CanarySetting{}) {
+			apigatewayDeploymentStageDescriptionCanarySetting := apigateway.Deployment_CanarySetting{}
+
+			if in.Spec.StageDescription.CanarySetting.UseStageCache || !in.Spec.StageDescription.CanarySetting.UseStageCache {
+				apigatewayDeploymentStageDescriptionCanarySetting.UseStageCache = in.Spec.StageDescription.CanarySetting.UseStageCache
+			}
+
+			if f, _ := strconv.ParseFloat(in.Spec.StageDescription.CanarySetting.PercentTraffic, 64); f != apigatewayDeploymentStageDescriptionCanarySetting.PercentTraffic {
+				f, _ := strconv.ParseFloat(in.Spec.StageDescription.CanarySetting.PercentTraffic, 64)
+				apigatewayDeploymentStageDescriptionCanarySetting.PercentTraffic = f
+			}
+
+			if !reflect.DeepEqual(in.Spec.StageDescription.CanarySetting.StageVariableOverrides, map[string]string{}) {
+				apigatewayDeploymentStageDescriptionCanarySetting.StageVariableOverrides = in.Spec.StageDescription.CanarySetting.StageVariableOverrides
+			}
+
+			apigatewayDeploymentStageDescription.CanarySetting = &apigatewayDeploymentStageDescriptionCanarySetting
+		}
+
+		if in.Spec.StageDescription.Description != "" {
+			apigatewayDeploymentStageDescription.Description = in.Spec.StageDescription.Description
+		}
+
+		if f, _ := strconv.ParseFloat(in.Spec.StageDescription.ThrottlingRateLimit, 64); f != apigatewayDeploymentStageDescription.ThrottlingRateLimit {
+			f, _ := strconv.ParseFloat(in.Spec.StageDescription.ThrottlingRateLimit, 64)
+			apigatewayDeploymentStageDescription.ThrottlingRateLimit = f
+		}
+
+		if in.Spec.StageDescription.ThrottlingBurstLimit != apigatewayDeploymentStageDescription.ThrottlingBurstLimit {
+			apigatewayDeploymentStageDescription.ThrottlingBurstLimit = in.Spec.StageDescription.ThrottlingBurstLimit
+		}
+
+		apigatewayDeployment.StageDescription = &apigatewayDeploymentStageDescription
+	}
+
+	if in.Spec.StageName != "" {
+		apigatewayDeployment.StageName = in.Spec.StageName
+	}
+
 	if !reflect.DeepEqual(in.Spec.DeploymentCanarySettings, Deployment_DeploymentCanarySettings{}) {
 		apigatewayDeploymentDeploymentCanarySettings := apigateway.Deployment_DeploymentCanarySettings{}
 
-		if float64(in.Spec.DeploymentCanarySettings.PercentTraffic) != apigatewayDeploymentDeploymentCanarySettings.PercentTraffic {
-			apigatewayDeploymentDeploymentCanarySettings.PercentTraffic = float64(in.Spec.DeploymentCanarySettings.PercentTraffic)
+		if f, _ := strconv.ParseFloat(in.Spec.DeploymentCanarySettings.PercentTraffic, 64); f != apigatewayDeploymentDeploymentCanarySettings.PercentTraffic {
+			f, _ := strconv.ParseFloat(in.Spec.DeploymentCanarySettings.PercentTraffic, 64)
+			apigatewayDeploymentDeploymentCanarySettings.PercentTraffic = f
 		}
 
 		if !reflect.DeepEqual(in.Spec.DeploymentCanarySettings.StageVariableOverrides, map[string]string{}) {
@@ -81,14 +265,6 @@ func (in *Deployment) GetTemplate(client dynamic.Interface) (string, error) {
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayDeploymentRestApiItem := in.Spec.RestApi.DeepCopy()
 
-	if apigatewayDeploymentRestApiItem.ObjectRef.Kind == "" {
-		apigatewayDeploymentRestApiItem.ObjectRef.Kind = "Deployment"
-	}
-
-	if apigatewayDeploymentRestApiItem.ObjectRef.APIVersion == "" {
-		apigatewayDeploymentRestApiItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-	}
-
 	if apigatewayDeploymentRestApiItem.ObjectRef.Namespace == "" {
 		apigatewayDeploymentRestApiItem.ObjectRef.Namespace = in.Namespace
 	}
@@ -101,201 +277,6 @@ func (in *Deployment) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if restApiId != "" {
 		apigatewayDeployment.RestApiId = restApiId
-	}
-
-	if !reflect.DeepEqual(in.Spec.StageDescription, Deployment_StageDescription{}) {
-		apigatewayDeploymentStageDescription := apigateway.Deployment_StageDescription{}
-
-		// TODO(christopherhein) move these to a defaulter
-		apigatewayDeploymentStageDescriptionClientCertificateItem := in.Spec.StageDescription.ClientCertificate.DeepCopy()
-
-		if apigatewayDeploymentStageDescriptionClientCertificateItem.ObjectRef.Kind == "" {
-			apigatewayDeploymentStageDescriptionClientCertificateItem.ObjectRef.Kind = "Deployment"
-		}
-
-		if apigatewayDeploymentStageDescriptionClientCertificateItem.ObjectRef.APIVersion == "" {
-			apigatewayDeploymentStageDescriptionClientCertificateItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-		}
-
-		if apigatewayDeploymentStageDescriptionClientCertificateItem.ObjectRef.Namespace == "" {
-			apigatewayDeploymentStageDescriptionClientCertificateItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		in.Spec.StageDescription.ClientCertificate = *apigatewayDeploymentStageDescriptionClientCertificateItem
-		clientCertificateId, err := in.Spec.StageDescription.ClientCertificate.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if clientCertificateId != "" {
-			apigatewayDeploymentStageDescription.ClientCertificateId = clientCertificateId
-		}
-
-		// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-		if !reflect.DeepEqual(in.Spec.StageDescription.AccessLogSetting, Deployment_AccessLogSetting{}) {
-			apigatewayDeploymentStageDescriptionAccessLogSetting := apigateway.Deployment_AccessLogSetting{}
-
-			if in.Spec.StageDescription.AccessLogSetting.Format != "" {
-				apigatewayDeploymentStageDescriptionAccessLogSetting.Format = in.Spec.StageDescription.AccessLogSetting.Format
-			}
-
-			// TODO(christopherhein) move these to a defaulter
-			apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem := in.Spec.StageDescription.AccessLogSetting.Destination.DeepCopy()
-
-			if apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem.ObjectRef.Kind == "" {
-				apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem.ObjectRef.Kind = "Deployment"
-			}
-
-			if apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem.ObjectRef.APIVersion == "" {
-				apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem.ObjectRef.APIVersion = "apigateway.awsctrl.io/v1alpha1"
-			}
-
-			if apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem.ObjectRef.Namespace == "" {
-				apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem.ObjectRef.Namespace = in.Namespace
-			}
-
-			in.Spec.StageDescription.AccessLogSetting.Destination = *apigatewayDeploymentStageDescriptionAccessLogSettingDestinationItem
-			destinationArn, err := in.Spec.StageDescription.AccessLogSetting.Destination.String(client)
-			if err != nil {
-				return "", err
-			}
-
-			if destinationArn != "" {
-				apigatewayDeploymentStageDescriptionAccessLogSetting.DestinationArn = destinationArn
-			}
-
-			apigatewayDeploymentStageDescription.AccessLogSetting = &apigatewayDeploymentStageDescriptionAccessLogSetting
-		}
-
-		if in.Spec.StageDescription.DocumentationVersion != "" {
-			apigatewayDeploymentStageDescription.DocumentationVersion = in.Spec.StageDescription.DocumentationVersion
-		}
-
-		if in.Spec.StageDescription.Description != "" {
-			apigatewayDeploymentStageDescription.Description = in.Spec.StageDescription.Description
-		}
-
-		if float64(in.Spec.StageDescription.ThrottlingRateLimit) != apigatewayDeploymentStageDescription.ThrottlingRateLimit {
-			apigatewayDeploymentStageDescription.ThrottlingRateLimit = float64(in.Spec.StageDescription.ThrottlingRateLimit)
-		}
-
-		if in.Spec.StageDescription.CachingEnabled || !in.Spec.StageDescription.CachingEnabled {
-			apigatewayDeploymentStageDescription.CachingEnabled = in.Spec.StageDescription.CachingEnabled
-		}
-
-		if !reflect.DeepEqual(in.Spec.StageDescription.CanarySetting, Deployment_CanarySetting{}) {
-			apigatewayDeploymentStageDescriptionCanarySetting := apigateway.Deployment_CanarySetting{}
-
-			if !reflect.DeepEqual(in.Spec.StageDescription.CanarySetting.StageVariableOverrides, map[string]string{}) {
-				apigatewayDeploymentStageDescriptionCanarySetting.StageVariableOverrides = in.Spec.StageDescription.CanarySetting.StageVariableOverrides
-			}
-
-			if in.Spec.StageDescription.CanarySetting.UseStageCache || !in.Spec.StageDescription.CanarySetting.UseStageCache {
-				apigatewayDeploymentStageDescriptionCanarySetting.UseStageCache = in.Spec.StageDescription.CanarySetting.UseStageCache
-			}
-
-			if float64(in.Spec.StageDescription.CanarySetting.PercentTraffic) != apigatewayDeploymentStageDescriptionCanarySetting.PercentTraffic {
-				apigatewayDeploymentStageDescriptionCanarySetting.PercentTraffic = float64(in.Spec.StageDescription.CanarySetting.PercentTraffic)
-			}
-
-			apigatewayDeploymentStageDescription.CanarySetting = &apigatewayDeploymentStageDescriptionCanarySetting
-		}
-
-		if in.Spec.StageDescription.DataTraceEnabled || !in.Spec.StageDescription.DataTraceEnabled {
-			apigatewayDeploymentStageDescription.DataTraceEnabled = in.Spec.StageDescription.DataTraceEnabled
-		}
-
-		apigatewayDeploymentStageDescriptionMethodSettings := []apigateway.Deployment_MethodSetting{}
-
-		for _, item := range in.Spec.StageDescription.MethodSettings {
-			apigatewayDeploymentStageDescriptionMethodSetting := apigateway.Deployment_MethodSetting{}
-
-			if item.CacheTtlInSeconds != apigatewayDeploymentStageDescriptionMethodSetting.CacheTtlInSeconds {
-				apigatewayDeploymentStageDescriptionMethodSetting.CacheTtlInSeconds = item.CacheTtlInSeconds
-			}
-
-			if item.CachingEnabled || !item.CachingEnabled {
-				apigatewayDeploymentStageDescriptionMethodSetting.CachingEnabled = item.CachingEnabled
-			}
-
-			if item.HttpMethod != "" {
-				apigatewayDeploymentStageDescriptionMethodSetting.HttpMethod = item.HttpMethod
-			}
-
-			if item.ResourcePath != "" {
-				apigatewayDeploymentStageDescriptionMethodSetting.ResourcePath = item.ResourcePath
-			}
-
-			if item.ThrottlingBurstLimit != apigatewayDeploymentStageDescriptionMethodSetting.ThrottlingBurstLimit {
-				apigatewayDeploymentStageDescriptionMethodSetting.ThrottlingBurstLimit = item.ThrottlingBurstLimit
-			}
-
-			if item.CacheDataEncrypted || !item.CacheDataEncrypted {
-				apigatewayDeploymentStageDescriptionMethodSetting.CacheDataEncrypted = item.CacheDataEncrypted
-			}
-
-			if item.DataTraceEnabled || !item.DataTraceEnabled {
-				apigatewayDeploymentStageDescriptionMethodSetting.DataTraceEnabled = item.DataTraceEnabled
-			}
-
-			if item.LoggingLevel != "" {
-				apigatewayDeploymentStageDescriptionMethodSetting.LoggingLevel = item.LoggingLevel
-			}
-
-			if item.MetricsEnabled || !item.MetricsEnabled {
-				apigatewayDeploymentStageDescriptionMethodSetting.MetricsEnabled = item.MetricsEnabled
-			}
-
-			if float64(item.ThrottlingRateLimit) != apigatewayDeploymentStageDescriptionMethodSetting.ThrottlingRateLimit {
-				apigatewayDeploymentStageDescriptionMethodSetting.ThrottlingRateLimit = float64(item.ThrottlingRateLimit)
-			}
-
-		}
-
-		if len(apigatewayDeploymentStageDescriptionMethodSettings) > 0 {
-			apigatewayDeploymentStageDescription.MethodSettings = apigatewayDeploymentStageDescriptionMethodSettings
-		}
-		if in.Spec.StageDescription.CacheClusterSize != "" {
-			apigatewayDeploymentStageDescription.CacheClusterSize = in.Spec.StageDescription.CacheClusterSize
-		}
-
-		if in.Spec.StageDescription.TracingEnabled || !in.Spec.StageDescription.TracingEnabled {
-			apigatewayDeploymentStageDescription.TracingEnabled = in.Spec.StageDescription.TracingEnabled
-		}
-
-		if in.Spec.StageDescription.CacheClusterEnabled || !in.Spec.StageDescription.CacheClusterEnabled {
-			apigatewayDeploymentStageDescription.CacheClusterEnabled = in.Spec.StageDescription.CacheClusterEnabled
-		}
-
-		if in.Spec.StageDescription.CacheDataEncrypted || !in.Spec.StageDescription.CacheDataEncrypted {
-			apigatewayDeploymentStageDescription.CacheDataEncrypted = in.Spec.StageDescription.CacheDataEncrypted
-		}
-
-		if !reflect.DeepEqual(in.Spec.StageDescription.Variables, map[string]string{}) {
-			apigatewayDeploymentStageDescription.Variables = in.Spec.StageDescription.Variables
-		}
-
-		if in.Spec.StageDescription.ThrottlingBurstLimit != apigatewayDeploymentStageDescription.ThrottlingBurstLimit {
-			apigatewayDeploymentStageDescription.ThrottlingBurstLimit = in.Spec.StageDescription.ThrottlingBurstLimit
-		}
-
-		if in.Spec.StageDescription.MetricsEnabled || !in.Spec.StageDescription.MetricsEnabled {
-			apigatewayDeploymentStageDescription.MetricsEnabled = in.Spec.StageDescription.MetricsEnabled
-		}
-
-		if in.Spec.StageDescription.LoggingLevel != "" {
-			apigatewayDeploymentStageDescription.LoggingLevel = in.Spec.StageDescription.LoggingLevel
-		}
-
-		if in.Spec.StageDescription.CacheTtlInSeconds != apigatewayDeploymentStageDescription.CacheTtlInSeconds {
-			apigatewayDeploymentStageDescription.CacheTtlInSeconds = in.Spec.StageDescription.CacheTtlInSeconds
-		}
-
-		apigatewayDeployment.StageDescription = &apigatewayDeploymentStageDescription
-	}
-
-	if in.Spec.StageName != "" {
-		apigatewayDeployment.StageName = in.Spec.StageName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

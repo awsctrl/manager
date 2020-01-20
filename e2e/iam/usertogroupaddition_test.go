@@ -60,8 +60,10 @@ var _ = Describe("Run IAM UserToGroupAddition Controller", func() {
 						},
 					},
 					GroupName: "sample-group",
-					ManagedPolicyArns: []string{
-						"arn:aws:iam::aws:policy/AdministratorAccess",
+					ManagedPolicy: []metav1alpha1.ObjectReference{
+						metav1alpha1.ObjectReference{
+							Arn: "arn:aws:iam::aws:policy/AdministratorAccess",
+						},
 					},
 				},
 			}
@@ -80,8 +82,10 @@ var _ = Describe("Run IAM UserToGroupAddition Controller", func() {
 						},
 					},
 					UserName: "christopherhein",
-					ManagedPolicyArns: []string{
-						"arn:aws:iam::aws:policy/AdministratorAccess",
+					ManagedPolicy: []metav1alpha1.ObjectReference{
+						metav1alpha1.ObjectReference{
+							Arn: "arn:aws:iam::aws:policy/AdministratorAccess",
+						},
 					},
 				},
 			}

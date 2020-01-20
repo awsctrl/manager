@@ -60,14 +60,6 @@ func (in *User) GetTemplate(client dynamic.Interface) (string, error) {
 
 	iamUser := &iam.User{}
 
-	if len(in.Spec.ManagedPolicyArns) > 0 {
-		iamUser.ManagedPolicyArns = in.Spec.ManagedPolicyArns
-	}
-
-	if in.Spec.Path != "" {
-		iamUser.Path = in.Spec.Path
-	}
-
 	if in.Spec.PermissionsBoundary != "" {
 		iamUser.PermissionsBoundary = in.Spec.PermissionsBoundary
 	}
@@ -116,6 +108,25 @@ func (in *User) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		iamUser.LoginProfile = &iamUserLoginProfile
+	}
+
+	if len(in.Spec.ManagedPolicy) > 0 {
+		iamUserManagedPolicy := []string{}
+
+		for _, item := range in.Spec.ManagedPolicy {
+			iamUserManagedPolicyItem := item.DeepCopy()
+
+			if iamUserManagedPolicyItem.ObjectRef.Namespace == "" {
+				iamUserManagedPolicyItem.ObjectRef.Namespace = in.Namespace
+			}
+
+		}
+
+		iamUser.ManagedPolicyArns = iamUserManagedPolicy
+	}
+
+	if in.Spec.Path != "" {
+		iamUser.Path = in.Spec.Path
 	}
 
 	template.Resources = map[string]cloudformation.Resource{
