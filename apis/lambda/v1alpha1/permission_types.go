@@ -25,23 +25,23 @@ import (
 type PermissionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// SourceAccount http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourceaccount
-	SourceAccount string `json:"sourceAccount,omitempty" cloudformation:"SourceAccount,Parameter"`
-
-	// Source http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourcearn
-	Source metav1alpha1.ObjectReference `json:"source,omitempty" cloudformation:"SourceArn,Parameter"`
-
-	// Action http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-action
-	Action string `json:"action" cloudformation:"Action,Parameter"`
-
 	// EventSourceToken http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-eventsourcetoken
 	EventSourceToken string `json:"eventSourceToken,omitempty" cloudformation:"EventSourceToken,Parameter"`
 
 	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-functionname
-	FunctionName string `json:"functionName" cloudformation:"FunctionName,Parameter"`
+	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
 
 	// Principal http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-principal
-	Principal string `json:"principal" cloudformation:"Principal,Parameter"`
+	Principal string `json:"principal,omitempty" cloudformation:"Principal,Parameter"`
+
+	// SourceAccount http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourceaccount
+	SourceAccount string `json:"sourceAccount,omitempty" cloudformation:"SourceAccount,Parameter"`
+
+	// SourceRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourcearn
+	SourceRef metav1alpha1.ObjectReference `json:"sourceRef,omitempty" cloudformation:"SourceArn,Parameter"`
+
+	// Action http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-action
+	Action string `json:"action,omitempty" cloudformation:"Action,Parameter"`
 }
 
 // PermissionStatus defines the observed state of Permission

@@ -80,8 +80,8 @@ spec:
               type: string
             region:
               type: string
-            restApi:
-              description: RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-basepathmapping.html#cfn-apigateway-basepathmapping-restapiid
+            restApiRef:
+              description: RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-basepathmapping.html#cfn-apigateway-basepathmapping-restapiid
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -124,8 +124,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - domainName
           type: object
         status:
           description: BasePathMappingStatus defines the observed state of BasePathMapping

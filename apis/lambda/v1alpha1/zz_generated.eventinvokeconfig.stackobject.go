@@ -51,23 +51,20 @@ func (in *EventInvokeConfig) GetTemplate(client dynamic.Interface) (string, erro
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("EventInvokeConfig"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	lambdaEventInvokeConfig := &lambda.EventInvokeConfig{}
 
+	if in.Spec.Qualifier != "" {
+		lambdaEventInvokeConfig.Qualifier = in.Spec.Qualifier
+	}
+
 	if !reflect.DeepEqual(in.Spec.DestinationConfig, EventInvokeConfig_DestinationConfig{}) {
 		lambdaEventInvokeConfigDestinationConfig := lambda.EventInvokeConfig_DestinationConfig{}
-
-		if !reflect.DeepEqual(in.Spec.DestinationConfig.OnSuccess, EventInvokeConfig_OnSuccess{}) {
-			lambdaEventInvokeConfigDestinationConfigOnSuccess := lambda.EventInvokeConfig_OnSuccess{}
-
-			if in.Spec.DestinationConfig.OnSuccess.Destination != "" {
-				lambdaEventInvokeConfigDestinationConfigOnSuccess.Destination = in.Spec.DestinationConfig.OnSuccess.Destination
-			}
-
-			lambdaEventInvokeConfigDestinationConfig.OnSuccess = &lambdaEventInvokeConfigDestinationConfigOnSuccess
-		}
 
 		if !reflect.DeepEqual(in.Spec.DestinationConfig.OnFailure, EventInvokeConfig_OnFailure{}) {
 			lambdaEventInvokeConfigDestinationConfigOnFailure := lambda.EventInvokeConfig_OnFailure{}
@@ -77,6 +74,16 @@ func (in *EventInvokeConfig) GetTemplate(client dynamic.Interface) (string, erro
 			}
 
 			lambdaEventInvokeConfigDestinationConfig.OnFailure = &lambdaEventInvokeConfigDestinationConfigOnFailure
+		}
+
+		if !reflect.DeepEqual(in.Spec.DestinationConfig.OnSuccess, EventInvokeConfig_OnSuccess{}) {
+			lambdaEventInvokeConfigDestinationConfigOnSuccess := lambda.EventInvokeConfig_OnSuccess{}
+
+			if in.Spec.DestinationConfig.OnSuccess.Destination != "" {
+				lambdaEventInvokeConfigDestinationConfigOnSuccess.Destination = in.Spec.DestinationConfig.OnSuccess.Destination
+			}
+
+			lambdaEventInvokeConfigDestinationConfig.OnSuccess = &lambdaEventInvokeConfigDestinationConfigOnSuccess
 		}
 
 		lambdaEventInvokeConfig.DestinationConfig = &lambdaEventInvokeConfigDestinationConfig
@@ -92,10 +99,6 @@ func (in *EventInvokeConfig) GetTemplate(client dynamic.Interface) (string, erro
 
 	if in.Spec.MaximumRetryAttempts != lambdaEventInvokeConfig.MaximumRetryAttempts {
 		lambdaEventInvokeConfig.MaximumRetryAttempts = in.Spec.MaximumRetryAttempts
-	}
-
-	if in.Spec.Qualifier != "" {
-		lambdaEventInvokeConfig.Qualifier = in.Spec.Qualifier
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

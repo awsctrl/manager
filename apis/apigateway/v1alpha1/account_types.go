@@ -25,8 +25,8 @@ import (
 type AccountSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// CloudWatchRole http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-account.html#cfn-apigateway-account-cloudwatchrolearn
-	CloudWatchRole metav1alpha1.ObjectReference `json:"cloudWatchRole,omitempty" cloudformation:"CloudWatchRoleArn,Parameter"`
+	// CloudWatchRoleRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-account.html#cfn-apigateway-account-cloudwatchrolearn
+	CloudWatchRoleRef metav1alpha1.ObjectReference `json:"cloudWatchRoleRef,omitempty" cloudformation:"CloudWatchRoleArn,Parameter"`
 }
 
 // AccountStatus defines the observed state of Account

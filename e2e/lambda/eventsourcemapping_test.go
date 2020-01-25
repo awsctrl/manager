@@ -93,7 +93,7 @@ var _ = Describe("Run Lambda EventSourceMapping Controller", func() {
 				},
 				Spec: lambdav1alpha1.EventSourceMappingSpec{
 					FunctionName: "sample-function",
-					EventSource: metav1alpha1.ObjectReference{
+					EventSourceRef: metav1alpha1.ObjectReference{
 						Arn: "arn:aws:sqs:us-west-2:860055033182:lambda-invoke",
 					},
 				},

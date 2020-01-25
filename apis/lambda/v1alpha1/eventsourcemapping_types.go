@@ -31,8 +31,23 @@ type EventSourceMappingSpec struct {
 	// MaximumRecordAgeInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-maximumrecordageinseconds
 	MaximumRecordAgeInSeconds int `json:"maximumRecordAgeInSeconds,omitempty" cloudformation:"MaximumRecordAgeInSeconds,Parameter"`
 
+	// ParallelizationFactor http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-parallelizationfactor
+	ParallelizationFactor int `json:"parallelizationFactor,omitempty" cloudformation:"ParallelizationFactor,Parameter"`
+
+	// BisectBatchOnFunctionError http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-bisectbatchonfunctionerror
+	BisectBatchOnFunctionError bool `json:"bisectBatchOnFunctionError,omitempty" cloudformation:"BisectBatchOnFunctionError,Parameter"`
+
+	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-functionname
+	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
+
+	// EventSourceRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-eventsourcearn
+	EventSourceRef metav1alpha1.ObjectReference `json:"eventSourceRef,omitempty" cloudformation:"EventSourceArn,Parameter"`
+
 	// DestinationConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-destinationconfig
 	DestinationConfig EventSourceMapping_DestinationConfig `json:"destinationConfig,omitempty" cloudformation:"DestinationConfig"`
+
+	// MaximumRetryAttempts http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-maximumretryattempts
+	MaximumRetryAttempts int `json:"maximumRetryAttempts,omitempty" cloudformation:"MaximumRetryAttempts,Parameter"`
 
 	// StartingPosition http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-startingposition
 	StartingPosition string `json:"startingPosition,omitempty" cloudformation:"StartingPosition,Parameter"`
@@ -42,33 +57,18 @@ type EventSourceMappingSpec struct {
 
 	// Enabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-enabled
 	Enabled bool `json:"enabled,omitempty" cloudformation:"Enabled,Parameter"`
-
-	// ParallelizationFactor http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-parallelizationfactor
-	ParallelizationFactor int `json:"parallelizationFactor,omitempty" cloudformation:"ParallelizationFactor,Parameter"`
-
-	// BisectBatchOnFunctionError http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-bisectbatchonfunctionerror
-	BisectBatchOnFunctionError bool `json:"bisectBatchOnFunctionError,omitempty" cloudformation:"BisectBatchOnFunctionError,Parameter"`
-
-	// EventSource http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-eventsourcearn
-	EventSource metav1alpha1.ObjectReference `json:"eventSource" cloudformation:"EventSourceArn,Parameter"`
-
-	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-functionname
-	FunctionName string `json:"functionName" cloudformation:"FunctionName,Parameter"`
-
-	// MaximumRetryAttempts http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-maximumretryattempts
-	MaximumRetryAttempts int `json:"maximumRetryAttempts,omitempty" cloudformation:"MaximumRetryAttempts,Parameter"`
 }
 
 // EventSourceMapping_DestinationConfig defines the desired state of EventSourceMappingDestinationConfig
 type EventSourceMapping_DestinationConfig struct {
 	// OnFailure http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventsourcemapping-destinationconfig.html#cfn-lambda-eventsourcemapping-destinationconfig-onfailure
-	OnFailure EventSourceMapping_OnFailure `json:"onFailure" cloudformation:"OnFailure"`
+	OnFailure EventSourceMapping_OnFailure `json:"onFailure,omitempty" cloudformation:"OnFailure"`
 }
 
 // EventSourceMapping_OnFailure defines the desired state of EventSourceMappingOnFailure
 type EventSourceMapping_OnFailure struct {
 	// Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventsourcemapping-onfailure.html#cfn-lambda-eventsourcemapping-onfailure-destination
-	Destination string `json:"destination" cloudformation:"Destination,Parameter"`
+	Destination string `json:"destination,omitempty" cloudformation:"Destination,Parameter"`
 }
 
 // EventSourceMappingStatus defines the observed state of EventSourceMapping

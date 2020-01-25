@@ -50,28 +50,23 @@ func (in *Permission) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Permission"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	lambdaPermission := &lambda.Permission{}
 
-	if in.Spec.Principal != "" {
-		lambdaPermission.Principal = in.Spec.Principal
-	}
-
-	if in.Spec.SourceAccount != "" {
-		lambdaPermission.SourceAccount = in.Spec.SourceAccount
-	}
-
 	// TODO(christopherhein) move these to a defaulter
-	lambdaPermissionSourceItem := in.Spec.Source.DeepCopy()
+	lambdaPermissionSourceRefItem := in.Spec.SourceRef.DeepCopy()
 
-	if lambdaPermissionSourceItem.ObjectRef.Namespace == "" {
-		lambdaPermissionSourceItem.ObjectRef.Namespace = in.Namespace
+	if lambdaPermissionSourceRefItem.ObjectRef.Namespace == "" {
+		lambdaPermissionSourceRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.Source = *lambdaPermissionSourceItem
-	sourceArn, err := in.Spec.Source.String(client)
+	in.Spec.SourceRef = *lambdaPermissionSourceRefItem
+	sourceArn, err := in.Spec.SourceRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -90,6 +85,14 @@ func (in *Permission) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.FunctionName != "" {
 		lambdaPermission.FunctionName = in.Spec.FunctionName
+	}
+
+	if in.Spec.Principal != "" {
+		lambdaPermission.Principal = in.Spec.Principal
+	}
+
+	if in.Spec.SourceAccount != "" {
+		lambdaPermission.SourceAccount = in.Spec.SourceAccount
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

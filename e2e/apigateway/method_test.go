@@ -78,7 +78,7 @@ var _ = Describe("Run Apigateway Method Controller", func() {
 						IntegrationHttpMethod: "POST",
 						Type:                  "MOCK",
 					},
-					Resource: metav1alpha1.ObjectReference{
+					ResourceRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",
@@ -86,7 +86,7 @@ var _ = Describe("Run Apigateway Method Controller", func() {
 							Key:        "RootResourceId",
 						},
 					},
-					RestApi: metav1alpha1.ObjectReference{
+					RestApiRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",
@@ -98,10 +98,10 @@ var _ = Describe("Run Apigateway Method Controller", func() {
 			}
 
 			if os.Getenv("USE_AWS_CLIENT") != "true" {
-				instance.Spec.Resource.ObjectRef = metav1alpha1.ObjectRef{}
-				instance.Spec.Resource.Arn = "resource-arn"
-				instance.Spec.RestApi.ObjectRef = metav1alpha1.ObjectRef{}
-				instance.Spec.RestApi.Arn = "restapi-arn"
+				instance.Spec.ResourceRef.ObjectRef = metav1alpha1.ObjectRef{}
+				instance.Spec.ResourceRef.Arn = "resource-arn"
+				instance.Spec.RestApiRef.ObjectRef = metav1alpha1.ObjectRef{}
+				instance.Spec.RestApiRef.Arn = "restapi-arn"
 			}
 
 			By("Creating new Apigateway Method")

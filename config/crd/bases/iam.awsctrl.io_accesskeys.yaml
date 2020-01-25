@@ -97,8 +97,6 @@ spec:
             userName:
               description: UserName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html#cfn-iam-accesskey-username
               type: string
-          required:
-          - userName
           type: object
         status:
           description: AccessKeyStatus defines the observed state of AccessKey

@@ -75,11 +75,9 @@ spec:
                 passwordResetRequired:
                   description: PasswordResetRequired http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user-loginprofile.html#cfn-iam-user-loginprofile-passwordresetrequired
                   type: boolean
-              required:
-              - password
               type: object
-            managedPolicy:
-              description: ManagedPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-managepolicyarns
+            managedPolicyRefs:
+              description: ManagedPolicyRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-managepolicyarns
               items:
                 description: ObjectReference contains information about how
                 properties:
@@ -134,9 +132,6 @@ spec:
                   policyName:
                     description: PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
                     type: string
-                required:
-                - policyDocument
-                - policyName
                 type: object
               type: array
             region:

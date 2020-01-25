@@ -80,8 +80,8 @@ spec:
             deadLetterConfig:
               description: DeadLetterConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-deadletterconfig
               properties:
-                target:
-                  description: Target http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-deadletterconfig.html#cfn-lambda-function-deadletterconfig-targetarn
+                targetRef:
+                  description: TargetRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-deadletterconfig.html#cfn-lambda-function-deadletterconfig-targetarn
                   properties:
                     apiVersion:
                       description: API version of the referent.
@@ -125,8 +125,8 @@ spec:
             handler:
               description: Handler http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-handler
               type: string
-            kmsKey:
-              description: KmsKey http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-kmskeyarn
+            kmsKeyRef:
+              description: KmsKeyRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-kmskeyarn
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -208,8 +208,8 @@ spec:
             vpcConfig:
               description: VpcConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-vpcconfig
               properties:
-                securityGroup:
-                  description: SecurityGroup http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-securitygroupids
+                securityGroupRefs:
+                  description: SecurityGroupRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-securitygroupids
                   items:
                     description: ObjectReference contains information about how
                     properties:
@@ -237,8 +237,8 @@ spec:
                         type: string
                     type: object
                   type: array
-                subnet:
-                  description: Subnet http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-subnetids
+                subnetRefs:
+                  description: SubnetRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-subnetids
                   items:
                     description: ObjectReference contains information about how
                     properties:
@@ -267,11 +267,6 @@ spec:
                     type: object
                   type: array
               type: object
-          required:
-          - code
-          - handler
-          - role
-          - runtime
           type: object
         status:
           description: FunctionStatus defines the observed state of Function

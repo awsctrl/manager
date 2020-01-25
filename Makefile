@@ -45,6 +45,7 @@ test-e2e: generate fmt vet manifests
 	@$(MAKE) test-e2e-iam
 	@$(MAKE) test-e2e-lambda
 	@$(MAKE) test-e2e-route53
+	@$(MAKE) test-e2e-s3
 
 
 # Build manager binary

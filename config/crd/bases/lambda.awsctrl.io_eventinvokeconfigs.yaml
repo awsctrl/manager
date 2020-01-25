@@ -71,8 +71,6 @@ spec:
                     destination:
                       description: Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig-onfailure.html#cfn-lambda-eventinvokeconfig-destinationconfig-onfailure-destination
                       type: string
-                  required:
-                  - destination
                   type: object
                 onSuccess:
                   description: OnSuccess http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onsuccess
@@ -80,8 +78,6 @@ spec:
                     destination:
                       description: Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig-onsuccess.html#cfn-lambda-eventinvokeconfig-destinationconfig-onsuccess-destination
                       type: string
-                  required:
-                  - destination
                   type: object
               type: object
             functionName:
@@ -123,9 +119,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - functionName
-          - qualifier
           type: object
         status:
           description: EventInvokeConfigStatus defines the observed state of EventInvokeConfig

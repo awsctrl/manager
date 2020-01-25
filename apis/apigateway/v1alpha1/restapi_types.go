@@ -25,41 +25,41 @@ import (
 type RestApiSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Body http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-body
-	Body string `json:"body,omitempty" cloudformation:"Body,Parameter"`
-
 	// BodyS3Location http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-bodys3location
 	BodyS3Location RestApi_S3Location `json:"bodyS3Location,omitempty" cloudformation:"BodyS3Location"`
-
-	// Parameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-parameters
-	Parameters map[string]string `json:"parameters,omitempty" cloudformation:"Parameters"`
-
-	// MinimumCompressionSize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-minimumcompressionsize
-	MinimumCompressionSize int `json:"minimumCompressionSize,omitempty" cloudformation:"MinimumCompressionSize,Parameter"`
-
-	// EndpointConfiguration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-endpointconfiguration
-	EndpointConfiguration RestApi_EndpointConfiguration `json:"endpointConfiguration,omitempty" cloudformation:"EndpointConfiguration"`
-
-	// FailOnWarnings http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-failonwarnings
-	FailOnWarnings bool `json:"failOnWarnings,omitempty" cloudformation:"FailOnWarnings,Parameter"`
-
-	// ApiKeySourceType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-apikeysourcetype
-	ApiKeySourceType string `json:"apiKeySourceType,omitempty" cloudformation:"ApiKeySourceType,Parameter"`
-
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-name
 	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
 
+	// Parameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-parameters
+	Parameters map[string]string `json:"parameters,omitempty" cloudformation:"Parameters"`
+
 	// Policy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-policy
 	Policy string `json:"policy,omitempty" cloudformation:"Policy,Parameter"`
+
+	// ApiKeySourceType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-apikeysourcetype
+	ApiKeySourceType string `json:"apiKeySourceType,omitempty" cloudformation:"ApiKeySourceType,Parameter"`
+
+	// CloneFrom http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-clonefrom
+	CloneFrom string `json:"cloneFrom,omitempty" cloudformation:"CloneFrom,Parameter"`
+
+	// Body http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-body
+	Body string `json:"body,omitempty" cloudformation:"Body,Parameter"`
+
+	// FailOnWarnings http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-failonwarnings
+	FailOnWarnings bool `json:"failOnWarnings,omitempty" cloudformation:"FailOnWarnings,Parameter"`
 
 	// BinaryMediaTypes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-binarymediatypes
 	BinaryMediaTypes []string `json:"binaryMediaTypes,omitempty" cloudformation:"BinaryMediaTypes"`
 
-	// CloneFrom http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-clonefrom
-	CloneFrom string `json:"cloneFrom,omitempty" cloudformation:"CloneFrom,Parameter"`
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
+	// EndpointConfiguration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-endpointconfiguration
+	EndpointConfiguration RestApi_EndpointConfiguration `json:"endpointConfiguration,omitempty" cloudformation:"EndpointConfiguration"`
+
+	// MinimumCompressionSize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-restapi.html#cfn-apigateway-restapi-minimumcompressionsize
+	MinimumCompressionSize int `json:"minimumCompressionSize,omitempty" cloudformation:"MinimumCompressionSize,Parameter"`
 }
 
 // RestApi_EndpointConfiguration defines the desired state of RestApiEndpointConfiguration
@@ -67,12 +67,15 @@ type RestApi_EndpointConfiguration struct {
 	// Types http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-endpointconfiguration.html#cfn-apigateway-restapi-endpointconfiguration-types
 	Types []string `json:"types,omitempty" cloudformation:"Types"`
 
-	// VpcEndpoint http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-endpointconfiguration.html#cfn-apigateway-restapi-endpointconfiguration-vpcendpointids
-	VpcEndpoint []metav1alpha1.ObjectReference `json:"vpcEndpoint,omitempty" cloudformation:"VpcEndpointIds"`
+	// VpcEndpointRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-endpointconfiguration.html#cfn-apigateway-restapi-endpointconfiguration-vpcendpointids
+	VpcEndpointRefs []metav1alpha1.ObjectReference `json:"vpcEndpointRefs,omitempty" cloudformation:"VpcEndpointIds"`
 }
 
 // RestApi_S3Location defines the desired state of RestApiS3Location
 type RestApi_S3Location struct {
+	// Version http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-s3location.html#cfn-apigateway-restapi-s3location-version
+	Version string `json:"version,omitempty" cloudformation:"Version,Parameter"`
+
 	// Bucket http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-s3location.html#cfn-apigateway-restapi-s3location-bucket
 	Bucket string `json:"bucket,omitempty" cloudformation:"Bucket,Parameter"`
 
@@ -81,9 +84,6 @@ type RestApi_S3Location struct {
 
 	// Key http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-s3location.html#cfn-apigateway-restapi-s3location-key
 	Key string `json:"key,omitempty" cloudformation:"Key,Parameter"`
-
-	// Version http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-s3location.html#cfn-apigateway-restapi-s3location-version
-	Version string `json:"version,omitempty" cloudformation:"Version,Parameter"`
 }
 
 // RestApiStatus defines the observed state of RestApi

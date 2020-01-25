@@ -25,20 +25,20 @@ import (
 type DomainNameSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// SecurityPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-securitypolicy
-	SecurityPolicy string `json:"securityPolicy,omitempty" cloudformation:"SecurityPolicy,Parameter"`
-
-	// Certificate http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-certificatearn
-	Certificate metav1alpha1.ObjectReference `json:"certificate,omitempty" cloudformation:"CertificateArn,Parameter"`
-
-	// DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-domainname
-	DomainName string `json:"domainName" cloudformation:"DomainName,Parameter"`
-
 	// EndpointConfiguration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-endpointconfiguration
 	EndpointConfiguration DomainName_EndpointConfiguration `json:"endpointConfiguration,omitempty" cloudformation:"EndpointConfiguration"`
 
-	// RegionalCertificate http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-regionalcertificatearn
-	RegionalCertificate metav1alpha1.ObjectReference `json:"regionalCertificate,omitempty" cloudformation:"RegionalCertificateArn,Parameter"`
+	// RegionalCertificateRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-regionalcertificatearn
+	RegionalCertificateRef metav1alpha1.ObjectReference `json:"regionalCertificateRef,omitempty" cloudformation:"RegionalCertificateArn,Parameter"`
+
+	// SecurityPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-securitypolicy
+	SecurityPolicy string `json:"securityPolicy,omitempty" cloudformation:"SecurityPolicy,Parameter"`
+
+	// CertificateRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-certificatearn
+	CertificateRef metav1alpha1.ObjectReference `json:"certificateRef,omitempty" cloudformation:"CertificateArn,Parameter"`
+
+	// DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-domainname
+	DomainName string `json:"domainName,omitempty" cloudformation:"DomainName,Parameter"`
 }
 
 // DomainName_EndpointConfiguration defines the desired state of DomainNameEndpointConfiguration

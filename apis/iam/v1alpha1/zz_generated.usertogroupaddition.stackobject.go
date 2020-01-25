@@ -50,6 +50,9 @@ func (in *UserToGroupAddition) GetTemplate(client dynamic.Interface) (string, er
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("UserToGroupAddition"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 

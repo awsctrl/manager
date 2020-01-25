@@ -887,6 +887,66 @@ rules:
   - patch
   - update
 - apiGroups:
+  - s3.awsctrl.io
+  resources:
+  - accesspoints
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - s3.awsctrl.io
+  resources:
+  - accesspoints/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - s3.awsctrl.io
+  resources:
+  - bucketpolicies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - s3.awsctrl.io
+  resources:
+  - bucketpolicies/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - s3.awsctrl.io
+  resources:
+  - buckets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - s3.awsctrl.io
+  resources:
+  - buckets/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - self.awsctrl.io
   resources:
   - config

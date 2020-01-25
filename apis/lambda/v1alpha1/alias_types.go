@@ -26,10 +26,10 @@ type AliasSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
 	// FunctionVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-functionversion
-	FunctionVersion string `json:"functionVersion" cloudformation:"FunctionVersion,Parameter"`
+	FunctionVersion string `json:"functionVersion,omitempty" cloudformation:"FunctionVersion,Parameter"`
 
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-name
-	Name string `json:"name" cloudformation:"Name,Parameter"`
+	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
 
 	// ProvisionedConcurrencyConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-provisionedconcurrencyconfig
 	ProvisionedConcurrencyConfig Alias_ProvisionedConcurrencyConfiguration `json:"provisionedConcurrencyConfig,omitempty" cloudformation:"ProvisionedConcurrencyConfig"`
@@ -41,28 +41,28 @@ type AliasSpec struct {
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 
 	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-functionname
-	FunctionName string `json:"functionName" cloudformation:"FunctionName,Parameter"`
+	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
+}
+
+// Alias_VersionWeight defines the desired state of AliasVersionWeight
+type Alias_VersionWeight struct {
+	// FunctionVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionversion
+	FunctionVersion string `json:"functionVersion,omitempty" cloudformation:"FunctionVersion,Parameter"`
+
+	// FunctionWeight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionweight
+	FunctionWeight int `json:"functionWeight,omitempty" cloudformation:"FunctionWeight,Parameter"`
 }
 
 // Alias_ProvisionedConcurrencyConfiguration defines the desired state of AliasProvisionedConcurrencyConfiguration
 type Alias_ProvisionedConcurrencyConfiguration struct {
 	// ProvisionedConcurrentExecutions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-provisionedconcurrencyconfiguration.html#cfn-lambda-alias-provisionedconcurrencyconfiguration-provisionedconcurrentexecutions
-	ProvisionedConcurrentExecutions int `json:"provisionedConcurrentExecutions" cloudformation:"ProvisionedConcurrentExecutions,Parameter"`
+	ProvisionedConcurrentExecutions int `json:"provisionedConcurrentExecutions,omitempty" cloudformation:"ProvisionedConcurrentExecutions,Parameter"`
 }
 
 // Alias_AliasRoutingConfiguration defines the desired state of AliasAliasRoutingConfiguration
 type Alias_AliasRoutingConfiguration struct {
 	// AdditionalVersionWeights http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-aliasroutingconfiguration.html#cfn-lambda-alias-aliasroutingconfiguration-additionalversionweights
-	AdditionalVersionWeights []Alias_VersionWeight `json:"additionalVersionWeights" cloudformation:"AdditionalVersionWeights"`
-}
-
-// Alias_VersionWeight defines the desired state of AliasVersionWeight
-type Alias_VersionWeight struct {
-	// FunctionWeight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionweight
-	FunctionWeight string `json:"functionWeight" cloudformation:"FunctionWeight,Parameter"`
-
-	// FunctionVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionversion
-	FunctionVersion string `json:"functionVersion" cloudformation:"FunctionVersion,Parameter"`
+	AdditionalVersionWeights []Alias_VersionWeight `json:"additionalVersionWeights,omitempty" cloudformation:"AdditionalVersionWeights"`
 }
 
 // AliasStatus defines the observed state of Alias

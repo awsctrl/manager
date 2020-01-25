@@ -78,7 +78,7 @@ var _ = Describe("Run Apigateway GatewayResponse Controller", func() {
 					},
 					ResponseType: "MISSING_AUTHENTICATION_TOKEN",
 					StatusCode:   "404",
-					RestApi: metav1alpha1.ObjectReference{
+					RestApiRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",

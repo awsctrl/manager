@@ -73,9 +73,6 @@ spec:
                     region:
                       description: Region http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-alarmidentifier.html#cfn-route53-healthcheck-alarmidentifier-region
                       type: string
-                  required:
-                  - name
-                  - region
                   type: object
                 childHealthChecks:
                   description: ChildHealthChecks http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-childhealthchecks
@@ -126,8 +123,6 @@ spec:
                 type:
                   description: Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthcheckconfig.html#cfn-route53-healthcheck-healthcheckconfig-type
                   type: string
-              required:
-              - type
               type: object
             healthCheckTags:
               description: HealthCheckTags http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-healthcheck.html#cfn-route53-healthcheck-healthchecktags
@@ -141,9 +136,6 @@ spec:
                   value:
                     description: Value http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-healthcheck-healthchecktag.html#cfn-route53-healthchecktags-value
                     type: string
-                required:
-                - key
-                - value
                 type: object
               type: array
             notificationARNs:
@@ -173,8 +165,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - healthCheckConfig
           type: object
         status:
           description: HealthCheckStatus defines the observed state of HealthCheck

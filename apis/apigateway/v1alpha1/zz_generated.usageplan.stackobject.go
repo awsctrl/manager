@@ -19,7 +19,6 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
@@ -52,6 +51,9 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("UsagePlan"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
@@ -59,10 +61,6 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if !reflect.DeepEqual(in.Spec.Quota, UsagePlan_QuotaSettings{}) {
 		apigatewayUsagePlanQuotaSettings := apigateway.UsagePlan_QuotaSettings{}
-
-		if in.Spec.Quota.Limit != apigatewayUsagePlanQuotaSettings.Limit {
-			apigatewayUsagePlanQuotaSettings.Limit = in.Spec.Quota.Limit
-		}
 
 		if in.Spec.Quota.Offset != apigatewayUsagePlanQuotaSettings.Offset {
 			apigatewayUsagePlanQuotaSettings.Offset = in.Spec.Quota.Offset
@@ -72,6 +70,10 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayUsagePlanQuotaSettings.Period = in.Spec.Quota.Period
 		}
 
+		if in.Spec.Quota.Limit != apigatewayUsagePlanQuotaSettings.Limit {
+			apigatewayUsagePlanQuotaSettings.Limit = in.Spec.Quota.Limit
+		}
+
 		apigatewayUsagePlan.Quota = &apigatewayUsagePlanQuotaSettings
 	}
 
@@ -79,16 +81,20 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 	if !reflect.DeepEqual(in.Spec.Throttle, UsagePlan_ThrottleSettings{}) {
 		apigatewayUsagePlanThrottleSettings := apigateway.UsagePlan_ThrottleSettings{}
 
+		if float64(in.Spec.Throttle.RateLimit) != apigatewayUsagePlanThrottleSettings.RateLimit {
+			apigatewayUsagePlanThrottleSettings.RateLimit = float64(in.Spec.Throttle.RateLimit)
+		}
+
 		if in.Spec.Throttle.BurstLimit != apigatewayUsagePlanThrottleSettings.BurstLimit {
 			apigatewayUsagePlanThrottleSettings.BurstLimit = in.Spec.Throttle.BurstLimit
 		}
 
-		if f, _ := strconv.ParseFloat(in.Spec.Throttle.RateLimit, 64); f != apigatewayUsagePlanThrottleSettings.RateLimit {
-			f, _ := strconv.ParseFloat(in.Spec.Throttle.RateLimit, 64)
-			apigatewayUsagePlanThrottleSettings.RateLimit = f
-		}
-
 		apigatewayUsagePlan.Throttle = &apigatewayUsagePlanThrottleSettings
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.UsagePlanName == "" {
+		apigatewayUsagePlan.UsagePlanName = in.Name
 	}
 
 	if in.Spec.UsagePlanName != "" {
@@ -103,13 +109,12 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 		if !reflect.DeepEqual(item.Throttle, map[string]UsagePlan_ThrottleSettings{}) {
 			for key, prop := range item.Throttle {
 				apigatewayUsagePlanApiStageThrottleSettings := apigateway.UsagePlan_ThrottleSettings{}
-				if prop.BurstLimit != apigatewayUsagePlanApiStageThrottleSettings.BurstLimit {
-					apigatewayUsagePlanApiStageThrottleSettings.BurstLimit = prop.BurstLimit
+				if float64(prop.RateLimit) != apigatewayUsagePlanApiStageThrottleSettings.RateLimit {
+					apigatewayUsagePlanApiStageThrottleSettings.RateLimit = float64(prop.RateLimit)
 				}
 
-				if f, _ := strconv.ParseFloat(prop.RateLimit, 64); f != apigatewayUsagePlanApiStageThrottleSettings.RateLimit {
-					f, _ := strconv.ParseFloat(prop.RateLimit, 64)
-					apigatewayUsagePlanApiStageThrottleSettings.RateLimit = f
+				if prop.BurstLimit != apigatewayUsagePlanApiStageThrottleSettings.BurstLimit {
+					apigatewayUsagePlanApiStageThrottleSettings.BurstLimit = prop.BurstLimit
 				}
 
 				apigatewayUsagePlanApiStage.Throttle[key] = apigatewayUsagePlanApiStageThrottleSettings
@@ -117,14 +122,14 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		// TODO(christopherhein) move these to a defaulter
-		apigatewayUsagePlanApiStageApiItem := item.Api.DeepCopy()
+		apigatewayUsagePlanApiStageApiRefItem := item.ApiRef.DeepCopy()
 
-		if apigatewayUsagePlanApiStageApiItem.ObjectRef.Namespace == "" {
-			apigatewayUsagePlanApiStageApiItem.ObjectRef.Namespace = in.Namespace
+		if apigatewayUsagePlanApiStageApiRefItem.ObjectRef.Namespace == "" {
+			apigatewayUsagePlanApiStageApiRefItem.ObjectRef.Namespace = in.Namespace
 		}
 
-		item.Api = *apigatewayUsagePlanApiStageApiItem
-		apiId, err := item.Api.String(client)
+		item.ApiRef = *apigatewayUsagePlanApiStageApiRefItem
+		apiId, err := item.ApiRef.String(client)
 		if err != nil {
 			return "", err
 		}

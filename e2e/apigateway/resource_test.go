@@ -73,7 +73,7 @@ var _ = Describe("Run Apigateway Resource Controller", func() {
 				},
 				Spec: apigatewayv1alpha1.ResourceSpec{
 					PathPart: "stack",
-					Parent: metav1alpha1.ObjectReference{
+					ParentRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",
@@ -81,7 +81,7 @@ var _ = Describe("Run Apigateway Resource Controller", func() {
 							Key:        "RootResourceId",
 						},
 					},
-					RestApi: metav1alpha1.ObjectReference{
+					RestApiRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",

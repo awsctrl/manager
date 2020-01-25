@@ -50,24 +50,27 @@ func (in *VpcLink) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("VpcLink"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayVpcLink := &apigateway.VpcLink{}
 
-	if len(in.Spec.Target) > 0 {
-		apigatewayVpcLinkTarget := []string{}
+	if len(in.Spec.TargetRefs) > 0 {
+		apigatewayVpcLinkTargetRefs := []string{}
 
-		for _, item := range in.Spec.Target {
-			apigatewayVpcLinkTargetItem := item.DeepCopy()
+		for _, item := range in.Spec.TargetRefs {
+			apigatewayVpcLinkTargetRefsItem := item.DeepCopy()
 
-			if apigatewayVpcLinkTargetItem.ObjectRef.Namespace == "" {
-				apigatewayVpcLinkTargetItem.ObjectRef.Namespace = in.Namespace
+			if apigatewayVpcLinkTargetRefsItem.ObjectRef.Namespace == "" {
+				apigatewayVpcLinkTargetRefsItem.ObjectRef.Namespace = in.Namespace
 			}
 
 		}
 
-		apigatewayVpcLink.TargetArns = apigatewayVpcLinkTarget
+		apigatewayVpcLink.TargetArns = apigatewayVpcLinkTargetRefs
 	}
 
 	if in.Spec.Description != "" {

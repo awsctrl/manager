@@ -25,14 +25,14 @@ import (
 type ServiceLinkedRoleSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-servicelinkedrole.html#cfn-iam-servicelinkedrole-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
-
 	// AWSServiceName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-servicelinkedrole.html#cfn-iam-servicelinkedrole-awsservicename
-	AWSServiceName string `json:"aWSServiceName" cloudformation:"AWSServiceName,Parameter"`
+	AWSServiceName string `json:"aWSServiceName,omitempty" cloudformation:"AWSServiceName,Parameter"`
 
 	// CustomSuffix http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-servicelinkedrole.html#cfn-iam-servicelinkedrole-customsuffix
 	CustomSuffix string `json:"customSuffix,omitempty" cloudformation:"CustomSuffix,Parameter"`
+
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-servicelinkedrole.html#cfn-iam-servicelinkedrole-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 }
 
 // ServiceLinkedRoleStatus defines the observed state of ServiceLinkedRole

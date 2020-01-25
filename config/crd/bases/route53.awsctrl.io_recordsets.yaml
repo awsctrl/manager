@@ -63,8 +63,8 @@ spec:
                 evaluateTargetHealth:
                   description: EvaluateTargetHealth http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-evaluatetargethealth
                   type: boolean
-                hostedZone:
-                  description: HostedZone http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
+                hostedZoneRef:
+                  description: HostedZoneRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
                   properties:
                     apiVersion:
                       description: API version of the referent.
@@ -89,9 +89,6 @@ spec:
                       description: Namespace of the referent.
                       type: string
                   type: object
-              required:
-              - dNSName
-              - hostedZone
               type: object
             capabilities:
               description: Capabilities In some cases, you must explicity acknowledge
@@ -119,34 +116,8 @@ spec:
                   description: SubdivisionCode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset-geolocation.html#cfn-route53-recordset-geolocation-subdivisioncode
                   type: string
               type: object
-            healthCheck:
-              description: HealthCheck http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-healthcheckid
-              properties:
-                apiVersion:
-                  description: API version of the referent.
-                  type: string
-                arn:
-                  description: Arn is used if the object expects an Arn
-                  type: string
-                id:
-                  description: Id is used if the object expects an ID like Security
-                    groups and vpcs
-                  type: string
-                key:
-                  description: Key of the referent.
-                  type: string
-                kind:
-                  description: Kind of the referent.
-                  type: string
-                name:
-                  description: Name of the referent.
-                  type: string
-                namespace:
-                  description: Namespace of the referent.
-                  type: string
-              type: object
-            hostedZone:
-              description: HostedZone http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzoneid
+            healthCheckRef:
+              description: HealthCheckRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-healthcheckid
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -174,6 +145,32 @@ spec:
             hostedZoneName:
               description: HostedZoneName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzonename
               type: string
+            hostedZoneRef:
+              description: HostedZoneRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzoneid
+              properties:
+                apiVersion:
+                  description: API version of the referent.
+                  type: string
+                arn:
+                  description: Arn is used if the object expects an Arn
+                  type: string
+                id:
+                  description: Id is used if the object expects an ID like Security
+                    groups and vpcs
+                  type: string
+                key:
+                  description: Key of the referent.
+                  type: string
+                kind:
+                  description: Kind of the referent.
+                  type: string
+                name:
+                  description: Name of the referent.
+                  type: string
+                namespace:
+                  description: Namespace of the referent.
+                  type: string
+              type: object
             multiValueAnswer:
               description: MultiValueAnswer http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-multivalueanswer
               type: boolean
@@ -224,9 +221,6 @@ spec:
             weight:
               description: Weight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-weight
               type: integer
-          required:
-          - name
-          - type
           type: object
         status:
           description: RecordSetStatus defines the observed state of RecordSet

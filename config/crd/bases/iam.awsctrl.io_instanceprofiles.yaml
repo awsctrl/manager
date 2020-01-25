@@ -99,8 +99,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - roles
           type: object
         status:
           description: InstanceProfileStatus defines the observed state of InstanceProfile

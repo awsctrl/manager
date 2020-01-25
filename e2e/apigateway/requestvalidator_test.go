@@ -75,7 +75,7 @@ var _ = Describe("Run Apigateway RequestValidator Controller", func() {
 					Name:                      "test-validator",
 					ValidateRequestBody:       true,
 					ValidateRequestParameters: true,
-					RestApi: metav1alpha1.ObjectReference{
+					RestApiRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",

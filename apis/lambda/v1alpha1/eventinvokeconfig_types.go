@@ -29,7 +29,7 @@ type EventInvokeConfigSpec struct {
 	DestinationConfig EventInvokeConfig_DestinationConfig `json:"destinationConfig,omitempty" cloudformation:"DestinationConfig"`
 
 	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-functionname
-	FunctionName string `json:"functionName" cloudformation:"FunctionName,Parameter"`
+	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
 
 	// MaximumEventAgeInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-maximumeventageinseconds
 	MaximumEventAgeInSeconds int `json:"maximumEventAgeInSeconds,omitempty" cloudformation:"MaximumEventAgeInSeconds,Parameter"`
@@ -38,28 +38,28 @@ type EventInvokeConfigSpec struct {
 	MaximumRetryAttempts int `json:"maximumRetryAttempts,omitempty" cloudformation:"MaximumRetryAttempts,Parameter"`
 
 	// Qualifier http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-qualifier
-	Qualifier string `json:"qualifier" cloudformation:"Qualifier,Parameter"`
-}
-
-// EventInvokeConfig_DestinationConfig defines the desired state of EventInvokeConfigDestinationConfig
-type EventInvokeConfig_DestinationConfig struct {
-	// OnSuccess http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onsuccess
-	OnSuccess EventInvokeConfig_OnSuccess `json:"onSuccess,omitempty" cloudformation:"OnSuccess"`
-
-	// OnFailure http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onfailure
-	OnFailure EventInvokeConfig_OnFailure `json:"onFailure,omitempty" cloudformation:"OnFailure"`
-}
-
-// EventInvokeConfig_OnFailure defines the desired state of EventInvokeConfigOnFailure
-type EventInvokeConfig_OnFailure struct {
-	// Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig-onfailure.html#cfn-lambda-eventinvokeconfig-destinationconfig-onfailure-destination
-	Destination string `json:"destination" cloudformation:"Destination,Parameter"`
+	Qualifier string `json:"qualifier,omitempty" cloudformation:"Qualifier,Parameter"`
 }
 
 // EventInvokeConfig_OnSuccess defines the desired state of EventInvokeConfigOnSuccess
 type EventInvokeConfig_OnSuccess struct {
 	// Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig-onsuccess.html#cfn-lambda-eventinvokeconfig-destinationconfig-onsuccess-destination
-	Destination string `json:"destination" cloudformation:"Destination,Parameter"`
+	Destination string `json:"destination,omitempty" cloudformation:"Destination,Parameter"`
+}
+
+// EventInvokeConfig_DestinationConfig defines the desired state of EventInvokeConfigDestinationConfig
+type EventInvokeConfig_DestinationConfig struct {
+	// OnFailure http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onfailure
+	OnFailure EventInvokeConfig_OnFailure `json:"onFailure,omitempty" cloudformation:"OnFailure"`
+
+	// OnSuccess http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onsuccess
+	OnSuccess EventInvokeConfig_OnSuccess `json:"onSuccess,omitempty" cloudformation:"OnSuccess"`
+}
+
+// EventInvokeConfig_OnFailure defines the desired state of EventInvokeConfigOnFailure
+type EventInvokeConfig_OnFailure struct {
+	// Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig-onfailure.html#cfn-lambda-eventinvokeconfig-destinationconfig-onfailure-destination
+	Destination string `json:"destination,omitempty" cloudformation:"Destination,Parameter"`
 }
 
 // EventInvokeConfigStatus defines the observed state of EventInvokeConfig

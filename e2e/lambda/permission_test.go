@@ -82,7 +82,7 @@ var _ = Describe("Run Lambda Permission Controller", func() {
 					FunctionName: "sample-function",
 					Action:       "lambda:InvokeFunction",
 					Principal:    "s3.amazonaws.com",
-					Source: metav1alpha1.ObjectReference{
+					SourceRef: metav1alpha1.ObjectReference{
 						Arn: "arn:aws:s3:::awsctrl-lambda-s3-trigger",
 					},
 				},

@@ -1,0 +1,20 @@
+apiVersion: s3.awsctrl.io/v1alpha1
+kind: Bucket
+metadata:
+  name: awsctrl-s3-bucket-test-f596ac84
+  # generateName: awsctrl-s3-bucket-test-
+spec:
+  accessControl: PublicRead
+  metricsConfigurations: 
+  - ref: 
+      id: EntireBucket
+  websiteConfiguration:
+    indexDocument: index.html
+    errorDocument: error.html
+    routingRules:
+    - routingRuleCondition:
+        httpErrorCodeReturnedEquals: '404'
+        keyPrefixEquals: out1/
+      redirectRule:
+        hostName: ec2-11-22-333-44.compute-1.amazonaws.com
+        replaceKeyPrefixWith: report-404/

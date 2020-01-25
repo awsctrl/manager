@@ -51,41 +51,22 @@ func (in *Group) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Group"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"Arn": map[string]interface{}{
-			"Value": cloudformation.GetAtt("Group", "Arn"),
+			"Value":  cloudformation.GetAtt("Group", "Arn"),
+			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
 		},
 	}
 
 	iamGroup := &iam.Group{}
 
-	if len(in.Spec.ManagedPolicy) > 0 {
-		iamGroupManagedPolicy := []string{}
-
-		for _, item := range in.Spec.ManagedPolicy {
-			iamGroupManagedPolicyItem := item.DeepCopy()
-
-			if iamGroupManagedPolicyItem.ObjectRef.Namespace == "" {
-				iamGroupManagedPolicyItem.ObjectRef.Namespace = in.Namespace
-			}
-
-		}
-
-		iamGroup.ManagedPolicyArns = iamGroupManagedPolicy
-	}
-
-	if in.Spec.Path != "" {
-		iamGroup.Path = in.Spec.Path
-	}
-
 	iamGroupPolicies := []iam.Group_Policy{}
 
 	for _, item := range in.Spec.Policies {
 		iamGroupPolicy := iam.Group_Policy{}
-
-		if item.PolicyName != "" {
-			iamGroupPolicy.PolicyName = item.PolicyName
-		}
 
 		if item.PolicyDocument != "" {
 			iamGroupPolicyJSON := make(map[string]interface{})
@@ -96,13 +77,41 @@ func (in *Group) GetTemplate(client dynamic.Interface) (string, error) {
 			iamGroupPolicy.PolicyDocument = iamGroupPolicyJSON
 		}
 
+		if item.PolicyName != "" {
+			iamGroupPolicy.PolicyName = item.PolicyName
+		}
+
 	}
 
 	if len(iamGroupPolicies) > 0 {
 		iamGroup.Policies = iamGroupPolicies
 	}
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.GroupName == "" {
+		iamGroup.GroupName = in.Name
+	}
+
 	if in.Spec.GroupName != "" {
 		iamGroup.GroupName = in.Spec.GroupName
+	}
+
+	if len(in.Spec.ManagedPolicyRefs) > 0 {
+		iamGroupManagedPolicyRefs := []string{}
+
+		for _, item := range in.Spec.ManagedPolicyRefs {
+			iamGroupManagedPolicyRefsItem := item.DeepCopy()
+
+			if iamGroupManagedPolicyRefsItem.ObjectRef.Namespace == "" {
+				iamGroupManagedPolicyRefsItem.ObjectRef.Namespace = in.Namespace
+			}
+
+		}
+
+		iamGroup.ManagedPolicyArns = iamGroupManagedPolicyRefs
+	}
+
+	if in.Spec.Path != "" {
+		iamGroup.Path = in.Spec.Path
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

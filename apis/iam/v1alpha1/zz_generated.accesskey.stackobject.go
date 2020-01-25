@@ -50,17 +50,17 @@ func (in *AccessKey) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("AccessKey"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"SecretAccessKey": map[string]interface{}{
-			"Value": cloudformation.GetAtt("AccessKey", "SecretAccessKey"),
+			"Value":  cloudformation.GetAtt("AccessKey", "SecretAccessKey"),
+			"Export": map[string]interface{}{"Name": in.Name + "SecretAccessKey"},
 		},
 	}
 
 	iamAccessKey := &iam.AccessKey{}
-
-	if in.Spec.UserName != "" {
-		iamAccessKey.UserName = in.Spec.UserName
-	}
 
 	if in.Spec.Serial != iamAccessKey.Serial {
 		iamAccessKey.Serial = in.Spec.Serial
@@ -68,6 +68,10 @@ func (in *AccessKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.Status != "" {
 		iamAccessKey.Status = in.Spec.Status
+	}
+
+	if in.Spec.UserName != "" {
+		iamAccessKey.UserName = in.Spec.UserName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

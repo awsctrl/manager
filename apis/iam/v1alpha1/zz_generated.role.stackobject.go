@@ -51,12 +51,17 @@ func (in *Role) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Role"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"Arn": map[string]interface{}{
-			"Value": cloudformation.GetAtt("Role", "Arn"),
+			"Value":  cloudformation.GetAtt("Role", "Arn"),
+			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
 		},
 		"RoleId": map[string]interface{}{
-			"Value": cloudformation.GetAtt("Role", "RoleId"),
+			"Value":  cloudformation.GetAtt("Role", "RoleId"),
+			"Export": map[string]interface{}{"Name": in.Name + "RoleId"},
 		},
 	}
 
@@ -71,16 +76,23 @@ func (in *Role) GetTemplate(client dynamic.Interface) (string, error) {
 		iamRole.AssumeRolePolicyDocument = iamRoleJSON
 	}
 
-	if in.Spec.RoleName != "" {
-		iamRole.RoleName = in.Spec.RoleName
-	}
-
 	if in.Spec.Description != "" {
 		iamRole.Description = in.Spec.Description
 	}
 
-	if in.Spec.Path != "" {
-		iamRole.Path = in.Spec.Path
+	if len(in.Spec.ManagedPolicyRefs) > 0 {
+		iamRoleManagedPolicyRefs := []string{}
+
+		for _, item := range in.Spec.ManagedPolicyRefs {
+			iamRoleManagedPolicyRefsItem := item.DeepCopy()
+
+			if iamRoleManagedPolicyRefsItem.ObjectRef.Namespace == "" {
+				iamRoleManagedPolicyRefsItem.ObjectRef.Namespace = in.Namespace
+			}
+
+		}
+
+		iamRole.ManagedPolicyArns = iamRoleManagedPolicyRefs
 	}
 
 	if in.Spec.MaxSessionDuration != iamRole.MaxSessionDuration {
@@ -110,26 +122,23 @@ func (in *Role) GetTemplate(client dynamic.Interface) (string, error) {
 	if len(iamRolePolicies) > 0 {
 		iamRole.Policies = iamRolePolicies
 	}
-	if len(in.Spec.ManagedPolicy) > 0 {
-		iamRoleManagedPolicy := []string{}
-
-		for _, item := range in.Spec.ManagedPolicy {
-			iamRoleManagedPolicyItem := item.DeepCopy()
-
-			if iamRoleManagedPolicyItem.ObjectRef.Namespace == "" {
-				iamRoleManagedPolicyItem.ObjectRef.Namespace = in.Namespace
-			}
-
-		}
-
-		iamRole.ManagedPolicyArns = iamRoleManagedPolicy
-	}
-
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.PermissionsBoundary != "" {
 		iamRole.PermissionsBoundary = in.Spec.PermissionsBoundary
 	}
 
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.Path != "" {
+		iamRole.Path = in.Spec.Path
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.RoleName == "" {
+		iamRole.RoleName = in.Name
+	}
+
+	if in.Spec.RoleName != "" {
+		iamRole.RoleName = in.Spec.RoleName
+	}
 
 	template.Resources = map[string]cloudformation.Resource{
 		"Role": iamRole,

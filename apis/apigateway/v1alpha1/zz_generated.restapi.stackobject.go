@@ -52,15 +52,64 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("RestApi"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"RootResourceId": map[string]interface{}{
-			"Value": cloudformation.GetAtt("RestApi", "RootResourceId"),
+			"Value":  cloudformation.GetAtt("RestApi", "RootResourceId"),
+			"Export": map[string]interface{}{"Name": in.Name + "RootResourceId"},
 		},
 	}
 
 	apigatewayRestApi := &apigateway.RestApi{}
 
+	if in.Spec.MinimumCompressionSize != apigatewayRestApi.MinimumCompressionSize {
+		apigatewayRestApi.MinimumCompressionSize = in.Spec.MinimumCompressionSize
+	}
+
+	if len(in.Spec.BinaryMediaTypes) > 0 {
+		apigatewayRestApi.BinaryMediaTypes = in.Spec.BinaryMediaTypes
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayRestApi.Description = in.Spec.Description
+	}
+
+	if !reflect.DeepEqual(in.Spec.EndpointConfiguration, RestApi_EndpointConfiguration{}) {
+		apigatewayRestApiEndpointConfiguration := apigateway.RestApi_EndpointConfiguration{}
+
+		if len(in.Spec.EndpointConfiguration.VpcEndpointRefs) > 0 {
+			apigatewayRestApiEndpointConfigurationVpcEndpointRefs := []string{}
+
+			for _, item := range in.Spec.EndpointConfiguration.VpcEndpointRefs {
+				apigatewayRestApiEndpointConfigurationVpcEndpointRefsItem := item.DeepCopy()
+
+				if apigatewayRestApiEndpointConfigurationVpcEndpointRefsItem.ObjectRef.Namespace == "" {
+					apigatewayRestApiEndpointConfigurationVpcEndpointRefsItem.ObjectRef.Namespace = in.Namespace
+				}
+
+			}
+
+			apigatewayRestApiEndpointConfiguration.VpcEndpointIds = apigatewayRestApiEndpointConfigurationVpcEndpointRefs
+		}
+
+		if len(in.Spec.EndpointConfiguration.Types) > 0 {
+			apigatewayRestApiEndpointConfiguration.Types = in.Spec.EndpointConfiguration.Types
+		}
+
+		apigatewayRestApi.EndpointConfiguration = &apigatewayRestApiEndpointConfiguration
+	}
+
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.ApiKeySourceType != "" {
+		apigatewayRestApi.ApiKeySourceType = in.Spec.ApiKeySourceType
+	}
+
+	if in.Spec.CloneFrom != "" {
+		apigatewayRestApi.CloneFrom = in.Spec.CloneFrom
+	}
+
 	if in.Spec.Body != "" {
 		apigatewayRestApiJSON := make(map[string]interface{})
 		err := json.Unmarshal([]byte(in.Spec.Body), &apigatewayRestApiJSON)
@@ -72,10 +121,6 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if !reflect.DeepEqual(in.Spec.BodyS3Location, RestApi_S3Location{}) {
 		apigatewayRestApiS3Location := apigateway.RestApi_S3Location{}
-
-		if in.Spec.BodyS3Location.Key != "" {
-			apigatewayRestApiS3Location.Key = in.Spec.BodyS3Location.Key
-		}
 
 		if in.Spec.BodyS3Location.Version != "" {
 			apigatewayRestApiS3Location.Version = in.Spec.BodyS3Location.Version
@@ -89,60 +134,19 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayRestApiS3Location.ETag = in.Spec.BodyS3Location.ETag
 		}
 
+		if in.Spec.BodyS3Location.Key != "" {
+			apigatewayRestApiS3Location.Key = in.Spec.BodyS3Location.Key
+		}
+
 		apigatewayRestApi.BodyS3Location = &apigatewayRestApiS3Location
-	}
-
-	if !reflect.DeepEqual(in.Spec.Parameters, map[string]string{}) {
-		apigatewayRestApi.Parameters = in.Spec.Parameters
-	}
-
-	if in.Spec.MinimumCompressionSize != apigatewayRestApi.MinimumCompressionSize {
-		apigatewayRestApi.MinimumCompressionSize = in.Spec.MinimumCompressionSize
-	}
-
-	if in.Spec.CloneFrom != "" {
-		apigatewayRestApi.CloneFrom = in.Spec.CloneFrom
-	}
-
-	if !reflect.DeepEqual(in.Spec.EndpointConfiguration, RestApi_EndpointConfiguration{}) {
-		apigatewayRestApiEndpointConfiguration := apigateway.RestApi_EndpointConfiguration{}
-
-		if len(in.Spec.EndpointConfiguration.Types) > 0 {
-			apigatewayRestApiEndpointConfiguration.Types = in.Spec.EndpointConfiguration.Types
-		}
-
-		if len(in.Spec.EndpointConfiguration.VpcEndpoint) > 0 {
-			apigatewayRestApiEndpointConfigurationVpcEndpoint := []string{}
-
-			for _, item := range in.Spec.EndpointConfiguration.VpcEndpoint {
-				apigatewayRestApiEndpointConfigurationVpcEndpointItem := item.DeepCopy()
-
-				if apigatewayRestApiEndpointConfigurationVpcEndpointItem.ObjectRef.Namespace == "" {
-					apigatewayRestApiEndpointConfigurationVpcEndpointItem.ObjectRef.Namespace = in.Namespace
-				}
-
-			}
-
-			apigatewayRestApiEndpointConfiguration.VpcEndpointIds = apigatewayRestApiEndpointConfigurationVpcEndpoint
-		}
-
-		apigatewayRestApi.EndpointConfiguration = &apigatewayRestApiEndpointConfiguration
-	}
-
-	if in.Spec.FailOnWarnings || !in.Spec.FailOnWarnings {
-		apigatewayRestApi.FailOnWarnings = in.Spec.FailOnWarnings
-	}
-
-	if in.Spec.ApiKeySourceType != "" {
-		apigatewayRestApi.ApiKeySourceType = in.Spec.ApiKeySourceType
-	}
-
-	if in.Spec.Description != "" {
-		apigatewayRestApi.Description = in.Spec.Description
 	}
 
 	if in.Spec.Name != "" {
 		apigatewayRestApi.Name = in.Spec.Name
+	}
+
+	if !reflect.DeepEqual(in.Spec.Parameters, map[string]string{}) {
+		apigatewayRestApi.Parameters = in.Spec.Parameters
 	}
 
 	if in.Spec.Policy != "" {
@@ -154,8 +158,8 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayRestApi.Policy = apigatewayRestApiJSON
 	}
 
-	if len(in.Spec.BinaryMediaTypes) > 0 {
-		apigatewayRestApi.BinaryMediaTypes = in.Spec.BinaryMediaTypes
+	if in.Spec.FailOnWarnings || !in.Spec.FailOnWarnings {
+		apigatewayRestApi.FailOnWarnings = in.Spec.FailOnWarnings
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

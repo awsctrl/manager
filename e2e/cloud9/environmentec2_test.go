@@ -55,7 +55,7 @@ var _ = Describe("Run Cloud9 EnvironmentEC2 Controller", func() {
 				},
 				Spec: cloud9v1alpha1.EnvironmentEC2Spec{
 					InstanceType: "t2.micro",
-					Subnet: metav1alpha1.ObjectReference{
+					SubnetRef: metav1alpha1.ObjectReference{
 						Id: "subnet-12688c49",
 					},
 				},

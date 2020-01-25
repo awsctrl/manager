@@ -51,28 +51,27 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Function"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"Arn": map[string]interface{}{
-			"Value": cloudformation.GetAtt("Function", "Arn"),
+			"Value":  cloudformation.GetAtt("Function", "Arn"),
+			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
 		},
 	}
 
 	lambdaFunction := &lambda.Function{}
 
-	if in.Spec.ReservedConcurrentExecutions != lambdaFunction.ReservedConcurrentExecutions {
-		lambdaFunction.ReservedConcurrentExecutions = in.Spec.ReservedConcurrentExecutions
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	// TODO(christopherhein) move these to a defaulter
-	lambdaFunctionKmsKeyItem := in.Spec.KmsKey.DeepCopy()
+	lambdaFunctionKmsKeyRefItem := in.Spec.KmsKeyRef.DeepCopy()
 
-	if lambdaFunctionKmsKeyItem.ObjectRef.Namespace == "" {
-		lambdaFunctionKmsKeyItem.ObjectRef.Namespace = in.Namespace
+	if lambdaFunctionKmsKeyRefItem.ObjectRef.Namespace == "" {
+		lambdaFunctionKmsKeyRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.KmsKey = *lambdaFunctionKmsKeyItem
-	kmsKeyArn, err := in.Spec.KmsKey.String(client)
+	in.Spec.KmsKeyRef = *lambdaFunctionKmsKeyRefItem
+	kmsKeyArn, err := in.Spec.KmsKeyRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -81,8 +80,13 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 		lambdaFunction.KmsKeyArn = kmsKeyArn
 	}
 
-	if in.Spec.FunctionName != "" {
-		lambdaFunction.FunctionName = in.Spec.FunctionName
+	if in.Spec.Timeout != lambdaFunction.Timeout {
+		lambdaFunction.Timeout = in.Spec.Timeout
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.MemorySize != lambdaFunction.MemorySize {
+		lambdaFunction.MemorySize = in.Spec.MemorySize
 	}
 
 	if !reflect.DeepEqual(in.Spec.TracingConfig, Function_TracingConfig{}) {
@@ -95,34 +99,26 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 		lambdaFunction.TracingConfig = &lambdaFunctionTracingConfig
 	}
 
-	if in.Spec.Runtime != "" {
-		lambdaFunction.Runtime = in.Spec.Runtime
+	if in.Spec.Handler != "" {
+		lambdaFunction.Handler = in.Spec.Handler
 	}
 
-	if in.Spec.Timeout != lambdaFunction.Timeout {
-		lambdaFunction.Timeout = in.Spec.Timeout
-	}
-
-	if in.Spec.MemorySize != lambdaFunction.MemorySize {
-		lambdaFunction.MemorySize = in.Spec.MemorySize
-	}
-
-	if in.Spec.Role != "" {
-		lambdaFunction.Role = in.Spec.Role
+	if in.Spec.Description != "" {
+		lambdaFunction.Description = in.Spec.Description
 	}
 
 	if !reflect.DeepEqual(in.Spec.DeadLetterConfig, Function_DeadLetterConfig{}) {
 		lambdaFunctionDeadLetterConfig := lambda.Function_DeadLetterConfig{}
 
 		// TODO(christopherhein) move these to a defaulter
-		lambdaFunctionDeadLetterConfigTargetItem := in.Spec.DeadLetterConfig.Target.DeepCopy()
+		lambdaFunctionDeadLetterConfigTargetRefItem := in.Spec.DeadLetterConfig.TargetRef.DeepCopy()
 
-		if lambdaFunctionDeadLetterConfigTargetItem.ObjectRef.Namespace == "" {
-			lambdaFunctionDeadLetterConfigTargetItem.ObjectRef.Namespace = in.Namespace
+		if lambdaFunctionDeadLetterConfigTargetRefItem.ObjectRef.Namespace == "" {
+			lambdaFunctionDeadLetterConfigTargetRefItem.ObjectRef.Namespace = in.Namespace
 		}
 
-		in.Spec.DeadLetterConfig.Target = *lambdaFunctionDeadLetterConfigTargetItem
-		targetArn, err := in.Spec.DeadLetterConfig.Target.String(client)
+		in.Spec.DeadLetterConfig.TargetRef = *lambdaFunctionDeadLetterConfigTargetRefItem
+		targetArn, err := in.Spec.DeadLetterConfig.TargetRef.String(client)
 		if err != nil {
 			return "", err
 		}
@@ -132,14 +128,6 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		lambdaFunction.DeadLetterConfig = &lambdaFunctionDeadLetterConfig
-	}
-
-	if in.Spec.Description != "" {
-		lambdaFunction.Description = in.Spec.Description
-	}
-
-	if in.Spec.Handler != "" {
-		lambdaFunction.Handler = in.Spec.Handler
 	}
 
 	if !reflect.DeepEqual(in.Spec.Environment, Function_Environment{}) {
@@ -152,48 +140,33 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 		lambdaFunction.Environment = &lambdaFunctionEnvironment
 	}
 
-	if len(in.Spec.Layers) > 0 {
-		lambdaFunction.Layers = in.Spec.Layers
+	if in.Spec.ReservedConcurrentExecutions != lambdaFunction.ReservedConcurrentExecutions {
+		lambdaFunction.ReservedConcurrentExecutions = in.Spec.ReservedConcurrentExecutions
 	}
 
-	if !reflect.DeepEqual(in.Spec.VpcConfig, Function_VpcConfig{}) {
-		lambdaFunctionVpcConfig := lambda.Function_VpcConfig{}
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.FunctionName == "" {
+		lambdaFunction.FunctionName = in.Name
+	}
 
-		if len(in.Spec.VpcConfig.SecurityGroup) > 0 {
-			lambdaFunctionVpcConfigSecurityGroup := []string{}
+	if in.Spec.FunctionName != "" {
+		lambdaFunction.FunctionName = in.Spec.FunctionName
+	}
 
-			for _, item := range in.Spec.VpcConfig.SecurityGroup {
-				lambdaFunctionVpcConfigSecurityGroupItem := item.DeepCopy()
+	if in.Spec.Role != "" {
+		lambdaFunction.Role = in.Spec.Role
+	}
 
-				if lambdaFunctionVpcConfigSecurityGroupItem.ObjectRef.Namespace == "" {
-					lambdaFunctionVpcConfigSecurityGroupItem.ObjectRef.Namespace = in.Namespace
-				}
-
-			}
-
-			lambdaFunctionVpcConfig.SecurityGroupIds = lambdaFunctionVpcConfigSecurityGroup
-		}
-
-		if len(in.Spec.VpcConfig.Subnet) > 0 {
-			lambdaFunctionVpcConfigSubnet := []string{}
-
-			for _, item := range in.Spec.VpcConfig.Subnet {
-				lambdaFunctionVpcConfigSubnetItem := item.DeepCopy()
-
-				if lambdaFunctionVpcConfigSubnetItem.ObjectRef.Namespace == "" {
-					lambdaFunctionVpcConfigSubnetItem.ObjectRef.Namespace = in.Namespace
-				}
-
-			}
-
-			lambdaFunctionVpcConfig.SubnetIds = lambdaFunctionVpcConfigSubnet
-		}
-
-		lambdaFunction.VpcConfig = &lambdaFunctionVpcConfig
+	if in.Spec.Runtime != "" {
+		lambdaFunction.Runtime = in.Spec.Runtime
 	}
 
 	if !reflect.DeepEqual(in.Spec.Code, Function_Code{}) {
 		lambdaFunctionCode := lambda.Function_Code{}
+
+		if in.Spec.Code.S3Bucket != "" {
+			lambdaFunctionCode.S3Bucket = in.Spec.Code.S3Bucket
+		}
 
 		if in.Spec.Code.S3Key != "" {
 			lambdaFunctionCode.S3Key = in.Spec.Code.S3Key
@@ -207,11 +180,47 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 			lambdaFunctionCode.ZipFile = in.Spec.Code.ZipFile
 		}
 
-		if in.Spec.Code.S3Bucket != "" {
-			lambdaFunctionCode.S3Bucket = in.Spec.Code.S3Bucket
+		lambdaFunction.Code = &lambdaFunctionCode
+	}
+
+	if !reflect.DeepEqual(in.Spec.VpcConfig, Function_VpcConfig{}) {
+		lambdaFunctionVpcConfig := lambda.Function_VpcConfig{}
+
+		if len(in.Spec.VpcConfig.SecurityGroupRefs) > 0 {
+			lambdaFunctionVpcConfigSecurityGroupRefs := []string{}
+
+			for _, item := range in.Spec.VpcConfig.SecurityGroupRefs {
+				lambdaFunctionVpcConfigSecurityGroupRefsItem := item.DeepCopy()
+
+				if lambdaFunctionVpcConfigSecurityGroupRefsItem.ObjectRef.Namespace == "" {
+					lambdaFunctionVpcConfigSecurityGroupRefsItem.ObjectRef.Namespace = in.Namespace
+				}
+
+			}
+
+			lambdaFunctionVpcConfig.SecurityGroupIds = lambdaFunctionVpcConfigSecurityGroupRefs
 		}
 
-		lambdaFunction.Code = &lambdaFunctionCode
+		if len(in.Spec.VpcConfig.SubnetRefs) > 0 {
+			lambdaFunctionVpcConfigSubnetRefs := []string{}
+
+			for _, item := range in.Spec.VpcConfig.SubnetRefs {
+				lambdaFunctionVpcConfigSubnetRefsItem := item.DeepCopy()
+
+				if lambdaFunctionVpcConfigSubnetRefsItem.ObjectRef.Namespace == "" {
+					lambdaFunctionVpcConfigSubnetRefsItem.ObjectRef.Namespace = in.Namespace
+				}
+
+			}
+
+			lambdaFunctionVpcConfig.SubnetIds = lambdaFunctionVpcConfigSubnetRefs
+		}
+
+		lambdaFunction.VpcConfig = &lambdaFunctionVpcConfig
+	}
+
+	if len(in.Spec.Layers) > 0 {
+		lambdaFunction.Layers = in.Spec.Layers
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

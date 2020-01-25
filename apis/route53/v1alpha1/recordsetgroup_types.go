@@ -25,77 +25,77 @@ import (
 type RecordSetGroupSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// HostedZone http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-recordsetgroup.html#cfn-route53-recordsetgroup-hostedzoneid
-	HostedZone metav1alpha1.ObjectReference `json:"hostedZone,omitempty" cloudformation:"HostedZoneId,Parameter"`
+	// Comment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-recordsetgroup.html#cfn-route53-recordsetgroup-comment
+	Comment string `json:"comment,omitempty" cloudformation:"Comment,Parameter"`
+
+	// HostedZoneRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-recordsetgroup.html#cfn-route53-recordsetgroup-hostedzoneid
+	HostedZoneRef metav1alpha1.ObjectReference `json:"hostedZoneRef,omitempty" cloudformation:"HostedZoneId,Parameter"`
 
 	// HostedZoneName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-recordsetgroup.html#cfn-route53-recordsetgroup-hostedzonename
 	HostedZoneName string `json:"hostedZoneName,omitempty" cloudformation:"HostedZoneName,Parameter"`
 
 	// RecordSets http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-recordsetgroup.html#cfn-route53-recordsetgroup-recordsets
 	RecordSets []RecordSetGroup_RecordSet `json:"recordSets,omitempty" cloudformation:"RecordSets"`
-
-	// Comment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-recordsetgroup.html#cfn-route53-recordsetgroup-comment
-	Comment string `json:"comment,omitempty" cloudformation:"Comment,Parameter"`
 }
 
 // RecordSetGroup_RecordSet defines the desired state of RecordSetGroupRecordSet
 type RecordSetGroup_RecordSet struct {
+	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-name
+	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
+
 	// Region http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-region
 	Region string `json:"region,omitempty" cloudformation:"Region,Parameter"`
-
-	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-type
-	Type string `json:"type" cloudformation:"Type,Parameter"`
-
-	// GeoLocation http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-geolocation
-	GeoLocation RecordSetGroup_GeoLocation `json:"geoLocation,omitempty" cloudformation:"GeoLocation"`
-
-	// Comment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-comment
-	Comment string `json:"comment,omitempty" cloudformation:"Comment,Parameter"`
-
-	// HostedZone http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzoneid
-	HostedZone metav1alpha1.ObjectReference `json:"hostedZone,omitempty" cloudformation:"HostedZoneId,Parameter"`
-
-	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-name
-	Name string `json:"name" cloudformation:"Name,Parameter"`
 
 	// ResourceRecords http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-resourcerecords
 	ResourceRecords []string `json:"resourceRecords,omitempty" cloudformation:"ResourceRecords"`
 
-	// TTL http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-ttl
-	TTL string `json:"tTL,omitempty" cloudformation:"TTL,Parameter"`
-
-	// Weight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-weight
-	Weight int `json:"weight,omitempty" cloudformation:"Weight,Parameter"`
+	// MultiValueAnswer http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-multivalueanswer
+	MultiValueAnswer bool `json:"multiValueAnswer,omitempty" cloudformation:"MultiValueAnswer,Parameter"`
 
 	// AliasTarget http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-aliastarget
 	AliasTarget RecordSetGroup_AliasTarget `json:"aliasTarget,omitempty" cloudformation:"AliasTarget"`
 
-	// Failover http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-failover
-	Failover string `json:"failover,omitempty" cloudformation:"Failover,Parameter"`
+	// Comment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-comment
+	Comment string `json:"comment,omitempty" cloudformation:"Comment,Parameter"`
 
-	// MultiValueAnswer http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-multivalueanswer
-	MultiValueAnswer bool `json:"multiValueAnswer,omitempty" cloudformation:"MultiValueAnswer,Parameter"`
-
-	// HealthCheck http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-healthcheckid
-	HealthCheck metav1alpha1.ObjectReference `json:"healthCheck,omitempty" cloudformation:"HealthCheckId,Parameter"`
+	// HealthCheckRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-healthcheckid
+	HealthCheckRef metav1alpha1.ObjectReference `json:"healthCheckRef,omitempty" cloudformation:"HealthCheckId,Parameter"`
 
 	// HostedZoneName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzonename
 	HostedZoneName string `json:"hostedZoneName,omitempty" cloudformation:"HostedZoneName,Parameter"`
 
+	// Weight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-weight
+	Weight int `json:"weight,omitempty" cloudformation:"Weight,Parameter"`
+
+	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-type
+	Type string `json:"type,omitempty" cloudformation:"Type,Parameter"`
+
+	// GeoLocation http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-geolocation
+	GeoLocation RecordSetGroup_GeoLocation `json:"geoLocation,omitempty" cloudformation:"GeoLocation"`
+
+	// Failover http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-failover
+	Failover string `json:"failover,omitempty" cloudformation:"Failover,Parameter"`
+
 	// SetIdentifier http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-setidentifier
 	SetIdentifier string `json:"setIdentifier,omitempty" cloudformation:"SetIdentifier,Parameter"`
+
+	// HostedZoneRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-hostedzoneid
+	HostedZoneRef metav1alpha1.ObjectReference `json:"hostedZoneRef,omitempty" cloudformation:"HostedZoneId,Parameter"`
+
+	// TTL http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-recordset.html#cfn-route53-recordset-ttl
+	TTL string `json:"tTL,omitempty" cloudformation:"TTL,Parameter"`
 }
 
 // RecordSetGroup_AliasTarget defines the desired state of RecordSetGroupAliasTarget
 type RecordSetGroup_AliasTarget struct {
-	// EvaluateTargetHealth http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-evaluatetargethealth
-	EvaluateTargetHealth bool `json:"evaluateTargetHealth,omitempty" cloudformation:"EvaluateTargetHealth,Parameter"`
-
-	// HostedZone http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
-	HostedZone metav1alpha1.ObjectReference `json:"hostedZone" cloudformation:"HostedZoneId,Parameter"`
+	// HostedZoneRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-hostedzoneid
+	HostedZoneRef metav1alpha1.ObjectReference `json:"hostedZoneRef,omitempty" cloudformation:"HostedZoneId,Parameter"`
 
 	// DNSName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-dnshostname
-	DNSName string `json:"dNSName" cloudformation:"DNSName,Parameter"`
+	DNSName string `json:"dNSName,omitempty" cloudformation:"DNSName,Parameter"`
+
+	// EvaluateTargetHealth http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-aliastarget.html#cfn-route53-aliastarget-evaluatetargethealth
+	EvaluateTargetHealth bool `json:"evaluateTargetHealth,omitempty" cloudformation:"EvaluateTargetHealth,Parameter"`
 }
 
 // RecordSetGroup_GeoLocation defines the desired state of RecordSetGroupGeoLocation

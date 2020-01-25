@@ -64,8 +64,8 @@ spec:
             groupName:
               description: GroupName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-groupname
               type: string
-            managedPolicy:
-              description: ManagedPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-managepolicyarns
+            managedPolicyRefs:
+              description: ManagedPolicyRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-managepolicyarns
               items:
                 description: ObjectReference contains information about how
                 properties:
@@ -117,9 +117,6 @@ spec:
                   policyName:
                     description: PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
                     type: string
-                required:
-                - policyDocument
-                - policyName
                 type: object
               type: array
             region:

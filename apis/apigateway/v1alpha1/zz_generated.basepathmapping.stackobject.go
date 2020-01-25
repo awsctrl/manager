@@ -50,31 +50,13 @@ func (in *BasePathMapping) GetTemplate(client dynamic.Interface) (string, error)
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("BasePathMapping"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayBasePathMapping := &apigateway.BasePathMapping{}
-
-	if in.Spec.DomainName != "" {
-		apigatewayBasePathMapping.DomainName = in.Spec.DomainName
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayBasePathMappingRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayBasePathMappingRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayBasePathMappingRestApiItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RestApi = *apigatewayBasePathMappingRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayBasePathMapping.RestApiId = restApiId
-	}
 
 	if in.Spec.Stage != "" {
 		apigatewayBasePathMapping.Stage = in.Spec.Stage
@@ -82,6 +64,27 @@ func (in *BasePathMapping) GetTemplate(client dynamic.Interface) (string, error)
 
 	if in.Spec.BasePath != "" {
 		apigatewayBasePathMapping.BasePath = in.Spec.BasePath
+	}
+
+	if in.Spec.DomainName != "" {
+		apigatewayBasePathMapping.DomainName = in.Spec.DomainName
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayBasePathMappingRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
+
+	if apigatewayBasePathMappingRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayBasePathMappingRestApiRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApiRef = *apigatewayBasePathMappingRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if restApiId != "" {
+		apigatewayBasePathMapping.RestApiId = restApiId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

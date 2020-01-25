@@ -26,16 +26,16 @@ type LayerVersionPermissionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
 	// Action http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-action
-	Action string `json:"action" cloudformation:"Action,Parameter"`
+	Action string `json:"action,omitempty" cloudformation:"Action,Parameter"`
 
-	// LayerVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-layerversionarn
-	LayerVersion metav1alpha1.ObjectReference `json:"layerVersion" cloudformation:"LayerVersionArn,Parameter"`
+	// LayerVersionRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-layerversionarn
+	LayerVersionRef metav1alpha1.ObjectReference `json:"layerVersionRef,omitempty" cloudformation:"LayerVersionArn,Parameter"`
 
-	// Organization http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-organizationid
-	Organization metav1alpha1.ObjectReference `json:"organization,omitempty" cloudformation:"OrganizationId,Parameter"`
+	// OrganizationRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-organizationid
+	OrganizationRef metav1alpha1.ObjectReference `json:"organizationRef,omitempty" cloudformation:"OrganizationId,Parameter"`
 
 	// Principal http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-principal
-	Principal string `json:"principal" cloudformation:"Principal,Parameter"`
+	Principal string `json:"principal,omitempty" cloudformation:"Principal,Parameter"`
 }
 
 // LayerVersionPermissionStatus defines the observed state of LayerVersionPermission

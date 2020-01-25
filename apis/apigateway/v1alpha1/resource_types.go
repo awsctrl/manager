@@ -25,14 +25,14 @@ import (
 type ResourceSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// ParentRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-parentid
+	ParentRef metav1alpha1.ObjectReference `json:"parentRef,omitempty" cloudformation:"ParentId,Parameter"`
+
 	// PathPart http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-pathpart
-	PathPart string `json:"pathPart" cloudformation:"PathPart,Parameter"`
+	PathPart string `json:"pathPart,omitempty" cloudformation:"PathPart,Parameter"`
 
-	// RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-restapiid
-	RestApi metav1alpha1.ObjectReference `json:"restApi" cloudformation:"RestApiId,Parameter"`
-
-	// Parent http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-parentid
-	Parent metav1alpha1.ObjectReference `json:"parent" cloudformation:"ParentId,Parameter"`
+	// RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-resource.html#cfn-apigateway-resource-restapiid
+	RestApiRef metav1alpha1.ObjectReference `json:"restApiRef,omitempty" cloudformation:"RestApiId,Parameter"`
 }
 
 // ResourceStatus defines the observed state of Resource

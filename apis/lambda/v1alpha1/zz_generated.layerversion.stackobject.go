@@ -51,10 +51,21 @@ func (in *LayerVersion) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("LayerVersion"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	lambdaLayerVersion := &lambda.LayerVersion{}
+
+	if in.Spec.Description != "" {
+		lambdaLayerVersion.Description = in.Spec.Description
+	}
+
+	if in.Spec.LayerName != "" {
+		lambdaLayerVersion.LayerName = in.Spec.LayerName
+	}
 
 	if in.Spec.LicenseInfo != "" {
 		lambdaLayerVersion.LicenseInfo = in.Spec.LicenseInfo
@@ -67,6 +78,10 @@ func (in *LayerVersion) GetTemplate(client dynamic.Interface) (string, error) {
 	if !reflect.DeepEqual(in.Spec.Content, LayerVersion_Content{}) {
 		lambdaLayerVersionContent := lambda.LayerVersion_Content{}
 
+		if in.Spec.Content.S3Bucket != "" {
+			lambdaLayerVersionContent.S3Bucket = in.Spec.Content.S3Bucket
+		}
+
 		if in.Spec.Content.S3Key != "" {
 			lambdaLayerVersionContent.S3Key = in.Spec.Content.S3Key
 		}
@@ -75,19 +90,7 @@ func (in *LayerVersion) GetTemplate(client dynamic.Interface) (string, error) {
 			lambdaLayerVersionContent.S3ObjectVersion = in.Spec.Content.S3ObjectVersion
 		}
 
-		if in.Spec.Content.S3Bucket != "" {
-			lambdaLayerVersionContent.S3Bucket = in.Spec.Content.S3Bucket
-		}
-
 		lambdaLayerVersion.Content = &lambdaLayerVersionContent
-	}
-
-	if in.Spec.Description != "" {
-		lambdaLayerVersion.Description = in.Spec.Description
-	}
-
-	if in.Spec.LayerName != "" {
-		lambdaLayerVersion.LayerName = in.Spec.LayerName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

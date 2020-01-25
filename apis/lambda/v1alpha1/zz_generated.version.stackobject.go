@@ -51,23 +51,17 @@ func (in *Version) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Version"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"Version": map[string]interface{}{
-			"Value": cloudformation.GetAtt("Version", "Version"),
+			"Value":  cloudformation.GetAtt("Version", "Version"),
+			"Export": map[string]interface{}{"Name": in.Name + "Version"},
 		},
 	}
 
 	lambdaVersion := &lambda.Version{}
-
-	if !reflect.DeepEqual(in.Spec.ProvisionedConcurrencyConfig, Version_ProvisionedConcurrencyConfiguration{}) {
-		lambdaVersionProvisionedConcurrencyConfiguration := lambda.Version_ProvisionedConcurrencyConfiguration{}
-
-		if in.Spec.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions != lambdaVersionProvisionedConcurrencyConfiguration.ProvisionedConcurrentExecutions {
-			lambdaVersionProvisionedConcurrencyConfiguration.ProvisionedConcurrentExecutions = in.Spec.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions
-		}
-
-		lambdaVersion.ProvisionedConcurrencyConfig = &lambdaVersionProvisionedConcurrencyConfiguration
-	}
 
 	if in.Spec.CodeSha256 != "" {
 		lambdaVersion.CodeSha256 = in.Spec.CodeSha256
@@ -79,6 +73,16 @@ func (in *Version) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.FunctionName != "" {
 		lambdaVersion.FunctionName = in.Spec.FunctionName
+	}
+
+	if !reflect.DeepEqual(in.Spec.ProvisionedConcurrencyConfig, Version_ProvisionedConcurrencyConfiguration{}) {
+		lambdaVersionProvisionedConcurrencyConfiguration := lambda.Version_ProvisionedConcurrencyConfiguration{}
+
+		if in.Spec.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions != lambdaVersionProvisionedConcurrencyConfiguration.ProvisionedConcurrentExecutions {
+			lambdaVersionProvisionedConcurrencyConfiguration.ProvisionedConcurrentExecutions = in.Spec.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions
+		}
+
+		lambdaVersion.ProvisionedConcurrencyConfig = &lambdaVersionProvisionedConcurrencyConfiguration
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

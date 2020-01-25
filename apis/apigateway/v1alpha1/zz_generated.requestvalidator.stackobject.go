@@ -50,6 +50,9 @@ func (in *RequestValidator) GetTemplate(client dynamic.Interface) (string, error
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("RequestValidator"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
@@ -68,14 +71,14 @@ func (in *RequestValidator) GetTemplate(client dynamic.Interface) (string, error
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayRequestValidatorRestApiItem := in.Spec.RestApi.DeepCopy()
+	apigatewayRequestValidatorRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
 
-	if apigatewayRequestValidatorRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayRequestValidatorRestApiItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayRequestValidatorRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayRequestValidatorRestApiRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.RestApi = *apigatewayRequestValidatorRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
+	in.Spec.RestApiRef = *apigatewayRequestValidatorRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
 	if err != nil {
 		return "", err
 	}

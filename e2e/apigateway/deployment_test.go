@@ -77,7 +77,7 @@ var _ = Describe("Run Apigateway Deployment Controller", func() {
 						IntegrationHttpMethod: "POST",
 						Type:                  "MOCK",
 					},
-					Resource: metav1alpha1.ObjectReference{
+					ResourceRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",
@@ -85,7 +85,7 @@ var _ = Describe("Run Apigateway Deployment Controller", func() {
 							Key:        "RootResourceId",
 						},
 					},
-					RestApi: metav1alpha1.ObjectReference{
+					RestApiRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",
@@ -97,10 +97,10 @@ var _ = Describe("Run Apigateway Deployment Controller", func() {
 			}
 
 			if os.Getenv("USE_AWS_CLIENT") != "true" {
-				method.Spec.Resource.ObjectRef = metav1alpha1.ObjectRef{}
-				method.Spec.Resource.Arn = "resource-arn"
-				method.Spec.RestApi.ObjectRef = metav1alpha1.ObjectRef{}
-				method.Spec.RestApi.Arn = "restapi-arn"
+				method.Spec.ResourceRef.ObjectRef = metav1alpha1.ObjectRef{}
+				method.Spec.ResourceRef.Arn = "resource-arn"
+				method.Spec.RestApiRef.ObjectRef = metav1alpha1.ObjectRef{}
+				method.Spec.RestApiRef.Arn = "restapi-arn"
 			}
 
 			By("Creating new Apigateway Method")
@@ -114,7 +114,7 @@ var _ = Describe("Run Apigateway Deployment Controller", func() {
 				Spec: apigatewayv1alpha1.DeploymentSpec{
 					StageName:   "staging",
 					Description: "Staging Deployment desc",
-					RestApi: metav1alpha1.ObjectReference{
+					RestApiRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",
@@ -127,8 +127,8 @@ var _ = Describe("Run Apigateway Deployment Controller", func() {
 			}
 
 			if os.Getenv("USE_AWS_CLIENT") != "true" {
-				instance.Spec.RestApi.ObjectRef = metav1alpha1.ObjectRef{}
-				instance.Spec.RestApi.Arn = "restapi-arn"
+				instance.Spec.RestApiRef.ObjectRef = metav1alpha1.ObjectRef{}
+				instance.Spec.RestApiRef.Arn = "restapi-arn"
 			}
 
 			By("Creating new Apigateway Deployment")
@@ -186,9 +186,6 @@ var _ = Describe("Run Apigateway Deployment Controller", func() {
 
 			By("Deleting Apigateway RestApi")
 			Expect(k8sclient.Delete(context.Background(), restapi)).Should(Succeed())
-
-			By("Deleting Deployment Stack")
-			Expect(k8sclient.Delete(context.Background(), stack)).Should(Succeed())
 
 			By("Expecting metav1alpha1.DeleteCompleteStatus")
 			Eventually(func() bool {

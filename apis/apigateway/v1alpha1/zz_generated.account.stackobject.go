@@ -50,20 +50,23 @@ func (in *Account) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Account"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayAccount := &apigateway.Account{}
 
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayAccountCloudWatchRoleItem := in.Spec.CloudWatchRole.DeepCopy()
+	apigatewayAccountCloudWatchRoleRefItem := in.Spec.CloudWatchRoleRef.DeepCopy()
 
-	if apigatewayAccountCloudWatchRoleItem.ObjectRef.Namespace == "" {
-		apigatewayAccountCloudWatchRoleItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayAccountCloudWatchRoleRefItem.ObjectRef.Namespace == "" {
+		apigatewayAccountCloudWatchRoleRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.CloudWatchRole = *apigatewayAccountCloudWatchRoleItem
-	cloudWatchRoleArn, err := in.Spec.CloudWatchRole.String(client)
+	in.Spec.CloudWatchRoleRef = *apigatewayAccountCloudWatchRoleRefItem
+	cloudWatchRoleArn, err := in.Spec.CloudWatchRoleRef.String(client)
 	if err != nil {
 		return "", err
 	}

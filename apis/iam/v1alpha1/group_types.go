@@ -25,8 +25,8 @@ import (
 type GroupSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// ManagedPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-managepolicyarns
-	ManagedPolicy []metav1alpha1.ObjectReference `json:"managedPolicy,omitempty" cloudformation:"ManagedPolicyArns"`
+	// ManagedPolicyRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-managepolicyarns
+	ManagedPolicyRefs []metav1alpha1.ObjectReference `json:"managedPolicyRefs,omitempty" cloudformation:"ManagedPolicyArns"`
 
 	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-path
 	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
@@ -40,11 +40,11 @@ type GroupSpec struct {
 
 // Group_Policy defines the desired state of GroupPolicy
 type Group_Policy struct {
-	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policydocument
-	PolicyDocument string `json:"policyDocument" cloudformation:"PolicyDocument,Parameter"`
-
 	// PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
-	PolicyName string `json:"policyName" cloudformation:"PolicyName,Parameter"`
+	PolicyName string `json:"policyName,omitempty" cloudformation:"PolicyName,Parameter"`
+
+	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policydocument
+	PolicyDocument string `json:"policyDocument,omitempty" cloudformation:"PolicyDocument,Parameter"`
 }
 
 // GroupStatus defines the observed state of Group

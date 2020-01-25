@@ -26,10 +26,10 @@ type UserToGroupAdditionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
 	// GroupName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html#cfn-iam-addusertogroup-groupname
-	GroupName string `json:"groupName" cloudformation:"GroupName,Parameter"`
+	GroupName string `json:"groupName,omitempty" cloudformation:"GroupName,Parameter"`
 
 	// Users http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-addusertogroup.html#cfn-iam-addusertogroup-users
-	Users []string `json:"users" cloudformation:"Users"`
+	Users []string `json:"users,omitempty" cloudformation:"Users"`
 }
 
 // UserToGroupAdditionStatus defines the observed state of UserToGroupAddition

@@ -78,9 +78,6 @@ spec:
                 s3ObjectVersion:
                   description: S3ObjectVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-layerversion-content.html#cfn-lambda-layerversion-content-s3objectversion
                   type: string
-              required:
-              - s3Bucket
-              - s3Key
               type: object
             description:
               description: Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversion.html#cfn-lambda-layerversion-description
@@ -118,8 +115,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - content
           type: object
         status:
           description: LayerVersionStatus defines the observed state of LayerVersion

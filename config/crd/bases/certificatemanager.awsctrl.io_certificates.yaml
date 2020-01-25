@@ -77,9 +77,6 @@ spec:
                   validationDomain:
                     description: ValidationDomain http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-certificatemanager-certificate-domainvalidationoption.html#cfn-certificatemanager-certificate-domainvalidationoption-validationdomain
                     type: string
-                required:
-                - domainName
-                - validationDomain
                 type: object
               type: array
             notificationARNs:
@@ -117,8 +114,6 @@ spec:
             validationMethod:
               description: ValidationMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-certificatemanager-certificate.html#cfn-certificatemanager-certificate-validationmethod
               type: string
-          required:
-          - domainName
           type: object
         status:
           description: CertificateStatus defines the observed state of Certificate

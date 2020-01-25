@@ -110,7 +110,6 @@ spec:
                 type: string
               type: array
           required:
-          - policyDocument
           - policyName
           type: object
         status:

@@ -60,7 +60,7 @@ var _ = Describe("Run IAM Group Controller", func() {
 						},
 					},
 					GroupName: "christopherhein",
-					ManagedPolicy: []metav1alpha1.ObjectReference{
+					ManagedPolicyRefs: []metav1alpha1.ObjectReference{
 						metav1alpha1.ObjectReference{
 							Arn: "arn:aws:iam::aws:policy/AdministratorAccess",
 						},

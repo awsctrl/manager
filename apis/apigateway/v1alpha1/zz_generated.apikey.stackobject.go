@@ -50,26 +50,13 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("ApiKey"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayApiKey := &apigateway.ApiKey{}
-
-	if in.Spec.Description != "" {
-		apigatewayApiKey.Description = in.Spec.Description
-	}
-
-	if in.Spec.Enabled || !in.Spec.Enabled {
-		apigatewayApiKey.Enabled = in.Spec.Enabled
-	}
-
-	if in.Spec.GenerateDistinctId || !in.Spec.GenerateDistinctId {
-		apigatewayApiKey.GenerateDistinctId = in.Spec.GenerateDistinctId
-	}
-
-	if in.Spec.Name != "" {
-		apigatewayApiKey.Name = in.Spec.Name
-	}
 
 	apigatewayApiKeyStageKeys := []apigateway.ApiKey_StageKey{}
 
@@ -77,14 +64,14 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayApiKeyStageKey := apigateway.ApiKey_StageKey{}
 
 		// TODO(christopherhein) move these to a defaulter
-		apigatewayApiKeyStageKeyRestApiItem := item.RestApi.DeepCopy()
+		apigatewayApiKeyStageKeyRestApiRefItem := item.RestApiRef.DeepCopy()
 
-		if apigatewayApiKeyStageKeyRestApiItem.ObjectRef.Namespace == "" {
-			apigatewayApiKeyStageKeyRestApiItem.ObjectRef.Namespace = in.Namespace
+		if apigatewayApiKeyStageKeyRestApiRefItem.ObjectRef.Namespace == "" {
+			apigatewayApiKeyStageKeyRestApiRefItem.ObjectRef.Namespace = in.Namespace
 		}
 
-		item.RestApi = *apigatewayApiKeyStageKeyRestApiItem
-		restApiId, err := item.RestApi.String(client)
+		item.RestApiRef = *apigatewayApiKeyStageKeyRestApiRefItem
+		restApiId, err := item.RestApiRef.String(client)
 		if err != nil {
 			return "", err
 		}
@@ -108,20 +95,36 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayApiKeyCustomerItem := in.Spec.Customer.DeepCopy()
+	apigatewayApiKeyCustomerRefItem := in.Spec.CustomerRef.DeepCopy()
 
-	if apigatewayApiKeyCustomerItem.ObjectRef.Namespace == "" {
-		apigatewayApiKeyCustomerItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayApiKeyCustomerRefItem.ObjectRef.Namespace == "" {
+		apigatewayApiKeyCustomerRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.Customer = *apigatewayApiKeyCustomerItem
-	customerId, err := in.Spec.Customer.String(client)
+	in.Spec.CustomerRef = *apigatewayApiKeyCustomerRefItem
+	customerId, err := in.Spec.CustomerRef.String(client)
 	if err != nil {
 		return "", err
 	}
 
 	if customerId != "" {
 		apigatewayApiKey.CustomerId = customerId
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayApiKey.Description = in.Spec.Description
+	}
+
+	if in.Spec.Enabled || !in.Spec.Enabled {
+		apigatewayApiKey.Enabled = in.Spec.Enabled
+	}
+
+	if in.Spec.GenerateDistinctId || !in.Spec.GenerateDistinctId {
+		apigatewayApiKey.GenerateDistinctId = in.Spec.GenerateDistinctId
+	}
+
+	if in.Spec.Name != "" {
+		apigatewayApiKey.Name = in.Spec.Name
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

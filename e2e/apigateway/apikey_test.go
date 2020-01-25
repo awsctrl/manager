@@ -77,7 +77,7 @@ var _ = Describe("Run Apigateway ApiKey Controller", func() {
 					Enabled:     true,
 					StageKeys: []apigatewayv1alpha1.ApiKey_StageKey{
 						apigatewayv1alpha1.ApiKey_StageKey{
-							RestApi: metav1alpha1.ObjectReference{
+							RestApiRef: metav1alpha1.ObjectReference{
 								ObjectRef: metav1alpha1.ObjectRef{
 									Kind:       "RestApi",
 									APIVersion: "apigateway.awsctrl.io/v1alpha1",

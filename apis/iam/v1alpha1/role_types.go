@@ -25,26 +25,26 @@ import (
 type RoleSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// ManagedPolicyRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-managepolicyarns
+	ManagedPolicyRefs []metav1alpha1.ObjectReference `json:"managedPolicyRefs,omitempty" cloudformation:"ManagedPolicyArns"`
+
 	// MaxSessionDuration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-maxsessionduration
 	MaxSessionDuration int `json:"maxSessionDuration,omitempty" cloudformation:"MaxSessionDuration,Parameter"`
 
 	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-policies
 	Policies []Role_Policy `json:"policies,omitempty" cloudformation:"Policies"`
 
-	// ManagedPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-managepolicyarns
-	ManagedPolicy []metav1alpha1.ObjectReference `json:"managedPolicy,omitempty" cloudformation:"ManagedPolicyArns"`
-
-	// PermissionsBoundary http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-permissionsboundary
-	PermissionsBoundary string `json:"permissionsBoundary,omitempty" cloudformation:"PermissionsBoundary,Parameter"`
-
 	// AssumeRolePolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-assumerolepolicydocument
-	AssumeRolePolicyDocument string `json:"assumeRolePolicyDocument" cloudformation:"AssumeRolePolicyDocument,Parameter"`
+	AssumeRolePolicyDocument string `json:"assumeRolePolicyDocument,omitempty" cloudformation:"AssumeRolePolicyDocument,Parameter"`
+
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 
 	// RoleName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-rolename
 	RoleName string `json:"roleName,omitempty" cloudformation:"RoleName,Parameter"`
 
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+	// PermissionsBoundary http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-permissionsboundary
+	PermissionsBoundary string `json:"permissionsBoundary,omitempty" cloudformation:"PermissionsBoundary,Parameter"`
 
 	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-path
 	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
@@ -52,11 +52,11 @@ type RoleSpec struct {
 
 // Role_Policy defines the desired state of RolePolicy
 type Role_Policy struct {
-	// PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
-	PolicyName string `json:"policyName" cloudformation:"PolicyName,Parameter"`
-
 	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policydocument
-	PolicyDocument string `json:"policyDocument" cloudformation:"PolicyDocument,Parameter"`
+	PolicyDocument string `json:"policyDocument,omitempty" cloudformation:"PolicyDocument,Parameter"`
+
+	// PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
+	PolicyName string `json:"policyName,omitempty" cloudformation:"PolicyName,Parameter"`
 }
 
 // RoleStatus defines the observed state of Role
