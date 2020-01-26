@@ -78,7 +78,7 @@ var _ = Describe("Run Apigateway DocumentationPart Controller", func() {
 						Path:   "/hello",
 					},
 					Properties: `{"description":"Example description"}`,
-					RestApi: metav1alpha1.ObjectReference{
+					RestApiRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "RestApi",
 							APIVersion: "apigateway.awsctrl.io/v1alpha1",

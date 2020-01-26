@@ -26,7 +26,7 @@ type AccessKeySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
 	// UserName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html#cfn-iam-accesskey-username
-	UserName string `json:"userName" cloudformation:"UserName,Parameter"`
+	UserName string `json:"userName,omitempty" cloudformation:"UserName,Parameter"`
 
 	// Serial http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-accesskey.html#cfn-iam-accesskey-serial
 	Serial int `json:"serial,omitempty" cloudformation:"Serial,Parameter"`

@@ -85,8 +85,11 @@ spec:
               type: string
             region:
               type: string
-            source:
-              description: Source http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourcearn
+            sourceAccount:
+              description: SourceAccount http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourceaccount
+              type: string
+            sourceRef:
+              description: SourceRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourcearn
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -111,9 +114,6 @@ spec:
                   description: Namespace of the referent.
                   type: string
               type: object
-            sourceAccount:
-              description: SourceAccount http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourceaccount
-              type: string
             stackName:
               type: string
             tags:
@@ -129,10 +129,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - action
-          - functionName
-          - principal
           type: object
         status:
           description: PermissionStatus defines the observed state of Permission

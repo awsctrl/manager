@@ -50,6 +50,9 @@ func (in *ServiceLinkedRole) GetTemplate(client dynamic.Interface) (string, erro
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("ServiceLinkedRole"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 

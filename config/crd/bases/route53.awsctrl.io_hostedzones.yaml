@@ -80,9 +80,6 @@ spec:
                   value:
                     description: Value http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-hostedzonetags.html#cfn-route53-hostedzonetags-value
                     type: string
-                required:
-                - key
-                - value
                 type: object
               type: array
             name:
@@ -101,8 +98,8 @@ spec:
             queryLoggingConfig:
               description: QueryLoggingConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-queryloggingconfig
               properties:
-                cloudWatchLogsLogGroup:
-                  description: CloudWatchLogsLogGroup http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-queryloggingconfig.html#cfn-route53-hostedzone-queryloggingconfig-cloudwatchlogsloggrouparn
+                cloudWatchLogsLogGroupRef:
+                  description: CloudWatchLogsLogGroupRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-queryloggingconfig.html#cfn-route53-hostedzone-queryloggingconfig-cloudwatchlogsloggrouparn
                   properties:
                     apiVersion:
                       description: API version of the referent.
@@ -127,8 +124,6 @@ spec:
                       description: Namespace of the referent.
                       type: string
                   type: object
-              required:
-              - cloudWatchLogsLogGroup
               type: object
             region:
               type: string
@@ -152,8 +147,8 @@ spec:
               items:
                 description: HostedZone_VPC defines the desired state of HostedZoneVPC
                 properties:
-                  vPC:
-                    description: VPC http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcid
+                  vPCRef:
+                    description: VPCRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcid
                     properties:
                       apiVersion:
                         description: API version of the referent.
@@ -181,13 +176,8 @@ spec:
                   vPCRegion:
                     description: VPCRegion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone-hostedzonevpcs.html#cfn-route53-hostedzone-hostedzonevpcs-vpcregion
                     type: string
-                required:
-                - vPC
-                - vPCRegion
                 type: object
               type: array
-          required:
-          - name
           type: object
         status:
           description: HostedZoneStatus defines the observed state of HostedZone

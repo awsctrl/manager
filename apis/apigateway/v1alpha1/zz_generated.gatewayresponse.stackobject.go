@@ -51,32 +51,27 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("GatewayResponse"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayGatewayResponse := &apigateway.GatewayResponse{}
-
-	if !reflect.DeepEqual(in.Spec.ResponseParameters, map[string]string{}) {
-		apigatewayGatewayResponse.ResponseParameters = in.Spec.ResponseParameters
-	}
-
-	if !reflect.DeepEqual(in.Spec.ResponseTemplates, map[string]string{}) {
-		apigatewayGatewayResponse.ResponseTemplates = in.Spec.ResponseTemplates
-	}
 
 	if in.Spec.ResponseType != "" {
 		apigatewayGatewayResponse.ResponseType = in.Spec.ResponseType
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayGatewayResponseRestApiItem := in.Spec.RestApi.DeepCopy()
+	apigatewayGatewayResponseRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
 
-	if apigatewayGatewayResponseRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayGatewayResponseRestApiItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayGatewayResponseRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayGatewayResponseRestApiRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.RestApi = *apigatewayGatewayResponseRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
+	in.Spec.RestApiRef = *apigatewayGatewayResponseRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -87,6 +82,14 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 
 	if in.Spec.StatusCode != "" {
 		apigatewayGatewayResponse.StatusCode = in.Spec.StatusCode
+	}
+
+	if !reflect.DeepEqual(in.Spec.ResponseParameters, map[string]string{}) {
+		apigatewayGatewayResponse.ResponseParameters = in.Spec.ResponseParameters
+	}
+
+	if !reflect.DeepEqual(in.Spec.ResponseTemplates, map[string]string{}) {
+		apigatewayGatewayResponse.ResponseTemplates = in.Spec.ResponseTemplates
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

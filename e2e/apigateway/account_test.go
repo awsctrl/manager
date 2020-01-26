@@ -55,7 +55,7 @@ var _ = Describe("Run Apigateway Account Controller", func() {
 					Namespace:    podnamespace,
 				},
 				Spec: apigatewayv1alpha1.AccountSpec{
-					CloudWatchRole: metav1alpha1.ObjectReference{
+					CloudWatchRoleRef: metav1alpha1.ObjectReference{
 						Arn: fmt.Sprintf("arn:aws:iam::%s:role/awsctrl-apigateway-instance", os.Getenv("AWS_ACCOUNT_ID")),
 					},
 				},

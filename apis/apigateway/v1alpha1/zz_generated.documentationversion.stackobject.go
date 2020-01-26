@@ -50,20 +50,27 @@ func (in *DocumentationVersion) GetTemplate(client dynamic.Interface) (string, e
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("DocumentationVersion"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayDocumentationVersion := &apigateway.DocumentationVersion{}
 
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayDocumentationVersionRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayDocumentationVersionRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayDocumentationVersionRestApiItem.ObjectRef.Namespace = in.Namespace
+	if in.Spec.DocumentationVersion != "" {
+		apigatewayDocumentationVersion.DocumentationVersion = in.Spec.DocumentationVersion
 	}
 
-	in.Spec.RestApi = *apigatewayDocumentationVersionRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayDocumentationVersionRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
+
+	if apigatewayDocumentationVersionRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayDocumentationVersionRestApiRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApiRef = *apigatewayDocumentationVersionRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -74,10 +81,6 @@ func (in *DocumentationVersion) GetTemplate(client dynamic.Interface) (string, e
 
 	if in.Spec.Description != "" {
 		apigatewayDocumentationVersion.Description = in.Spec.Description
-	}
-
-	if in.Spec.DocumentationVersion != "" {
-		apigatewayDocumentationVersion.DocumentationVersion = in.Spec.DocumentationVersion
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

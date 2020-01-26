@@ -102,8 +102,8 @@ spec:
                   items:
                     type: string
                   type: array
-                vpcEndpoint:
-                  description: VpcEndpoint http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-endpointconfiguration.html#cfn-apigateway-restapi-endpointconfiguration-vpcendpointids
+                vpcEndpointRefs:
+                  description: VpcEndpointRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-restapi-endpointconfiguration.html#cfn-apigateway-restapi-endpointconfiguration-vpcendpointids
                   items:
                     description: ObjectReference contains information about how
                     properties:

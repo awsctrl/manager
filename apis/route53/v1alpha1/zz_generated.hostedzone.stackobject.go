@@ -51,51 +51,13 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("HostedZone"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	route53HostedZone := &route53.HostedZone{}
-
-	route53HostedZoneVPCs := []route53.HostedZone_VPC{}
-
-	for _, item := range in.Spec.VPCs {
-		route53HostedZoneVPC := route53.HostedZone_VPC{}
-
-		// TODO(christopherhein) move these to a defaulter
-		route53HostedZoneVPCVPCItem := item.VPC.DeepCopy()
-
-		if route53HostedZoneVPCVPCItem.ObjectRef.Namespace == "" {
-			route53HostedZoneVPCVPCItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		item.VPC = *route53HostedZoneVPCVPCItem
-		vPCId, err := item.VPC.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if vPCId != "" {
-			route53HostedZoneVPC.VPCId = vPCId
-		}
-
-		if item.VPCRegion != "" {
-			route53HostedZoneVPC.VPCRegion = item.VPCRegion
-		}
-
-	}
-
-	if len(route53HostedZoneVPCs) > 0 {
-		route53HostedZone.VPCs = route53HostedZoneVPCs
-	}
-	if !reflect.DeepEqual(in.Spec.HostedZoneConfig, HostedZone_HostedZoneConfig{}) {
-		route53HostedZoneHostedZoneConfig := route53.HostedZone_HostedZoneConfig{}
-
-		if in.Spec.HostedZoneConfig.Comment != "" {
-			route53HostedZoneHostedZoneConfig.Comment = in.Spec.HostedZoneConfig.Comment
-		}
-
-		route53HostedZone.HostedZoneConfig = &route53HostedZoneHostedZoneConfig
-	}
 
 	route53HostedZoneHostedZoneTags := []route53.HostedZone_HostedZoneTag{}
 
@@ -123,14 +85,14 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 		route53HostedZoneQueryLoggingConfig := route53.HostedZone_QueryLoggingConfig{}
 
 		// TODO(christopherhein) move these to a defaulter
-		route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem := in.Spec.QueryLoggingConfig.CloudWatchLogsLogGroup.DeepCopy()
+		route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupRefItem := in.Spec.QueryLoggingConfig.CloudWatchLogsLogGroupRef.DeepCopy()
 
-		if route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem.ObjectRef.Namespace == "" {
-			route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem.ObjectRef.Namespace = in.Namespace
+		if route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupRefItem.ObjectRef.Namespace == "" {
+			route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupRefItem.ObjectRef.Namespace = in.Namespace
 		}
 
-		in.Spec.QueryLoggingConfig.CloudWatchLogsLogGroup = *route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupItem
-		cloudWatchLogsLogGroupArn, err := in.Spec.QueryLoggingConfig.CloudWatchLogsLogGroup.String(client)
+		in.Spec.QueryLoggingConfig.CloudWatchLogsLogGroupRef = *route53HostedZoneQueryLoggingConfigCloudWatchLogsLogGroupRefItem
+		cloudWatchLogsLogGroupArn, err := in.Spec.QueryLoggingConfig.CloudWatchLogsLogGroupRef.String(client)
 		if err != nil {
 			return "", err
 		}
@@ -140,6 +102,47 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		route53HostedZone.QueryLoggingConfig = &route53HostedZoneQueryLoggingConfig
+	}
+
+	route53HostedZoneVPCs := []route53.HostedZone_VPC{}
+
+	for _, item := range in.Spec.VPCs {
+		route53HostedZoneVPC := route53.HostedZone_VPC{}
+
+		// TODO(christopherhein) move these to a defaulter
+		route53HostedZoneVPCVPCRefItem := item.VPCRef.DeepCopy()
+
+		if route53HostedZoneVPCVPCRefItem.ObjectRef.Namespace == "" {
+			route53HostedZoneVPCVPCRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		item.VPCRef = *route53HostedZoneVPCVPCRefItem
+		vPCId, err := item.VPCRef.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if vPCId != "" {
+			route53HostedZoneVPC.VPCId = vPCId
+		}
+
+		if item.VPCRegion != "" {
+			route53HostedZoneVPC.VPCRegion = item.VPCRegion
+		}
+
+	}
+
+	if len(route53HostedZoneVPCs) > 0 {
+		route53HostedZone.VPCs = route53HostedZoneVPCs
+	}
+	if !reflect.DeepEqual(in.Spec.HostedZoneConfig, HostedZone_HostedZoneConfig{}) {
+		route53HostedZoneHostedZoneConfig := route53.HostedZone_HostedZoneConfig{}
+
+		if in.Spec.HostedZoneConfig.Comment != "" {
+			route53HostedZoneHostedZoneConfig.Comment = in.Spec.HostedZoneConfig.Comment
+		}
+
+		route53HostedZone.HostedZoneConfig = &route53HostedZoneHostedZoneConfig
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

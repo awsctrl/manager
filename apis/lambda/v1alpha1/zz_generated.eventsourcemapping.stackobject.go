@@ -51,6 +51,9 @@ func (in *EventSourceMapping) GetTemplate(client dynamic.Interface) (string, err
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("EventSourceMapping"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
@@ -60,35 +63,27 @@ func (in *EventSourceMapping) GetTemplate(client dynamic.Interface) (string, err
 		lambdaEventSourceMapping.MaximumRecordAgeInSeconds = in.Spec.MaximumRecordAgeInSeconds
 	}
 
-	if !reflect.DeepEqual(in.Spec.DestinationConfig, EventSourceMapping_DestinationConfig{}) {
-		lambdaEventSourceMappingDestinationConfig := lambda.EventSourceMapping_DestinationConfig{}
-
-		if !reflect.DeepEqual(in.Spec.DestinationConfig.OnFailure, EventSourceMapping_OnFailure{}) {
-			lambdaEventSourceMappingDestinationConfigOnFailure := lambda.EventSourceMapping_OnFailure{}
-
-			if in.Spec.DestinationConfig.OnFailure.Destination != "" {
-				lambdaEventSourceMappingDestinationConfigOnFailure.Destination = in.Spec.DestinationConfig.OnFailure.Destination
-			}
-
-			lambdaEventSourceMappingDestinationConfig.OnFailure = &lambdaEventSourceMappingDestinationConfigOnFailure
-		}
-
-		lambdaEventSourceMapping.DestinationConfig = &lambdaEventSourceMappingDestinationConfig
+	if in.Spec.ParallelizationFactor != lambdaEventSourceMapping.ParallelizationFactor {
+		lambdaEventSourceMapping.ParallelizationFactor = in.Spec.ParallelizationFactor
 	}
 
-	if in.Spec.MaximumBatchingWindowInSeconds != lambdaEventSourceMapping.MaximumBatchingWindowInSeconds {
-		lambdaEventSourceMapping.MaximumBatchingWindowInSeconds = in.Spec.MaximumBatchingWindowInSeconds
+	if in.Spec.BisectBatchOnFunctionError || !in.Spec.BisectBatchOnFunctionError {
+		lambdaEventSourceMapping.BisectBatchOnFunctionError = in.Spec.BisectBatchOnFunctionError
+	}
+
+	if in.Spec.FunctionName != "" {
+		lambdaEventSourceMapping.FunctionName = in.Spec.FunctionName
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	lambdaEventSourceMappingEventSourceItem := in.Spec.EventSource.DeepCopy()
+	lambdaEventSourceMappingEventSourceRefItem := in.Spec.EventSourceRef.DeepCopy()
 
-	if lambdaEventSourceMappingEventSourceItem.ObjectRef.Namespace == "" {
-		lambdaEventSourceMappingEventSourceItem.ObjectRef.Namespace = in.Namespace
+	if lambdaEventSourceMappingEventSourceRefItem.ObjectRef.Namespace == "" {
+		lambdaEventSourceMappingEventSourceRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.EventSource = *lambdaEventSourceMappingEventSourceItem
-	eventSourceArn, err := in.Spec.EventSource.String(client)
+	in.Spec.EventSourceRef = *lambdaEventSourceMappingEventSourceRefItem
+	eventSourceArn, err := in.Spec.EventSourceRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -97,8 +92,8 @@ func (in *EventSourceMapping) GetTemplate(client dynamic.Interface) (string, err
 		lambdaEventSourceMapping.EventSourceArn = eventSourceArn
 	}
 
-	if in.Spec.FunctionName != "" {
-		lambdaEventSourceMapping.FunctionName = in.Spec.FunctionName
+	if in.Spec.MaximumBatchingWindowInSeconds != lambdaEventSourceMapping.MaximumBatchingWindowInSeconds {
+		lambdaEventSourceMapping.MaximumBatchingWindowInSeconds = in.Spec.MaximumBatchingWindowInSeconds
 	}
 
 	if in.Spec.MaximumRetryAttempts != lambdaEventSourceMapping.MaximumRetryAttempts {
@@ -117,12 +112,20 @@ func (in *EventSourceMapping) GetTemplate(client dynamic.Interface) (string, err
 		lambdaEventSourceMapping.Enabled = in.Spec.Enabled
 	}
 
-	if in.Spec.ParallelizationFactor != lambdaEventSourceMapping.ParallelizationFactor {
-		lambdaEventSourceMapping.ParallelizationFactor = in.Spec.ParallelizationFactor
-	}
+	if !reflect.DeepEqual(in.Spec.DestinationConfig, EventSourceMapping_DestinationConfig{}) {
+		lambdaEventSourceMappingDestinationConfig := lambda.EventSourceMapping_DestinationConfig{}
 
-	if in.Spec.BisectBatchOnFunctionError || !in.Spec.BisectBatchOnFunctionError {
-		lambdaEventSourceMapping.BisectBatchOnFunctionError = in.Spec.BisectBatchOnFunctionError
+		if !reflect.DeepEqual(in.Spec.DestinationConfig.OnFailure, EventSourceMapping_OnFailure{}) {
+			lambdaEventSourceMappingDestinationConfigOnFailure := lambda.EventSourceMapping_OnFailure{}
+
+			if in.Spec.DestinationConfig.OnFailure.Destination != "" {
+				lambdaEventSourceMappingDestinationConfigOnFailure.Destination = in.Spec.DestinationConfig.OnFailure.Destination
+			}
+
+			lambdaEventSourceMappingDestinationConfig.OnFailure = &lambdaEventSourceMappingDestinationConfigOnFailure
+		}
+
+		lambdaEventSourceMapping.DestinationConfig = &lambdaEventSourceMappingDestinationConfig
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

@@ -77,17 +77,13 @@ spec:
                     destination:
                       description: Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventsourcemapping-onfailure.html#cfn-lambda-eventsourcemapping-onfailure-destination
                       type: string
-                  required:
-                  - destination
                   type: object
-              required:
-              - onFailure
               type: object
             enabled:
               description: Enabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-enabled
               type: boolean
-            eventSource:
-              description: EventSource http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-eventsourcearn
+            eventSourceRef:
+              description: EventSourceRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-eventsourcearn
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -157,9 +153,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - eventSource
-          - functionName
           type: object
         status:
           description: EventSourceMappingStatus defines the observed state of EventSourceMapping

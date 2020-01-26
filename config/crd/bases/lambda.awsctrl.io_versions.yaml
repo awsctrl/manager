@@ -86,8 +86,6 @@ spec:
                 provisionedConcurrentExecutions:
                   description: ProvisionedConcurrentExecutions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-version-provisionedconcurrencyconfiguration.html#cfn-lambda-version-provisionedconcurrencyconfiguration-provisionedconcurrentexecutions
                   type: integer
-              required:
-              - provisionedConcurrentExecutions
               type: object
             region:
               type: string
@@ -106,8 +104,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - functionName
           type: object
         status:
           description: VersionStatus defines the observed state of Version

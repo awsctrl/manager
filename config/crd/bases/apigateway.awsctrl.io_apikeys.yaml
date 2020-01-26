@@ -61,8 +61,8 @@ spec:
               items:
                 type: string
               type: array
-            customer:
-              description: Customer http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-customerid
+            customerRef:
+              description: CustomerRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-customerid
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -118,8 +118,8 @@ spec:
               items:
                 description: ApiKey_StageKey defines the desired state of ApiKeyStageKey
                 properties:
-                  restApi:
-                    description: RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-apikey-stagekey.html#cfn-apigateway-apikey-stagekey-restapiid
+                  restApiRef:
+                    description: RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-apikey-stagekey.html#cfn-apigateway-apikey-stagekey-restapiid
                     properties:
                       apiVersion:
                         description: API version of the referent.

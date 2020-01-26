@@ -1,0 +1,5 @@
+apiVersion: lambda.awsctrl.io/v1alpha1
+kind: LayerVersionPermission
+metadata:
+  name: layerversionpermission-sample
+spec: {}

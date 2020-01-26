@@ -50,20 +50,23 @@ func (in *Resource) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Resource"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayResource := &apigateway.Resource{}
 
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayResourceParentItem := in.Spec.Parent.DeepCopy()
+	apigatewayResourceParentRefItem := in.Spec.ParentRef.DeepCopy()
 
-	if apigatewayResourceParentItem.ObjectRef.Namespace == "" {
-		apigatewayResourceParentItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayResourceParentRefItem.ObjectRef.Namespace == "" {
+		apigatewayResourceParentRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.Parent = *apigatewayResourceParentItem
-	parentId, err := in.Spec.Parent.String(client)
+	in.Spec.ParentRef = *apigatewayResourceParentRefItem
+	parentId, err := in.Spec.ParentRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -77,14 +80,14 @@ func (in *Resource) GetTemplate(client dynamic.Interface) (string, error) {
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayResourceRestApiItem := in.Spec.RestApi.DeepCopy()
+	apigatewayResourceRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
 
-	if apigatewayResourceRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayResourceRestApiItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayResourceRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayResourceRestApiRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.RestApi = *apigatewayResourceRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
+	in.Spec.RestApiRef = *apigatewayResourceRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
 	if err != nil {
 		return "", err
 	}

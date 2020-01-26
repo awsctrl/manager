@@ -50,24 +50,33 @@ func (in *InstanceProfile) GetTemplate(client dynamic.Interface) (string, error)
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("InstanceProfile"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"Arn": map[string]interface{}{
-			"Value": cloudformation.GetAtt("InstanceProfile", "Arn"),
+			"Value":  cloudformation.GetAtt("InstanceProfile", "Arn"),
+			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
 		},
 	}
 
 	iamInstanceProfile := &iam.InstanceProfile{}
 
-	if in.Spec.Path != "" {
-		iamInstanceProfile.Path = in.Spec.Path
-	}
-
 	if len(in.Spec.Roles) > 0 {
 		iamInstanceProfile.Roles = in.Spec.Roles
 	}
 
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.InstanceProfileName == "" {
+		iamInstanceProfile.InstanceProfileName = in.Name
+	}
+
 	if in.Spec.InstanceProfileName != "" {
 		iamInstanceProfile.InstanceProfileName = in.Spec.InstanceProfileName
+	}
+
+	if in.Spec.Path != "" {
+		iamInstanceProfile.Path = in.Spec.Path
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

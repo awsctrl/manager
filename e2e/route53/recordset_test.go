@@ -78,7 +78,7 @@ var _ = Describe("Run Route53 RecordSet Controller", func() {
 					Name:            "test.e2e.awsctrl.io",
 					TTL:             "300",
 					ResourceRecords: []string{"104.198.14.52"},
-					HostedZone: metav1alpha1.ObjectReference{
+					HostedZoneRef: metav1alpha1.ObjectReference{
 						ObjectRef: metav1alpha1.ObjectRef{
 							Kind:       "HostedZone",
 							APIVersion: "route53.awsctrl.io/v1alpha1",

@@ -50,47 +50,50 @@ func (in *UsagePlanKey) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("UsagePlanKey"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayUsagePlanKey := &apigateway.UsagePlanKey{}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayUsagePlanKeyKeyItem := in.Spec.Key.DeepCopy()
-
-	if apigatewayUsagePlanKeyKeyItem.ObjectRef.Namespace == "" {
-		apigatewayUsagePlanKeyKeyItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.Key = *apigatewayUsagePlanKeyKeyItem
-	keyId, err := in.Spec.Key.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if keyId != "" {
-		apigatewayUsagePlanKey.KeyId = keyId
-	}
 
 	if in.Spec.KeyType != "" {
 		apigatewayUsagePlanKey.KeyType = in.Spec.KeyType
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayUsagePlanKeyUsagePlanItem := in.Spec.UsagePlan.DeepCopy()
+	apigatewayUsagePlanKeyUsagePlanRefItem := in.Spec.UsagePlanRef.DeepCopy()
 
-	if apigatewayUsagePlanKeyUsagePlanItem.ObjectRef.Namespace == "" {
-		apigatewayUsagePlanKeyUsagePlanItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayUsagePlanKeyUsagePlanRefItem.ObjectRef.Namespace == "" {
+		apigatewayUsagePlanKeyUsagePlanRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.UsagePlan = *apigatewayUsagePlanKeyUsagePlanItem
-	usagePlanId, err := in.Spec.UsagePlan.String(client)
+	in.Spec.UsagePlanRef = *apigatewayUsagePlanKeyUsagePlanRefItem
+	usagePlanId, err := in.Spec.UsagePlanRef.String(client)
 	if err != nil {
 		return "", err
 	}
 
 	if usagePlanId != "" {
 		apigatewayUsagePlanKey.UsagePlanId = usagePlanId
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayUsagePlanKeyKeyRefItem := in.Spec.KeyRef.DeepCopy()
+
+	if apigatewayUsagePlanKeyKeyRefItem.ObjectRef.Namespace == "" {
+		apigatewayUsagePlanKeyKeyRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.KeyRef = *apigatewayUsagePlanKeyKeyRefItem
+	keyId, err := in.Spec.KeyRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if keyId != "" {
+		apigatewayUsagePlanKey.KeyId = keyId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

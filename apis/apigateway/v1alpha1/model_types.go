@@ -25,20 +25,20 @@ import (
 type ModelSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-model.html#cfn-apigateway-model-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-model.html#cfn-apigateway-model-name
 	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
 
-	// RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-model.html#cfn-apigateway-model-restapiid
-	RestApi metav1alpha1.ObjectReference `json:"restApi" cloudformation:"RestApiId,Parameter"`
+	// RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-model.html#cfn-apigateway-model-restapiid
+	RestApiRef metav1alpha1.ObjectReference `json:"restApiRef,omitempty" cloudformation:"RestApiId,Parameter"`
 
 	// Schema http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-model.html#cfn-apigateway-model-schema
 	Schema string `json:"schema,omitempty" cloudformation:"Schema,Parameter"`
 
 	// ContentType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-model.html#cfn-apigateway-model-contenttype
 	ContentType string `json:"contentType,omitempty" cloudformation:"ContentType,Parameter"`
-
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-model.html#cfn-apigateway-model-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 }
 
 // ModelStatus defines the observed state of Model

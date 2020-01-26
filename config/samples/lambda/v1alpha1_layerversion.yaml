@@ -1,0 +1,5 @@
+apiVersion: lambda.awsctrl.io/v1alpha1
+kind: LayerVersion
+metadata:
+  name: layerversion-sample
+spec: {}

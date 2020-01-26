@@ -52,13 +52,50 @@ func (in *User) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("User"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"Arn": map[string]interface{}{
-			"Value": cloudformation.GetAtt("User", "Arn"),
+			"Value":  cloudformation.GetAtt("User", "Arn"),
+			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
 		},
 	}
 
 	iamUser := &iam.User{}
+
+	if !reflect.DeepEqual(in.Spec.LoginProfile, User_LoginProfile{}) {
+		iamUserLoginProfile := iam.User_LoginProfile{}
+
+		if in.Spec.LoginProfile.PasswordResetRequired || !in.Spec.LoginProfile.PasswordResetRequired {
+			iamUserLoginProfile.PasswordResetRequired = in.Spec.LoginProfile.PasswordResetRequired
+		}
+
+		if in.Spec.LoginProfile.Password != "" {
+			iamUserLoginProfile.Password = in.Spec.LoginProfile.Password
+		}
+
+		iamUser.LoginProfile = &iamUserLoginProfile
+	}
+
+	if len(in.Spec.ManagedPolicyRefs) > 0 {
+		iamUserManagedPolicyRefs := []string{}
+
+		for _, item := range in.Spec.ManagedPolicyRefs {
+			iamUserManagedPolicyRefsItem := item.DeepCopy()
+
+			if iamUserManagedPolicyRefsItem.ObjectRef.Namespace == "" {
+				iamUserManagedPolicyRefsItem.ObjectRef.Namespace = in.Namespace
+			}
+
+		}
+
+		iamUser.ManagedPolicyArns = iamUserManagedPolicyRefs
+	}
+
+	if in.Spec.Path != "" {
+		iamUser.Path = in.Spec.Path
+	}
 
 	if in.Spec.PermissionsBoundary != "" {
 		iamUser.PermissionsBoundary = in.Spec.PermissionsBoundary
@@ -88,45 +125,17 @@ func (in *User) GetTemplate(client dynamic.Interface) (string, error) {
 		iamUser.Policies = iamUserPolicies
 	}
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.UserName == "" {
+		iamUser.UserName = in.Name
+	}
+
 	if in.Spec.UserName != "" {
 		iamUser.UserName = in.Spec.UserName
 	}
 
 	if len(in.Spec.Groups) > 0 {
 		iamUser.Groups = in.Spec.Groups
-	}
-
-	if !reflect.DeepEqual(in.Spec.LoginProfile, User_LoginProfile{}) {
-		iamUserLoginProfile := iam.User_LoginProfile{}
-
-		if in.Spec.LoginProfile.Password != "" {
-			iamUserLoginProfile.Password = in.Spec.LoginProfile.Password
-		}
-
-		if in.Spec.LoginProfile.PasswordResetRequired || !in.Spec.LoginProfile.PasswordResetRequired {
-			iamUserLoginProfile.PasswordResetRequired = in.Spec.LoginProfile.PasswordResetRequired
-		}
-
-		iamUser.LoginProfile = &iamUserLoginProfile
-	}
-
-	if len(in.Spec.ManagedPolicy) > 0 {
-		iamUserManagedPolicy := []string{}
-
-		for _, item := range in.Spec.ManagedPolicy {
-			iamUserManagedPolicyItem := item.DeepCopy()
-
-			if iamUserManagedPolicyItem.ObjectRef.Namespace == "" {
-				iamUserManagedPolicyItem.ObjectRef.Namespace = in.Namespace
-			}
-
-		}
-
-		iamUser.ManagedPolicyArns = iamUserManagedPolicy
-	}
-
-	if in.Spec.Path != "" {
-		iamUser.Path = in.Spec.Path
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

@@ -19,7 +19,6 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
@@ -52,97 +51,45 @@ func (in *Stage) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Stage"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayStage := &apigateway.Stage{}
 
-	if !reflect.DeepEqual(in.Spec.AccessLogSetting, Stage_AccessLogSetting{}) {
-		apigatewayStageAccessLogSetting := apigateway.Stage_AccessLogSetting{}
-
-		// TODO(christopherhein) move these to a defaulter
-		apigatewayStageAccessLogSettingDestinationItem := in.Spec.AccessLogSetting.Destination.DeepCopy()
-
-		if apigatewayStageAccessLogSettingDestinationItem.ObjectRef.Namespace == "" {
-			apigatewayStageAccessLogSettingDestinationItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		in.Spec.AccessLogSetting.Destination = *apigatewayStageAccessLogSettingDestinationItem
-		destinationArn, err := in.Spec.AccessLogSetting.Destination.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if destinationArn != "" {
-			apigatewayStageAccessLogSetting.DestinationArn = destinationArn
-		}
-
-		if in.Spec.AccessLogSetting.Format != "" {
-			apigatewayStageAccessLogSetting.Format = in.Spec.AccessLogSetting.Format
-		}
-
-		apigatewayStage.AccessLogSetting = &apigatewayStageAccessLogSetting
+	if in.Spec.TracingEnabled || !in.Spec.TracingEnabled {
+		apigatewayStage.TracingEnabled = in.Spec.TracingEnabled
 	}
 
-	if !reflect.DeepEqual(in.Spec.CanarySetting, Stage_CanarySetting{}) {
-		apigatewayStageCanarySetting := apigateway.Stage_CanarySetting{}
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayStageRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
 
-		if in.Spec.CanarySetting.UseStageCache || !in.Spec.CanarySetting.UseStageCache {
-			apigatewayStageCanarySetting.UseStageCache = in.Spec.CanarySetting.UseStageCache
-		}
+	if apigatewayStageRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayStageRestApiRefItem.ObjectRef.Namespace = in.Namespace
+	}
 
-		// TODO(christopherhein) move these to a defaulter
-		apigatewayStageCanarySettingDeploymentItem := in.Spec.CanarySetting.Deployment.DeepCopy()
+	in.Spec.RestApiRef = *apigatewayStageRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
+	if err != nil {
+		return "", err
+	}
 
-		if apigatewayStageCanarySettingDeploymentItem.ObjectRef.Namespace == "" {
-			apigatewayStageCanarySettingDeploymentItem.ObjectRef.Namespace = in.Namespace
-		}
+	if restApiId != "" {
+		apigatewayStage.RestApiId = restApiId
+	}
 
-		in.Spec.CanarySetting.Deployment = *apigatewayStageCanarySettingDeploymentItem
-		deploymentId, err := in.Spec.CanarySetting.Deployment.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if deploymentId != "" {
-			apigatewayStageCanarySetting.DeploymentId = deploymentId
-		}
-
-		if f, _ := strconv.ParseFloat(in.Spec.CanarySetting.PercentTraffic, 64); f != apigatewayStageCanarySetting.PercentTraffic {
-			f, _ := strconv.ParseFloat(in.Spec.CanarySetting.PercentTraffic, 64)
-			apigatewayStageCanarySetting.PercentTraffic = f
-		}
-
-		if !reflect.DeepEqual(in.Spec.CanarySetting.StageVariableOverrides, map[string]string{}) {
-			apigatewayStageCanarySetting.StageVariableOverrides = in.Spec.CanarySetting.StageVariableOverrides
-		}
-
-		apigatewayStage.CanarySetting = &apigatewayStageCanarySetting
+	if in.Spec.DocumentationVersion != "" {
+		apigatewayStage.DocumentationVersion = in.Spec.DocumentationVersion
 	}
 
 	if !reflect.DeepEqual(in.Spec.Variables, map[string]string{}) {
 		apigatewayStage.Variables = in.Spec.Variables
 	}
 
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayStageDeploymentItem := in.Spec.Deployment.DeepCopy()
-
-	if apigatewayStageDeploymentItem.ObjectRef.Namespace == "" {
-		apigatewayStageDeploymentItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.Deployment = *apigatewayStageDeploymentItem
-	deploymentId, err := in.Spec.Deployment.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if deploymentId != "" {
-		apigatewayStage.DeploymentId = deploymentId
-	}
-
-	if in.Spec.Description != "" {
-		apigatewayStage.Description = in.Spec.Description
+	if in.Spec.CacheClusterEnabled || !in.Spec.CacheClusterEnabled {
+		apigatewayStage.CacheClusterEnabled = in.Spec.CacheClusterEnabled
 	}
 
 	apigatewayStageMethodSettings := []apigateway.Stage_MethodSetting{}
@@ -162,29 +109,28 @@ func (in *Stage) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayStageMethodSetting.CacheDataEncrypted = item.CacheDataEncrypted
 		}
 
-		if item.CachingEnabled || !item.CachingEnabled {
-			apigatewayStageMethodSetting.CachingEnabled = item.CachingEnabled
+		if item.CacheTtlInSeconds != apigatewayStageMethodSetting.CacheTtlInSeconds {
+			apigatewayStageMethodSetting.CacheTtlInSeconds = item.CacheTtlInSeconds
 		}
 
 		if item.HttpMethod != "" {
 			apigatewayStageMethodSetting.HttpMethod = item.HttpMethod
 		}
 
-		if item.CacheTtlInSeconds != apigatewayStageMethodSetting.CacheTtlInSeconds {
-			apigatewayStageMethodSetting.CacheTtlInSeconds = item.CacheTtlInSeconds
+		if item.MetricsEnabled || !item.MetricsEnabled {
+			apigatewayStageMethodSetting.MetricsEnabled = item.MetricsEnabled
+		}
+
+		if item.CachingEnabled || !item.CachingEnabled {
+			apigatewayStageMethodSetting.CachingEnabled = item.CachingEnabled
 		}
 
 		if item.ResourcePath != "" {
 			apigatewayStageMethodSetting.ResourcePath = item.ResourcePath
 		}
 
-		if f, _ := strconv.ParseFloat(item.ThrottlingRateLimit, 64); f != apigatewayStageMethodSetting.ThrottlingRateLimit {
-			f, _ := strconv.ParseFloat(item.ThrottlingRateLimit, 64)
-			apigatewayStageMethodSetting.ThrottlingRateLimit = f
-		}
-
-		if item.MetricsEnabled || !item.MetricsEnabled {
-			apigatewayStageMethodSetting.MetricsEnabled = item.MetricsEnabled
+		if float64(item.ThrottlingRateLimit) != apigatewayStageMethodSetting.ThrottlingRateLimit {
+			apigatewayStageMethodSetting.ThrottlingRateLimit = float64(item.ThrottlingRateLimit)
 		}
 
 		if item.LoggingLevel != "" {
@@ -196,59 +142,118 @@ func (in *Stage) GetTemplate(client dynamic.Interface) (string, error) {
 	if len(apigatewayStageMethodSettings) > 0 {
 		apigatewayStage.MethodSettings = apigatewayStageMethodSettings
 	}
-	if in.Spec.CacheClusterSize != "" {
-		apigatewayStage.CacheClusterSize = in.Spec.CacheClusterSize
-	}
-
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayStageRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayStageRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayStageRestApiItem.ObjectRef.Namespace = in.Namespace
+	if in.Spec.StageName == "" {
+		apigatewayStage.StageName = in.Name
 	}
 
-	in.Spec.RestApi = *apigatewayStageRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayStage.RestApiId = restApiId
-	}
-
-	if in.Spec.CacheClusterEnabled || !in.Spec.CacheClusterEnabled {
-		apigatewayStage.CacheClusterEnabled = in.Spec.CacheClusterEnabled
-	}
-
-	if in.Spec.DocumentationVersion != "" {
-		apigatewayStage.DocumentationVersion = in.Spec.DocumentationVersion
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.StageName != "" {
 		apigatewayStage.StageName = in.Spec.StageName
 	}
 
-	if in.Spec.TracingEnabled || !in.Spec.TracingEnabled {
-		apigatewayStage.TracingEnabled = in.Spec.TracingEnabled
+	if in.Spec.CacheClusterSize != "" {
+		apigatewayStage.CacheClusterSize = in.Spec.CacheClusterSize
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayStage.Description = in.Spec.Description
+	}
+
+	if !reflect.DeepEqual(in.Spec.AccessLogSetting, Stage_AccessLogSetting{}) {
+		apigatewayStageAccessLogSetting := apigateway.Stage_AccessLogSetting{}
+
+		// TODO(christopherhein) move these to a defaulter
+		apigatewayStageAccessLogSettingDestinationRefItem := in.Spec.AccessLogSetting.DestinationRef.DeepCopy()
+
+		if apigatewayStageAccessLogSettingDestinationRefItem.ObjectRef.Namespace == "" {
+			apigatewayStageAccessLogSettingDestinationRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		in.Spec.AccessLogSetting.DestinationRef = *apigatewayStageAccessLogSettingDestinationRefItem
+		destinationArn, err := in.Spec.AccessLogSetting.DestinationRef.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if destinationArn != "" {
+			apigatewayStageAccessLogSetting.DestinationArn = destinationArn
+		}
+
+		if in.Spec.AccessLogSetting.Format != "" {
+			apigatewayStageAccessLogSetting.Format = in.Spec.AccessLogSetting.Format
+		}
+
+		apigatewayStage.AccessLogSetting = &apigatewayStageAccessLogSetting
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayStageClientCertificateItem := in.Spec.ClientCertificate.DeepCopy()
+	apigatewayStageClientCertificateRefItem := in.Spec.ClientCertificateRef.DeepCopy()
 
-	if apigatewayStageClientCertificateItem.ObjectRef.Namespace == "" {
-		apigatewayStageClientCertificateItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayStageClientCertificateRefItem.ObjectRef.Namespace == "" {
+		apigatewayStageClientCertificateRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.ClientCertificate = *apigatewayStageClientCertificateItem
-	clientCertificateId, err := in.Spec.ClientCertificate.String(client)
+	in.Spec.ClientCertificateRef = *apigatewayStageClientCertificateRefItem
+	clientCertificateId, err := in.Spec.ClientCertificateRef.String(client)
 	if err != nil {
 		return "", err
 	}
 
 	if clientCertificateId != "" {
 		apigatewayStage.ClientCertificateId = clientCertificateId
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayStageDeploymentRefItem := in.Spec.DeploymentRef.DeepCopy()
+
+	if apigatewayStageDeploymentRefItem.ObjectRef.Namespace == "" {
+		apigatewayStageDeploymentRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.DeploymentRef = *apigatewayStageDeploymentRefItem
+	deploymentId, err := in.Spec.DeploymentRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if deploymentId != "" {
+		apigatewayStage.DeploymentId = deploymentId
+	}
+
+	if !reflect.DeepEqual(in.Spec.CanarySetting, Stage_CanarySetting{}) {
+		apigatewayStageCanarySetting := apigateway.Stage_CanarySetting{}
+
+		// TODO(christopherhein) move these to a defaulter
+		apigatewayStageCanarySettingDeploymentRefItem := in.Spec.CanarySetting.DeploymentRef.DeepCopy()
+
+		if apigatewayStageCanarySettingDeploymentRefItem.ObjectRef.Namespace == "" {
+			apigatewayStageCanarySettingDeploymentRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		in.Spec.CanarySetting.DeploymentRef = *apigatewayStageCanarySettingDeploymentRefItem
+		deploymentId, err := in.Spec.CanarySetting.DeploymentRef.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if deploymentId != "" {
+			apigatewayStageCanarySetting.DeploymentId = deploymentId
+		}
+
+		if float64(in.Spec.CanarySetting.PercentTraffic) != apigatewayStageCanarySetting.PercentTraffic {
+			apigatewayStageCanarySetting.PercentTraffic = float64(in.Spec.CanarySetting.PercentTraffic)
+		}
+
+		if !reflect.DeepEqual(in.Spec.CanarySetting.StageVariableOverrides, map[string]string{}) {
+			apigatewayStageCanarySetting.StageVariableOverrides = in.Spec.CanarySetting.StageVariableOverrides
+		}
+
+		if in.Spec.CanarySetting.UseStageCache || !in.Spec.CanarySetting.UseStageCache {
+			apigatewayStageCanarySetting.UseStageCache = in.Spec.CanarySetting.UseStageCache
+		}
+
+		apigatewayStage.CanarySetting = &apigatewayStageCanarySetting
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

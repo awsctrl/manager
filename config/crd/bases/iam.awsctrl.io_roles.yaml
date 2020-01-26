@@ -67,8 +67,8 @@ spec:
             description:
               description: Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-description
               type: string
-            managedPolicy:
-              description: ManagedPolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-managepolicyarns
+            managedPolicyRefs:
+              description: ManagedPolicyRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html#cfn-iam-role-managepolicyarns
               items:
                 description: ObjectReference contains information about how
                 properties:
@@ -126,9 +126,6 @@ spec:
                   policyName:
                     description: PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
                     type: string
-                required:
-                - policyDocument
-                - policyName
                 type: object
               type: array
             region:
@@ -151,8 +148,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - assumeRolePolicyDocument
           type: object
         status:
           description: RoleStatus defines the observed state of Role

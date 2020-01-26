@@ -52,15 +52,18 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Repository"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"Arn": map[string]interface{}{
-			"Value": cloudformation.GetAtt("Repository", "Arn"),
+			"Value":  cloudformation.GetAtt("Repository", "Arn"),
+			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
 		},
 	}
 
 	ecrRepository := &ecr.Repository{}
 
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if !reflect.DeepEqual(in.Spec.LifecyclePolicy, Repository_LifecyclePolicy{}) {
 		ecrRepositoryLifecyclePolicy := ecr.Repository_LifecyclePolicy{}
 
@@ -69,14 +72,14 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		// TODO(christopherhein) move these to a defaulter
-		ecrRepositoryLifecyclePolicyRegistryItem := in.Spec.LifecyclePolicy.Registry.DeepCopy()
+		ecrRepositoryLifecyclePolicyRegistryRefItem := in.Spec.LifecyclePolicy.RegistryRef.DeepCopy()
 
-		if ecrRepositoryLifecyclePolicyRegistryItem.ObjectRef.Namespace == "" {
-			ecrRepositoryLifecyclePolicyRegistryItem.ObjectRef.Namespace = in.Namespace
+		if ecrRepositoryLifecyclePolicyRegistryRefItem.ObjectRef.Namespace == "" {
+			ecrRepositoryLifecyclePolicyRegistryRefItem.ObjectRef.Namespace = in.Namespace
 		}
 
-		in.Spec.LifecyclePolicy.Registry = *ecrRepositoryLifecyclePolicyRegistryItem
-		registryId, err := in.Spec.LifecyclePolicy.Registry.String(client)
+		in.Spec.LifecyclePolicy.RegistryRef = *ecrRepositoryLifecyclePolicyRegistryRefItem
+		registryId, err := in.Spec.LifecyclePolicy.RegistryRef.String(client)
 		if err != nil {
 			return "", err
 		}
@@ -86,6 +89,11 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		ecrRepository.LifecyclePolicy = &ecrRepositoryLifecyclePolicy
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.RepositoryName == "" {
+		ecrRepository.RepositoryName = in.Name
 	}
 
 	if in.Spec.RepositoryName != "" {
@@ -100,6 +108,8 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 		ecrRepository.RepositoryPolicyText = ecrRepositoryJSON
 	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 
 	template.Resources = map[string]cloudformation.Resource{
 		"Repository": ecrRepository,

@@ -51,6 +51,9 @@ func (in *RecordSet) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("RecordSet"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
@@ -60,88 +63,8 @@ func (in *RecordSet) GetTemplate(client dynamic.Interface) (string, error) {
 		route53RecordSet.HostedZoneName = in.Spec.HostedZoneName
 	}
 
-	if in.Spec.Weight != route53RecordSet.Weight {
-		route53RecordSet.Weight = in.Spec.Weight
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	route53RecordSetHealthCheckItem := in.Spec.HealthCheck.DeepCopy()
-
-	if route53RecordSetHealthCheckItem.ObjectRef.Namespace == "" {
-		route53RecordSetHealthCheckItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.HealthCheck = *route53RecordSetHealthCheckItem
-	healthCheckId, err := in.Spec.HealthCheck.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if healthCheckId != "" {
-		route53RecordSet.HealthCheckId = healthCheckId
-	}
-
-	if in.Spec.Region != "" {
-		route53RecordSet.Region = in.Spec.Region
-	}
-
 	if in.Spec.SetIdentifier != "" {
 		route53RecordSet.SetIdentifier = in.Spec.SetIdentifier
-	}
-
-	if in.Spec.Comment != "" {
-		route53RecordSet.Comment = in.Spec.Comment
-	}
-
-	if in.Spec.Failover != "" {
-		route53RecordSet.Failover = in.Spec.Failover
-	}
-
-	if in.Spec.MultiValueAnswer || !in.Spec.MultiValueAnswer {
-		route53RecordSet.MultiValueAnswer = in.Spec.MultiValueAnswer
-	}
-
-	if !reflect.DeepEqual(in.Spec.AliasTarget, RecordSet_AliasTarget{}) {
-		route53RecordSetAliasTarget := route53.RecordSet_AliasTarget{}
-
-		if in.Spec.AliasTarget.DNSName != "" {
-			route53RecordSetAliasTarget.DNSName = in.Spec.AliasTarget.DNSName
-		}
-
-		if in.Spec.AliasTarget.EvaluateTargetHealth || !in.Spec.AliasTarget.EvaluateTargetHealth {
-			route53RecordSetAliasTarget.EvaluateTargetHealth = in.Spec.AliasTarget.EvaluateTargetHealth
-		}
-
-		// TODO(christopherhein) move these to a defaulter
-		route53RecordSetAliasTargetHostedZoneItem := in.Spec.AliasTarget.HostedZone.DeepCopy()
-
-		if route53RecordSetAliasTargetHostedZoneItem.ObjectRef.Namespace == "" {
-			route53RecordSetAliasTargetHostedZoneItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		in.Spec.AliasTarget.HostedZone = *route53RecordSetAliasTargetHostedZoneItem
-		hostedZoneId, err := in.Spec.AliasTarget.HostedZone.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if hostedZoneId != "" {
-			route53RecordSetAliasTarget.HostedZoneId = hostedZoneId
-		}
-
-		route53RecordSet.AliasTarget = &route53RecordSetAliasTarget
-	}
-
-	if in.Spec.Name != "" {
-		route53RecordSet.Name = in.Spec.Name
-	}
-
-	if len(in.Spec.ResourceRecords) > 0 {
-		route53RecordSet.ResourceRecords = in.Spec.ResourceRecords
-	}
-
-	if in.Spec.TTL != "" {
-		route53RecordSet.TTL = in.Spec.TTL
 	}
 
 	if !reflect.DeepEqual(in.Spec.GeoLocation, RecordSet_GeoLocation{}) {
@@ -166,21 +89,101 @@ func (in *RecordSet) GetTemplate(client dynamic.Interface) (string, error) {
 		route53RecordSet.Type = in.Spec.Type
 	}
 
-	// TODO(christopherhein) move these to a defaulter
-	route53RecordSetHostedZoneItem := in.Spec.HostedZone.DeepCopy()
-
-	if route53RecordSetHostedZoneItem.ObjectRef.Namespace == "" {
-		route53RecordSetHostedZoneItem.ObjectRef.Namespace = in.Namespace
+	if in.Spec.Failover != "" {
+		route53RecordSet.Failover = in.Spec.Failover
 	}
 
-	in.Spec.HostedZone = *route53RecordSetHostedZoneItem
-	hostedZoneId, err := in.Spec.HostedZone.String(client)
+	if in.Spec.MultiValueAnswer || !in.Spec.MultiValueAnswer {
+		route53RecordSet.MultiValueAnswer = in.Spec.MultiValueAnswer
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	route53RecordSetHealthCheckRefItem := in.Spec.HealthCheckRef.DeepCopy()
+
+	if route53RecordSetHealthCheckRefItem.ObjectRef.Namespace == "" {
+		route53RecordSetHealthCheckRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.HealthCheckRef = *route53RecordSetHealthCheckRefItem
+	healthCheckId, err := in.Spec.HealthCheckRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if healthCheckId != "" {
+		route53RecordSet.HealthCheckId = healthCheckId
+	}
+
+	if in.Spec.Region != "" {
+		route53RecordSet.Region = in.Spec.Region
+	}
+
+	if in.Spec.TTL != "" {
+		route53RecordSet.TTL = in.Spec.TTL
+	}
+
+	if in.Spec.Weight != route53RecordSet.Weight {
+		route53RecordSet.Weight = in.Spec.Weight
+	}
+
+	if len(in.Spec.ResourceRecords) > 0 {
+		route53RecordSet.ResourceRecords = in.Spec.ResourceRecords
+	}
+
+	if in.Spec.Comment != "" {
+		route53RecordSet.Comment = in.Spec.Comment
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	route53RecordSetHostedZoneRefItem := in.Spec.HostedZoneRef.DeepCopy()
+
+	if route53RecordSetHostedZoneRefItem.ObjectRef.Namespace == "" {
+		route53RecordSetHostedZoneRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.HostedZoneRef = *route53RecordSetHostedZoneRefItem
+	hostedZoneId, err := in.Spec.HostedZoneRef.String(client)
 	if err != nil {
 		return "", err
 	}
 
 	if hostedZoneId != "" {
 		route53RecordSet.HostedZoneId = hostedZoneId
+	}
+
+	if in.Spec.Name != "" {
+		route53RecordSet.Name = in.Spec.Name
+	}
+
+	if !reflect.DeepEqual(in.Spec.AliasTarget, RecordSet_AliasTarget{}) {
+		route53RecordSetAliasTarget := route53.RecordSet_AliasTarget{}
+
+		if in.Spec.AliasTarget.DNSName != "" {
+			route53RecordSetAliasTarget.DNSName = in.Spec.AliasTarget.DNSName
+		}
+
+		if in.Spec.AliasTarget.EvaluateTargetHealth || !in.Spec.AliasTarget.EvaluateTargetHealth {
+			route53RecordSetAliasTarget.EvaluateTargetHealth = in.Spec.AliasTarget.EvaluateTargetHealth
+		}
+
+		// TODO(christopherhein) move these to a defaulter
+		route53RecordSetAliasTargetHostedZoneRefItem := in.Spec.AliasTarget.HostedZoneRef.DeepCopy()
+
+		if route53RecordSetAliasTargetHostedZoneRefItem.ObjectRef.Namespace == "" {
+			route53RecordSetAliasTargetHostedZoneRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		in.Spec.AliasTarget.HostedZoneRef = *route53RecordSetAliasTargetHostedZoneRefItem
+		hostedZoneId, err := in.Spec.AliasTarget.HostedZoneRef.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if hostedZoneId != "" {
+			route53RecordSetAliasTarget.HostedZoneId = hostedZoneId
+		}
+
+		route53RecordSet.AliasTarget = &route53RecordSetAliasTarget
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

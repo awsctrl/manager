@@ -21,6 +21,7 @@ env:
   - TEST_SUITE=e2e- FLAG=iam
   - TEST_SUITE=e2e- FLAG=lambda
   - TEST_SUITE=e2e- FLAG=route53
+  - TEST_SUITE=e2e- FLAG=s3
 
 install: true
 

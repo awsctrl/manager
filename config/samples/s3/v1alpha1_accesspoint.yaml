@@ -1,0 +1,7 @@
+apiVersion: s3.awsctrl.io/v1alpha1
+kind: AccessPoint
+metadata:
+  name: accesspoint-sample
+spec:
+  name: accesspoint-sample
+  butcket: bucket-sample

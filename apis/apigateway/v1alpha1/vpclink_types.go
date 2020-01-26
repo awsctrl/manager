@@ -25,14 +25,14 @@ import (
 type VpcLinkSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-vpclink.html#cfn-apigateway-vpclink-name
-	Name string `json:"name" cloudformation:"Name,Parameter"`
-
-	// Target http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-vpclink.html#cfn-apigateway-vpclink-targetarns
-	Target []metav1alpha1.ObjectReference `json:"target,omitempty" cloudformation:"TargetArns"`
-
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-vpclink.html#cfn-apigateway-vpclink-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
+	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-vpclink.html#cfn-apigateway-vpclink-name
+	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
+
+	// TargetRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-vpclink.html#cfn-apigateway-vpclink-targetarns
+	TargetRefs []metav1alpha1.ObjectReference `json:"targetRefs,omitempty" cloudformation:"TargetArns"`
 }
 
 // VpcLinkStatus defines the observed state of VpcLink

@@ -51,34 +51,16 @@ func (in *DocumentationPart) GetTemplate(client dynamic.Interface) (string, erro
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("DocumentationPart"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayDocumentationPart := &apigateway.DocumentationPart{}
 
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayDocumentationPartRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayDocumentationPartRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayDocumentationPartRestApiItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RestApi = *apigatewayDocumentationPartRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayDocumentationPart.RestApiId = restApiId
-	}
-
 	if !reflect.DeepEqual(in.Spec.Location, DocumentationPart_Location{}) {
 		apigatewayDocumentationPartLocation := apigateway.DocumentationPart_Location{}
-
-		if in.Spec.Location.Method != "" {
-			apigatewayDocumentationPartLocation.Method = in.Spec.Location.Method
-		}
 
 		if in.Spec.Location.Name != "" {
 			apigatewayDocumentationPartLocation.Name = in.Spec.Location.Name
@@ -96,11 +78,32 @@ func (in *DocumentationPart) GetTemplate(client dynamic.Interface) (string, erro
 			apigatewayDocumentationPartLocation.Type = in.Spec.Location.Type
 		}
 
+		if in.Spec.Location.Method != "" {
+			apigatewayDocumentationPartLocation.Method = in.Spec.Location.Method
+		}
+
 		apigatewayDocumentationPart.Location = &apigatewayDocumentationPartLocation
 	}
 
 	if in.Spec.Properties != "" {
 		apigatewayDocumentationPart.Properties = in.Spec.Properties
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayDocumentationPartRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
+
+	if apigatewayDocumentationPartRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayDocumentationPartRestApiRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApiRef = *apigatewayDocumentationPartRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if restApiId != "" {
+		apigatewayDocumentationPart.RestApiId = restApiId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

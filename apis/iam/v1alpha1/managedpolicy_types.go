@@ -25,12 +25,6 @@ import (
 type ManagedPolicySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Users http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-users
-	Users []string `json:"users,omitempty" cloudformation:"Users"`
-
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
-
 	// Groups http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-groups
 	Groups []string `json:"groups,omitempty" cloudformation:"Groups"`
 
@@ -41,10 +35,16 @@ type ManagedPolicySpec struct {
 	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
 
 	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-policydocument
-	PolicyDocument string `json:"policyDocument" cloudformation:"PolicyDocument,Parameter"`
+	PolicyDocument string `json:"policyDocument,omitempty" cloudformation:"PolicyDocument,Parameter"`
 
 	// Roles http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-roles
 	Roles []string `json:"roles,omitempty" cloudformation:"Roles"`
+
+	// Users http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-users
+	Users []string `json:"users,omitempty" cloudformation:"Users"`
+
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 }
 
 // ManagedPolicyStatus defines the observed state of ManagedPolicy

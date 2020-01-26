@@ -51,6 +51,9 @@ func (in *ManagedPolicy) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("ManagedPolicy"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
@@ -83,6 +86,11 @@ func (in *ManagedPolicy) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if len(in.Spec.Groups) > 0 {
 		iamManagedPolicy.Groups = in.Spec.Groups
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.ManagedPolicyName == "" {
+		iamManagedPolicy.ManagedPolicyName = in.Name
 	}
 
 	if in.Spec.ManagedPolicyName != "" {

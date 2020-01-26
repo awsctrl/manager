@@ -89,8 +89,6 @@ spec:
                 provisionedConcurrentExecutions:
                   description: ProvisionedConcurrentExecutions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-provisionedconcurrencyconfiguration.html#cfn-lambda-alias-provisionedconcurrencyconfiguration-provisionedconcurrentexecutions
                   type: integer
-              required:
-              - provisionedConcurrentExecutions
               type: object
             region:
               type: string
@@ -108,14 +106,9 @@ spec:
                         type: string
                       functionWeight:
                         description: FunctionWeight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionweight
-                        type: string
-                    required:
-                    - functionVersion
-                    - functionWeight
+                        type: integer
                     type: object
                   type: array
-              required:
-              - additionalVersionWeights
               type: object
             stackName:
               type: string
@@ -132,10 +125,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - functionName
-          - functionVersion
-          - name
           type: object
         status:
           description: AliasStatus defines the observed state of Alias

@@ -50,50 +50,20 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Authorizer"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayAuthorizer := &apigateway.Authorizer{}
 
-	if in.Spec.IdentitySource != "" {
-		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
-	}
-
-	if in.Spec.IdentityValidationExpression != "" {
-		apigatewayAuthorizer.IdentityValidationExpression = in.Spec.IdentityValidationExpression
+	if in.Spec.AuthorizerCredentials != "" {
+		apigatewayAuthorizer.AuthorizerCredentials = in.Spec.AuthorizerCredentials
 	}
 
 	if in.Spec.Name != "" {
 		apigatewayAuthorizer.Name = in.Spec.Name
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayAuthorizerRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayAuthorizerRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayAuthorizerRestApiItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RestApi = *apigatewayAuthorizerRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayAuthorizer.RestApiId = restApiId
-	}
-
-	if in.Spec.AuthType != "" {
-		apigatewayAuthorizer.AuthType = in.Spec.AuthType
-	}
-
-	if in.Spec.Type != "" {
-		apigatewayAuthorizer.Type = in.Spec.Type
-	}
-
-	if in.Spec.AuthorizerCredentials != "" {
-		apigatewayAuthorizer.AuthorizerCredentials = in.Spec.AuthorizerCredentials
 	}
 
 	if in.Spec.AuthorizerResultTtlInSeconds != apigatewayAuthorizer.AuthorizerResultTtlInSeconds {
@@ -104,8 +74,52 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayAuthorizer.AuthorizerUri = in.Spec.AuthorizerUri
 	}
 
-	if len(in.Spec.ProviderARNs) > 0 {
-		apigatewayAuthorizer.ProviderARNs = in.Spec.ProviderARNs
+	if in.Spec.IdentitySource != "" {
+		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
+	}
+
+	if in.Spec.IdentityValidationExpression != "" {
+		apigatewayAuthorizer.IdentityValidationExpression = in.Spec.IdentityValidationExpression
+	}
+
+	if len(in.Spec.ProviderRefs) > 0 {
+		apigatewayAuthorizerProviderRefs := []string{}
+
+		for _, item := range in.Spec.ProviderRefs {
+			apigatewayAuthorizerProviderRefsItem := item.DeepCopy()
+
+			if apigatewayAuthorizerProviderRefsItem.ObjectRef.Namespace == "" {
+				apigatewayAuthorizerProviderRefsItem.ObjectRef.Namespace = in.Namespace
+			}
+
+		}
+
+		apigatewayAuthorizer.ProviderARNs = apigatewayAuthorizerProviderRefs
+	}
+
+	if in.Spec.Type != "" {
+		apigatewayAuthorizer.Type = in.Spec.Type
+	}
+
+	if in.Spec.AuthType != "" {
+		apigatewayAuthorizer.AuthType = in.Spec.AuthType
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayAuthorizerRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
+
+	if apigatewayAuthorizerRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayAuthorizerRestApiRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApiRef = *apigatewayAuthorizerRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if restApiId != "" {
+		apigatewayAuthorizer.RestApiId = restApiId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

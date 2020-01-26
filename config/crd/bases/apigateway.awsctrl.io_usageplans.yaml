@@ -59,8 +59,8 @@ spec:
               items:
                 description: UsagePlan_ApiStage defines the desired state of UsagePlanApiStage
                 properties:
-                  api:
-                    description: Api http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-apiid
+                  apiRef:
+                    description: ApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-apiid
                     properties:
                       apiVersion:
                         description: API version of the referent.
@@ -98,7 +98,7 @@ spec:
                           type: integer
                         rateLimit:
                           description: RateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-ratelimit
-                          type: string
+                          type: integer
                       type: object
                     description: Throttle http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-apistage.html#cfn-apigateway-usageplan-apistage-throttle
                     type: object
@@ -162,7 +162,7 @@ spec:
                   type: integer
                 rateLimit:
                   description: RateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-usageplan-throttlesettings.html#cfn-apigateway-usageplan-throttlesettings-ratelimit
-                  type: string
+                  type: integer
               type: object
             usagePlanName:
               description: UsagePlanName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-usageplan.html#cfn-apigateway-usageplan-usageplanname

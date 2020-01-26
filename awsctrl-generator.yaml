@@ -92,7 +92,7 @@ spec:
   # - robomaker
   - route53
   # - route53resolver
-  # - s3
+  - s3
   # - sagemaker
   # - sdb
   # - secretsmanager

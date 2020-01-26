@@ -65,8 +65,8 @@ spec:
             authorizationType:
               description: AuthorizationType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-authorizationtype
               type: string
-            authorizer:
-              description: Authorizer http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-authorizerid
+            authorizerRef:
+              description: AuthorizerRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-authorizerid
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -112,8 +112,8 @@ spec:
                 cacheNamespace:
                   description: CacheNamespace http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-cachenamespace
                   type: string
-                connection:
-                  description: Connection http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-connectionid
+                connectionRef:
+                  description: ConnectionRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-connectionid
                   properties:
                     apiVersion:
                       description: API version of the referent.
@@ -175,8 +175,6 @@ spec:
                       statusCode:
                         description: StatusCode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-statuscode
                         type: string
-                    required:
-                    - statusCode
                     type: object
                   type: array
                 passthroughBehavior:
@@ -220,8 +218,6 @@ spec:
                   statusCode:
                     description: StatusCode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-methodresponse.html#cfn-apigateway-method-methodresponse-statuscode
                     type: string
-                required:
-                - statusCode
                 type: object
               type: array
             notificationARNs:
@@ -249,8 +245,8 @@ spec:
                 type: boolean
               description: RequestParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-requestparameters
               type: object
-            requestValidator:
-              description: RequestValidator http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-requestvalidatorid
+            requestValidatorRef:
+              description: RequestValidatorRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-requestvalidatorid
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -275,8 +271,8 @@ spec:
                   description: Namespace of the referent.
                   type: string
               type: object
-            resource:
-              description: Resource http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-resourceid
+            resourceRef:
+              description: ResourceRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-resourceid
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -301,8 +297,8 @@ spec:
                   description: Namespace of the referent.
                   type: string
               type: object
-            restApi:
-              description: RestApi http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-restapiid
+            restApiRef:
+              description: RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-restapiid
               properties:
                 apiVersion:
                   description: API version of the referent.
@@ -342,10 +338,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - httpMethod
-          - resource
-          - restApi
           type: object
         status:
           description: MethodStatus defines the observed state of Method

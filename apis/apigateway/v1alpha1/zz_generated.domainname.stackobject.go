@@ -51,33 +51,61 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("DomainName"),
-		},
-		"DistributionDomainName": map[string]interface{}{
-			"Value": cloudformation.GetAtt("DomainName", "DistributionDomainName"),
-		},
-		"DistributionHostedZoneId": map[string]interface{}{
-			"Value": cloudformation.GetAtt("DomainName", "DistributionHostedZoneId"),
-		},
-		"RegionalDomainName": map[string]interface{}{
-			"Value": cloudformation.GetAtt("DomainName", "RegionalDomainName"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 		"RegionalHostedZoneId": map[string]interface{}{
-			"Value": cloudformation.GetAtt("DomainName", "RegionalHostedZoneId"),
+			"Value":  cloudformation.GetAtt("DomainName", "RegionalHostedZoneId"),
+			"Export": map[string]interface{}{"Name": in.Name + "RegionalHostedZoneId"},
+		},
+		"DistributionDomainName": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("DomainName", "DistributionDomainName"),
+			"Export": map[string]interface{}{"Name": in.Name + "DistributionDomainName"},
+		},
+		"DistributionHostedZoneId": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("DomainName", "DistributionHostedZoneId"),
+			"Export": map[string]interface{}{"Name": in.Name + "DistributionHostedZoneId"},
+		},
+		"RegionalDomainName": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("DomainName", "RegionalDomainName"),
+			"Export": map[string]interface{}{"Name": in.Name + "RegionalDomainName"},
 		},
 	}
 
 	apigatewayDomainName := &apigateway.DomainName{}
 
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	// TODO(christopherhein) move these to a defaulter
-	apigatewayDomainNameCertificateItem := in.Spec.Certificate.DeepCopy()
+	apigatewayDomainNameRegionalCertificateRefItem := in.Spec.RegionalCertificateRef.DeepCopy()
 
-	if apigatewayDomainNameCertificateItem.ObjectRef.Namespace == "" {
-		apigatewayDomainNameCertificateItem.ObjectRef.Namespace = in.Namespace
+	if apigatewayDomainNameRegionalCertificateRefItem.ObjectRef.Namespace == "" {
+		apigatewayDomainNameRegionalCertificateRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.Certificate = *apigatewayDomainNameCertificateItem
-	certificateArn, err := in.Spec.Certificate.String(client)
+	in.Spec.RegionalCertificateRef = *apigatewayDomainNameRegionalCertificateRefItem
+	regionalCertificateArn, err := in.Spec.RegionalCertificateRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if regionalCertificateArn != "" {
+		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
+	}
+
+	if in.Spec.SecurityPolicy != "" {
+		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayDomainNameCertificateRefItem := in.Spec.CertificateRef.DeepCopy()
+
+	if apigatewayDomainNameCertificateRefItem.ObjectRef.Namespace == "" {
+		apigatewayDomainNameCertificateRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.CertificateRef = *apigatewayDomainNameCertificateRefItem
+	certificateArn, err := in.Spec.CertificateRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -98,27 +126,6 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		apigatewayDomainName.EndpointConfiguration = &apigatewayDomainNameEndpointConfiguration
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayDomainNameRegionalCertificateItem := in.Spec.RegionalCertificate.DeepCopy()
-
-	if apigatewayDomainNameRegionalCertificateItem.ObjectRef.Namespace == "" {
-		apigatewayDomainNameRegionalCertificateItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RegionalCertificate = *apigatewayDomainNameRegionalCertificateItem
-	regionalCertificateArn, err := in.Spec.RegionalCertificate.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if regionalCertificateArn != "" {
-		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
-	}
-
-	if in.Spec.SecurityPolicy != "" {
-		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

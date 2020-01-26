@@ -19,7 +19,6 @@ package v1alpha1
 import (
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	metav1alpha1 "go.awsctrl.io/manager/apis/meta/v1alpha1"
@@ -52,20 +51,13 @@ func (in *Alias) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Alias"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	lambdaAlias := &lambda.Alias{}
-
-	if !reflect.DeepEqual(in.Spec.ProvisionedConcurrencyConfig, Alias_ProvisionedConcurrencyConfiguration{}) {
-		lambdaAliasProvisionedConcurrencyConfiguration := lambda.Alias_ProvisionedConcurrencyConfiguration{}
-
-		if in.Spec.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions != lambdaAliasProvisionedConcurrencyConfiguration.ProvisionedConcurrentExecutions {
-			lambdaAliasProvisionedConcurrencyConfiguration.ProvisionedConcurrentExecutions = in.Spec.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions
-		}
-
-		lambdaAlias.ProvisionedConcurrencyConfig = &lambdaAliasProvisionedConcurrencyConfiguration
-	}
 
 	if !reflect.DeepEqual(in.Spec.RoutingConfig, Alias_AliasRoutingConfiguration{}) {
 		lambdaAliasAliasRoutingConfiguration := lambda.Alias_AliasRoutingConfiguration{}
@@ -79,9 +71,8 @@ func (in *Alias) GetTemplate(client dynamic.Interface) (string, error) {
 				lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionVersion = item.FunctionVersion
 			}
 
-			if f, _ := strconv.ParseFloat(item.FunctionWeight, 64); f != lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionWeight {
-				f, _ := strconv.ParseFloat(item.FunctionWeight, 64)
-				lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionWeight = f
+			if float64(item.FunctionWeight) != lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionWeight {
+				lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionWeight = float64(item.FunctionWeight)
 			}
 
 		}
@@ -107,6 +98,16 @@ func (in *Alias) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.Name != "" {
 		lambdaAlias.Name = in.Spec.Name
+	}
+
+	if !reflect.DeepEqual(in.Spec.ProvisionedConcurrencyConfig, Alias_ProvisionedConcurrencyConfiguration{}) {
+		lambdaAliasProvisionedConcurrencyConfiguration := lambda.Alias_ProvisionedConcurrencyConfiguration{}
+
+		if in.Spec.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions != lambdaAliasProvisionedConcurrencyConfiguration.ProvisionedConcurrentExecutions {
+			lambdaAliasProvisionedConcurrencyConfiguration.ProvisionedConcurrentExecutions = in.Spec.ProvisionedConcurrencyConfig.ProvisionedConcurrentExecutions
+		}
+
+		lambdaAlias.ProvisionedConcurrencyConfig = &lambdaAliasProvisionedConcurrencyConfiguration
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

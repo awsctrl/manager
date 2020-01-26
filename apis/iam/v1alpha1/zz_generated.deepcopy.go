@@ -209,8 +209,8 @@ func (in *GroupOutput) DeepCopy() *GroupOutput {
 func (in *GroupSpec) DeepCopyInto(out *GroupSpec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
-	if in.ManagedPolicy != nil {
-		in, out := &in.ManagedPolicy, &out.ManagedPolicy
+	if in.ManagedPolicyRefs != nil {
+		in, out := &in.ManagedPolicyRefs, &out.ManagedPolicyRefs
 		*out = make([]metav1alpha1.ObjectReference, len(*in))
 		copy(*out, *in)
 	}
@@ -451,11 +451,6 @@ func (in *ManagedPolicyOutput) DeepCopy() *ManagedPolicyOutput {
 func (in *ManagedPolicySpec) DeepCopyInto(out *ManagedPolicySpec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
-	if in.Users != nil {
-		in, out := &in.Users, &out.Users
-		*out = make([]string, len(*in))
-		copy(*out, *in)
-	}
 	if in.Groups != nil {
 		in, out := &in.Groups, &out.Groups
 		*out = make([]string, len(*in))
@@ -463,6 +458,11 @@ func (in *ManagedPolicySpec) DeepCopyInto(out *ManagedPolicySpec) {
 	}
 	if in.Roles != nil {
 		in, out := &in.Roles, &out.Roles
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
+	if in.Users != nil {
+		in, out := &in.Users, &out.Users
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
@@ -572,6 +572,11 @@ func (in *PolicyOutput) DeepCopy() *PolicyOutput {
 func (in *PolicySpec) DeepCopyInto(out *PolicySpec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
+	if in.Groups != nil {
+		in, out := &in.Groups, &out.Groups
+		*out = make([]string, len(*in))
+		copy(*out, *in)
+	}
 	if in.Roles != nil {
 		in, out := &in.Roles, &out.Roles
 		*out = make([]string, len(*in))
@@ -579,11 +584,6 @@ func (in *PolicySpec) DeepCopyInto(out *PolicySpec) {
 	}
 	if in.Users != nil {
 		in, out := &in.Users, &out.Users
-		*out = make([]string, len(*in))
-		copy(*out, *in)
-	}
-	if in.Groups != nil {
-		in, out := &in.Groups, &out.Groups
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
@@ -693,14 +693,14 @@ func (in *RoleOutput) DeepCopy() *RoleOutput {
 func (in *RoleSpec) DeepCopyInto(out *RoleSpec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
+	if in.ManagedPolicyRefs != nil {
+		in, out := &in.ManagedPolicyRefs, &out.ManagedPolicyRefs
+		*out = make([]metav1alpha1.ObjectReference, len(*in))
+		copy(*out, *in)
+	}
 	if in.Policies != nil {
 		in, out := &in.Policies, &out.Policies
 		*out = make([]Role_Policy, len(*in))
-		copy(*out, *in)
-	}
-	if in.ManagedPolicy != nil {
-		in, out := &in.ManagedPolicy, &out.ManagedPolicy
-		*out = make([]metav1alpha1.ObjectReference, len(*in))
 		copy(*out, *in)
 	}
 }
@@ -930,20 +930,20 @@ func (in *UserOutput) DeepCopy() *UserOutput {
 func (in *UserSpec) DeepCopyInto(out *UserSpec) {
 	*out = *in
 	in.CloudFormationMeta.DeepCopyInto(&out.CloudFormationMeta)
-	if in.Policies != nil {
-		in, out := &in.Policies, &out.Policies
-		*out = make([]User_Policy, len(*in))
-		copy(*out, *in)
-	}
 	if in.Groups != nil {
 		in, out := &in.Groups, &out.Groups
 		*out = make([]string, len(*in))
 		copy(*out, *in)
 	}
 	out.LoginProfile = in.LoginProfile
-	if in.ManagedPolicy != nil {
-		in, out := &in.ManagedPolicy, &out.ManagedPolicy
+	if in.ManagedPolicyRefs != nil {
+		in, out := &in.ManagedPolicyRefs, &out.ManagedPolicyRefs
 		*out = make([]metav1alpha1.ObjectReference, len(*in))
+		copy(*out, *in)
+	}
+	if in.Policies != nil {
+		in, out := &in.Policies, &out.Policies
+		*out = make([]User_Policy, len(*in))
 		copy(*out, *in)
 	}
 }

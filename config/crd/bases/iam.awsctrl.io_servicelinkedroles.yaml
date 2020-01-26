@@ -97,8 +97,6 @@ spec:
                 termination protection enabled, the operation fails and the stack
                 remains unchanged.
               type: boolean
-          required:
-          - aWSServiceName
           type: object
         status:
           description: ServiceLinkedRoleStatus defines the observed state of ServiceLinkedRole

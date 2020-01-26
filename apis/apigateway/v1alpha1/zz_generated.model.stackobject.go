@@ -51,31 +51,13 @@ func (in *Model) GetTemplate(client dynamic.Interface) (string, error) {
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("Model"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	apigatewayModel := &apigateway.Model{}
-
-	if in.Spec.Name != "" {
-		apigatewayModel.Name = in.Spec.Name
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayModelRestApiItem := in.Spec.RestApi.DeepCopy()
-
-	if apigatewayModelRestApiItem.ObjectRef.Namespace == "" {
-		apigatewayModelRestApiItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RestApi = *apigatewayModelRestApiItem
-	restApiId, err := in.Spec.RestApi.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayModel.RestApiId = restApiId
-	}
 
 	if in.Spec.Schema != "" {
 		apigatewayModelJSON := make(map[string]interface{})
@@ -92,6 +74,27 @@ func (in *Model) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.Description != "" {
 		apigatewayModel.Description = in.Spec.Description
+	}
+
+	if in.Spec.Name != "" {
+		apigatewayModel.Name = in.Spec.Name
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayModelRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
+
+	if apigatewayModelRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayModelRestApiRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApiRef = *apigatewayModelRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if restApiId != "" {
+		apigatewayModel.RestApiId = restApiId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

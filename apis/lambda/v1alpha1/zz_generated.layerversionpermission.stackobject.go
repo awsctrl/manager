@@ -50,6 +50,9 @@ func (in *LayerVersionPermission) GetTemplate(client dynamic.Interface) (string,
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("LayerVersionPermission"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
@@ -60,14 +63,14 @@ func (in *LayerVersionPermission) GetTemplate(client dynamic.Interface) (string,
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	lambdaLayerVersionPermissionLayerVersionItem := in.Spec.LayerVersion.DeepCopy()
+	lambdaLayerVersionPermissionLayerVersionRefItem := in.Spec.LayerVersionRef.DeepCopy()
 
-	if lambdaLayerVersionPermissionLayerVersionItem.ObjectRef.Namespace == "" {
-		lambdaLayerVersionPermissionLayerVersionItem.ObjectRef.Namespace = in.Namespace
+	if lambdaLayerVersionPermissionLayerVersionRefItem.ObjectRef.Namespace == "" {
+		lambdaLayerVersionPermissionLayerVersionRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.LayerVersion = *lambdaLayerVersionPermissionLayerVersionItem
-	layerVersionArn, err := in.Spec.LayerVersion.String(client)
+	in.Spec.LayerVersionRef = *lambdaLayerVersionPermissionLayerVersionRefItem
+	layerVersionArn, err := in.Spec.LayerVersionRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -77,14 +80,14 @@ func (in *LayerVersionPermission) GetTemplate(client dynamic.Interface) (string,
 	}
 
 	// TODO(christopherhein) move these to a defaulter
-	lambdaLayerVersionPermissionOrganizationItem := in.Spec.Organization.DeepCopy()
+	lambdaLayerVersionPermissionOrganizationRefItem := in.Spec.OrganizationRef.DeepCopy()
 
-	if lambdaLayerVersionPermissionOrganizationItem.ObjectRef.Namespace == "" {
-		lambdaLayerVersionPermissionOrganizationItem.ObjectRef.Namespace = in.Namespace
+	if lambdaLayerVersionPermissionOrganizationRefItem.ObjectRef.Namespace == "" {
+		lambdaLayerVersionPermissionOrganizationRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.Organization = *lambdaLayerVersionPermissionOrganizationItem
-	organizationId, err := in.Spec.Organization.String(client)
+	in.Spec.OrganizationRef = *lambdaLayerVersionPermissionOrganizationRefItem
+	organizationId, err := in.Spec.OrganizationRef.String(client)
 	if err != nil {
 		return "", err
 	}

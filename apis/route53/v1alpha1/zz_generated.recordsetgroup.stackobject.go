@@ -51,20 +51,23 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 	template.Outputs = map[string]interface{}{
 		"ResourceRef": map[string]interface{}{
 			"Value": cloudformation.Ref("RecordSetGroup"),
+			"Export": map[string]interface{}{
+				"Name": in.Name + "Ref",
+			},
 		},
 	}
 
 	route53RecordSetGroup := &route53.RecordSetGroup{}
 
 	// TODO(christopherhein) move these to a defaulter
-	route53RecordSetGroupHostedZoneItem := in.Spec.HostedZone.DeepCopy()
+	route53RecordSetGroupHostedZoneRefItem := in.Spec.HostedZoneRef.DeepCopy()
 
-	if route53RecordSetGroupHostedZoneItem.ObjectRef.Namespace == "" {
-		route53RecordSetGroupHostedZoneItem.ObjectRef.Namespace = in.Namespace
+	if route53RecordSetGroupHostedZoneRefItem.ObjectRef.Namespace == "" {
+		route53RecordSetGroupHostedZoneRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	in.Spec.HostedZone = *route53RecordSetGroupHostedZoneItem
-	hostedZoneId, err := in.Spec.HostedZone.String(client)
+	in.Spec.HostedZoneRef = *route53RecordSetGroupHostedZoneRefItem
+	hostedZoneId, err := in.Spec.HostedZoneRef.String(client)
 	if err != nil {
 		return "", err
 	}
@@ -81,43 +84,6 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 
 	for _, item := range in.Spec.RecordSets {
 		route53RecordSetGroupRecordSet := route53.RecordSetGroup_RecordSet{}
-
-		if item.Failover != "" {
-			route53RecordSetGroupRecordSet.Failover = item.Failover
-		}
-
-		if item.MultiValueAnswer || !item.MultiValueAnswer {
-			route53RecordSetGroupRecordSet.MultiValueAnswer = item.MultiValueAnswer
-		}
-
-		// TODO(christopherhein) move these to a defaulter
-		route53RecordSetGroupRecordSetHealthCheckItem := item.HealthCheck.DeepCopy()
-
-		if route53RecordSetGroupRecordSetHealthCheckItem.ObjectRef.Namespace == "" {
-			route53RecordSetGroupRecordSetHealthCheckItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		item.HealthCheck = *route53RecordSetGroupRecordSetHealthCheckItem
-		healthCheckId, err := item.HealthCheck.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if healthCheckId != "" {
-			route53RecordSetGroupRecordSet.HealthCheckId = healthCheckId
-		}
-
-		if item.HostedZoneName != "" {
-			route53RecordSetGroupRecordSet.HostedZoneName = item.HostedZoneName
-		}
-
-		if item.SetIdentifier != "" {
-			route53RecordSetGroupRecordSet.SetIdentifier = item.SetIdentifier
-		}
-
-		if item.Region != "" {
-			route53RecordSetGroupRecordSet.Region = item.Region
-		}
 
 		if item.Type != "" {
 			route53RecordSetGroupRecordSet.Type = item.Type
@@ -141,19 +107,23 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 			route53RecordSetGroupRecordSet.GeoLocation = &route53RecordSetGroupRecordSetGeoLocation
 		}
 
-		if item.Comment != "" {
-			route53RecordSetGroupRecordSet.Comment = item.Comment
+		if item.Failover != "" {
+			route53RecordSetGroupRecordSet.Failover = item.Failover
+		}
+
+		if item.SetIdentifier != "" {
+			route53RecordSetGroupRecordSet.SetIdentifier = item.SetIdentifier
 		}
 
 		// TODO(christopherhein) move these to a defaulter
-		route53RecordSetGroupRecordSetHostedZoneItem := item.HostedZone.DeepCopy()
+		route53RecordSetGroupRecordSetHostedZoneRefItem := item.HostedZoneRef.DeepCopy()
 
-		if route53RecordSetGroupRecordSetHostedZoneItem.ObjectRef.Namespace == "" {
-			route53RecordSetGroupRecordSetHostedZoneItem.ObjectRef.Namespace = in.Namespace
+		if route53RecordSetGroupRecordSetHostedZoneRefItem.ObjectRef.Namespace == "" {
+			route53RecordSetGroupRecordSetHostedZoneRefItem.ObjectRef.Namespace = in.Namespace
 		}
 
-		item.HostedZone = *route53RecordSetGroupRecordSetHostedZoneItem
-		hostedZoneId, err := item.HostedZone.String(client)
+		item.HostedZoneRef = *route53RecordSetGroupRecordSetHostedZoneRefItem
+		hostedZoneId, err := item.HostedZoneRef.String(client)
 		if err != nil {
 			return "", err
 		}
@@ -162,20 +132,24 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 			route53RecordSetGroupRecordSet.HostedZoneId = hostedZoneId
 		}
 
+		if item.TTL != "" {
+			route53RecordSetGroupRecordSet.TTL = item.TTL
+		}
+
 		if item.Name != "" {
 			route53RecordSetGroupRecordSet.Name = item.Name
+		}
+
+		if item.Region != "" {
+			route53RecordSetGroupRecordSet.Region = item.Region
 		}
 
 		if len(item.ResourceRecords) > 0 {
 			route53RecordSetGroupRecordSet.ResourceRecords = item.ResourceRecords
 		}
 
-		if item.TTL != "" {
-			route53RecordSetGroupRecordSet.TTL = item.TTL
-		}
-
-		if item.Weight != route53RecordSetGroupRecordSet.Weight {
-			route53RecordSetGroupRecordSet.Weight = item.Weight
+		if item.MultiValueAnswer || !item.MultiValueAnswer {
+			route53RecordSetGroupRecordSet.MultiValueAnswer = item.MultiValueAnswer
 		}
 
 		if !reflect.DeepEqual(item.AliasTarget, RecordSetGroup_AliasTarget{}) {
@@ -190,14 +164,14 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 			}
 
 			// TODO(christopherhein) move these to a defaulter
-			route53RecordSetGroupRecordSetAliasTargetHostedZoneItem := item.AliasTarget.HostedZone.DeepCopy()
+			route53RecordSetGroupRecordSetAliasTargetHostedZoneRefItem := item.AliasTarget.HostedZoneRef.DeepCopy()
 
-			if route53RecordSetGroupRecordSetAliasTargetHostedZoneItem.ObjectRef.Namespace == "" {
-				route53RecordSetGroupRecordSetAliasTargetHostedZoneItem.ObjectRef.Namespace = in.Namespace
+			if route53RecordSetGroupRecordSetAliasTargetHostedZoneRefItem.ObjectRef.Namespace == "" {
+				route53RecordSetGroupRecordSetAliasTargetHostedZoneRefItem.ObjectRef.Namespace = in.Namespace
 			}
 
-			item.AliasTarget.HostedZone = *route53RecordSetGroupRecordSetAliasTargetHostedZoneItem
-			hostedZoneId, err := item.AliasTarget.HostedZone.String(client)
+			item.AliasTarget.HostedZoneRef = *route53RecordSetGroupRecordSetAliasTargetHostedZoneRefItem
+			hostedZoneId, err := item.AliasTarget.HostedZoneRef.String(client)
 			if err != nil {
 				return "", err
 			}
@@ -207,6 +181,35 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 			}
 
 			route53RecordSetGroupRecordSet.AliasTarget = &route53RecordSetGroupRecordSetAliasTarget
+		}
+
+		if item.Comment != "" {
+			route53RecordSetGroupRecordSet.Comment = item.Comment
+		}
+
+		// TODO(christopherhein) move these to a defaulter
+		route53RecordSetGroupRecordSetHealthCheckRefItem := item.HealthCheckRef.DeepCopy()
+
+		if route53RecordSetGroupRecordSetHealthCheckRefItem.ObjectRef.Namespace == "" {
+			route53RecordSetGroupRecordSetHealthCheckRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		item.HealthCheckRef = *route53RecordSetGroupRecordSetHealthCheckRefItem
+		healthCheckId, err := item.HealthCheckRef.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if healthCheckId != "" {
+			route53RecordSetGroupRecordSet.HealthCheckId = healthCheckId
+		}
+
+		if item.HostedZoneName != "" {
+			route53RecordSetGroupRecordSet.HostedZoneName = item.HostedZoneName
+		}
+
+		if item.Weight != route53RecordSetGroupRecordSet.Weight {
+			route53RecordSetGroupRecordSet.Weight = item.Weight
 		}
 
 	}

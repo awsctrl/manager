@@ -1,0 +1,22 @@
+apiVersion: s3.awsctrl.io/v1alpha1
+kind: BucketPolicy
+metadata:
+  name: bucketpolicy-sample
+spec:
+  bucket: awsctrl-s3-bucket-test-f596ac84
+  policyDocument: |
+    {
+      "Statement":[{
+      "Action":["s3:GetObject"],
+      "Effect":"Allow",
+      "Resource": { "Fn::ImportValue": "awsctrl-s3-bucket-test-f596ac84-Arn"},
+      "Principal":"*",
+        "Condition":{
+          "StringLike":{
+            "aws:Referer":[
+              "http://www.example.com/*"
+            ]
+          }
+        }
+      }]
+    }
