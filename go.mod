@@ -7,7 +7,7 @@ require (
 	github.com/awslabs/goformation/v4 v4.1.0
 	github.com/davecgh/go-spew v1.1.1
 	github.com/go-logr/logr v0.1.0
-	github.com/gobuffalo/envy v1.8.1 // indirect
+	github.com/gobuffalo/envy v1.9.0 // indirect
 	github.com/gobuffalo/flect v0.2.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/google/gofuzz v1.1.0 // indirect
@@ -21,15 +21,16 @@ require (
 	github.com/spf13/cobra v0.0.5
 	go.awsctrl.io/generator v0.0.0-20200125233602-7934df9bdfe5 // indirect
 	go.hein.dev/go-version v0.1.0
-	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad // indirect
+	golang.org/x/crypto v0.0.0-20200128174031-69ecbb4d6d5d // indirect
 	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
 	golang.org/x/sys v0.0.0-20191210023423-ac6580df4449 // indirect
-	golang.org/x/tools v0.0.0-20200125223703-d33eef8e6825 // indirect
+	golang.org/x/tools v0.0.0-20200131211209-ecb101ed6550 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	k8s.io/apimachinery v0.17.2
 	k8s.io/client-go v0.17.0
 	k8s.io/klog v1.0.0
 	sigs.k8s.io/controller-runtime v0.4.0
+	sigs.k8s.io/kustomize/api v0.3.2
 )
 
 replace github.com/appscode/jsonpatch => gomodules.xyz/jsonpatch v1.0.1
