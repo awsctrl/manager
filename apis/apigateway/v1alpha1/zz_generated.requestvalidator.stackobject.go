@@ -58,14 +58,6 @@ func (in *RequestValidator) GetTemplate(client dynamic.Interface) (string, error
 
 	apigatewayRequestValidator := &apigateway.RequestValidator{}
 
-	if in.Spec.ValidateRequestBody || !in.Spec.ValidateRequestBody {
-		apigatewayRequestValidator.ValidateRequestBody = in.Spec.ValidateRequestBody
-	}
-
-	if in.Spec.ValidateRequestParameters || !in.Spec.ValidateRequestParameters {
-		apigatewayRequestValidator.ValidateRequestParameters = in.Spec.ValidateRequestParameters
-	}
-
 	if in.Spec.Name != "" {
 		apigatewayRequestValidator.Name = in.Spec.Name
 	}
@@ -85,6 +77,14 @@ func (in *RequestValidator) GetTemplate(client dynamic.Interface) (string, error
 
 	if restApiId != "" {
 		apigatewayRequestValidator.RestApiId = restApiId
+	}
+
+	if in.Spec.ValidateRequestBody || !in.Spec.ValidateRequestBody {
+		apigatewayRequestValidator.ValidateRequestBody = in.Spec.ValidateRequestBody
+	}
+
+	if in.Spec.ValidateRequestParameters || !in.Spec.ValidateRequestParameters {
+		apigatewayRequestValidator.ValidateRequestParameters = in.Spec.ValidateRequestParameters
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

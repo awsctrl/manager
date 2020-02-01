@@ -62,6 +62,10 @@ func (in *InstanceProfile) GetTemplate(client dynamic.Interface) (string, error)
 
 	iamInstanceProfile := &iam.InstanceProfile{}
 
+	if in.Spec.Path != "" {
+		iamInstanceProfile.Path = in.Spec.Path
+	}
+
 	if len(in.Spec.Roles) > 0 {
 		iamInstanceProfile.Roles = in.Spec.Roles
 	}
@@ -73,10 +77,6 @@ func (in *InstanceProfile) GetTemplate(client dynamic.Interface) (string, error)
 
 	if in.Spec.InstanceProfileName != "" {
 		iamInstanceProfile.InstanceProfileName = in.Spec.InstanceProfileName
-	}
-
-	if in.Spec.Path != "" {
-		iamInstanceProfile.Path = in.Spec.Path
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

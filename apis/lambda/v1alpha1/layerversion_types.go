@@ -25,6 +25,12 @@ import (
 type LayerVersionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// CompatibleRuntimes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversion.html#cfn-lambda-layerversion-compatibleruntimes
+	CompatibleRuntimes []string `json:"compatibleRuntimes,omitempty" cloudformation:"CompatibleRuntimes"`
+
+	// Content http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversion.html#cfn-lambda-layerversion-content
+	Content LayerVersion_Content `json:"content,omitempty" cloudformation:"Content"`
+
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversion.html#cfn-lambda-layerversion-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 
@@ -33,24 +39,18 @@ type LayerVersionSpec struct {
 
 	// LicenseInfo http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversion.html#cfn-lambda-layerversion-licenseinfo
 	LicenseInfo string `json:"licenseInfo,omitempty" cloudformation:"LicenseInfo,Parameter"`
-
-	// CompatibleRuntimes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversion.html#cfn-lambda-layerversion-compatibleruntimes
-	CompatibleRuntimes []string `json:"compatibleRuntimes,omitempty" cloudformation:"CompatibleRuntimes"`
-
-	// Content http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversion.html#cfn-lambda-layerversion-content
-	Content LayerVersion_Content `json:"content,omitempty" cloudformation:"Content"`
 }
 
 // LayerVersion_Content defines the desired state of LayerVersionContent
 type LayerVersion_Content struct {
-	// S3ObjectVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-layerversion-content.html#cfn-lambda-layerversion-content-s3objectversion
-	S3ObjectVersion string `json:"s3ObjectVersion,omitempty" cloudformation:"S3ObjectVersion,Parameter"`
-
 	// S3Bucket http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-layerversion-content.html#cfn-lambda-layerversion-content-s3bucket
 	S3Bucket string `json:"s3Bucket,omitempty" cloudformation:"S3Bucket,Parameter"`
 
 	// S3Key http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-layerversion-content.html#cfn-lambda-layerversion-content-s3key
 	S3Key string `json:"s3Key,omitempty" cloudformation:"S3Key,Parameter"`
+
+	// S3ObjectVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-layerversion-content.html#cfn-lambda-layerversion-content-s3objectversion
+	S3ObjectVersion string `json:"s3ObjectVersion,omitempty" cloudformation:"S3ObjectVersion,Parameter"`
 }
 
 // LayerVersionStatus defines the observed state of LayerVersion

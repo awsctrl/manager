@@ -25,6 +25,9 @@ import (
 type AliasSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-functionname
+	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
+
 	// FunctionVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-functionversion
 	FunctionVersion string `json:"functionVersion,omitempty" cloudformation:"FunctionVersion,Parameter"`
 
@@ -39,18 +42,6 @@ type AliasSpec struct {
 
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
-
-	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-functionname
-	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
-}
-
-// Alias_VersionWeight defines the desired state of AliasVersionWeight
-type Alias_VersionWeight struct {
-	// FunctionVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionversion
-	FunctionVersion string `json:"functionVersion,omitempty" cloudformation:"FunctionVersion,Parameter"`
-
-	// FunctionWeight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionweight
-	FunctionWeight int `json:"functionWeight,omitempty" cloudformation:"FunctionWeight,Parameter"`
 }
 
 // Alias_ProvisionedConcurrencyConfiguration defines the desired state of AliasProvisionedConcurrencyConfiguration
@@ -63,6 +54,15 @@ type Alias_ProvisionedConcurrencyConfiguration struct {
 type Alias_AliasRoutingConfiguration struct {
 	// AdditionalVersionWeights http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-aliasroutingconfiguration.html#cfn-lambda-alias-aliasroutingconfiguration-additionalversionweights
 	AdditionalVersionWeights []Alias_VersionWeight `json:"additionalVersionWeights,omitempty" cloudformation:"AdditionalVersionWeights"`
+}
+
+// Alias_VersionWeight defines the desired state of AliasVersionWeight
+type Alias_VersionWeight struct {
+	// FunctionWeight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionweight
+	FunctionWeight int `json:"functionWeight,omitempty" cloudformation:"FunctionWeight,Parameter"`
+
+	// FunctionVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionversion
+	FunctionVersion string `json:"functionVersion,omitempty" cloudformation:"FunctionVersion,Parameter"`
 }
 
 // AliasStatus defines the observed state of Alias

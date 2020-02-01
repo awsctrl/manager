@@ -5,5 +5,5 @@ metadata:
 spec:
   # TODO(christopherhein) fix code generation for names
   aWSServiceName: autoscaling.amazonaws.com
-  Description: Test SLR description
-  CustomSuffix: TestSuffix
+  description: Test SLR description
+  customSuffix: TestSuffix

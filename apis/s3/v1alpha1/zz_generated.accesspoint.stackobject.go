@@ -60,10 +60,6 @@ func (in *AccessPoint) GetTemplate(client dynamic.Interface) (string, error) {
 
 	s3AccessPoint := &s3.AccessPoint{}
 
-	if in.Spec.CreationDate != "" {
-		s3AccessPoint.CreationDate = in.Spec.CreationDate
-	}
-
 	if in.Spec.Name != "" {
 		s3AccessPoint.Name = in.Spec.Name
 	}
@@ -93,6 +89,10 @@ func (in *AccessPoint) GetTemplate(client dynamic.Interface) (string, error) {
 	if !reflect.DeepEqual(in.Spec.PublicAccessBlockConfiguration, AccessPoint_PublicAccessBlockConfiguration{}) {
 		s3AccessPointPublicAccessBlockConfiguration := s3.AccessPoint_PublicAccessBlockConfiguration{}
 
+		if in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls || !in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls {
+			s3AccessPointPublicAccessBlockConfiguration.BlockPublicAcls = in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls
+		}
+
 		if in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy || !in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy {
 			s3AccessPointPublicAccessBlockConfiguration.BlockPublicPolicy = in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy
 		}
@@ -103,10 +103,6 @@ func (in *AccessPoint) GetTemplate(client dynamic.Interface) (string, error) {
 
 		if in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets || !in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets {
 			s3AccessPointPublicAccessBlockConfiguration.RestrictPublicBuckets = in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets
-		}
-
-		if in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls || !in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls {
-			s3AccessPointPublicAccessBlockConfiguration.BlockPublicAcls = in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls
 		}
 
 		s3AccessPoint.PublicAccessBlockConfiguration = &s3AccessPointPublicAccessBlockConfiguration
@@ -137,6 +133,10 @@ func (in *AccessPoint) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.Bucket != "" {
 		s3AccessPoint.Bucket = in.Spec.Bucket
+	}
+
+	if in.Spec.CreationDate != "" {
+		s3AccessPoint.CreationDate = in.Spec.CreationDate
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

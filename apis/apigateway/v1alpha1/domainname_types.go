@@ -25,6 +25,9 @@ import (
 type DomainNameSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-domainname
+	DomainName string `json:"domainName,omitempty" cloudformation:"DomainName,Parameter"`
+
 	// EndpointConfiguration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-endpointconfiguration
 	EndpointConfiguration DomainName_EndpointConfiguration `json:"endpointConfiguration,omitempty" cloudformation:"EndpointConfiguration"`
 
@@ -36,9 +39,6 @@ type DomainNameSpec struct {
 
 	// CertificateRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-certificatearn
 	CertificateRef metav1alpha1.ObjectReference `json:"certificateRef,omitempty" cloudformation:"CertificateArn,Parameter"`
-
-	// DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-domainname.html#cfn-apigateway-domainname-domainname
-	DomainName string `json:"domainName,omitempty" cloudformation:"DomainName,Parameter"`
 }
 
 // DomainName_EndpointConfiguration defines the desired state of DomainNameEndpointConfiguration

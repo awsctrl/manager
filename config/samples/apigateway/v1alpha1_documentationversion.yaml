@@ -6,7 +6,7 @@ spec:
   documentationVersion: "v0.0.1"
   description: |
     ApiGateway Documentation sample part
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample

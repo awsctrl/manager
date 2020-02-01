@@ -3,20 +3,20 @@ kind: Stage
 metadata:
   name: stage-sample
 spec:
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample
     key: ResourceRef
   stageName: Prod
   description: Prod Stage
-  deployment:
+  deploymentRef:
     kind: Deployment
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: deployment-sample
     key: ResourceRef
   documentationVersion: ""
-  clientCertificate: 
+  clientCertificateRef: 
     kind: ClientCertificate
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: clientcertificate-sample

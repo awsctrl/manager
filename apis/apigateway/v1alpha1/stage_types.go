@@ -25,59 +25,44 @@ import (
 type StageSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// TracingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-tracingenabled
-	TracingEnabled bool `json:"tracingEnabled,omitempty" cloudformation:"TracingEnabled,Parameter"`
+	// AccessLogSetting http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-accesslogsetting
+	AccessLogSetting Stage_AccessLogSetting `json:"accessLogSetting,omitempty" cloudformation:"AccessLogSetting"`
 
 	// RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-restapiid
 	RestApiRef metav1alpha1.ObjectReference `json:"restApiRef,omitempty" cloudformation:"RestApiId,Parameter"`
 
-	// MethodSettings http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-methodsettings
-	MethodSettings []Stage_MethodSetting `json:"methodSettings,omitempty" cloudformation:"MethodSettings"`
-
-	// StageName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-stagename
-	StageName string `json:"stageName,omitempty" cloudformation:"StageName,Parameter"`
-
-	// DocumentationVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-documentationversion
-	DocumentationVersion string `json:"documentationVersion,omitempty" cloudformation:"DocumentationVersion,Parameter"`
-
-	// Variables http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-variables
-	Variables map[string]string `json:"variables,omitempty" cloudformation:"Variables"`
-
 	// CacheClusterEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-cacheclusterenabled
 	CacheClusterEnabled bool `json:"cacheClusterEnabled,omitempty" cloudformation:"CacheClusterEnabled,Parameter"`
-
-	// ClientCertificateRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-clientcertificateid
-	ClientCertificateRef metav1alpha1.ObjectReference `json:"clientCertificateRef,omitempty" cloudformation:"ClientCertificateId,Parameter"`
 
 	// CacheClusterSize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-cacheclustersize
 	CacheClusterSize string `json:"cacheClusterSize,omitempty" cloudformation:"CacheClusterSize,Parameter"`
 
+	// StageName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-stagename
+	StageName string `json:"stageName,omitempty" cloudformation:"StageName,Parameter"`
+
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 
-	// AccessLogSetting http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-accesslogsetting
-	AccessLogSetting Stage_AccessLogSetting `json:"accessLogSetting,omitempty" cloudformation:"AccessLogSetting"`
+	// CanarySetting http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-canarysetting
+	CanarySetting Stage_CanarySetting `json:"canarySetting,omitempty" cloudformation:"CanarySetting"`
+
+	// DocumentationVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-documentationversion
+	DocumentationVersion string `json:"documentationVersion,omitempty" cloudformation:"DocumentationVersion,Parameter"`
+
+	// TracingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-tracingenabled
+	TracingEnabled bool `json:"tracingEnabled,omitempty" cloudformation:"TracingEnabled,Parameter"`
+
+	// MethodSettings http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-methodsettings
+	MethodSettings []Stage_MethodSetting `json:"methodSettings,omitempty" cloudformation:"MethodSettings"`
+
+	// ClientCertificateRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-clientcertificateid
+	ClientCertificateRef metav1alpha1.ObjectReference `json:"clientCertificateRef,omitempty" cloudformation:"ClientCertificateId,Parameter"`
 
 	// DeploymentRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-deploymentid
 	DeploymentRef metav1alpha1.ObjectReference `json:"deploymentRef,omitempty" cloudformation:"DeploymentId,Parameter"`
 
-	// CanarySetting http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-canarysetting
-	CanarySetting Stage_CanarySetting `json:"canarySetting,omitempty" cloudformation:"CanarySetting"`
-}
-
-// Stage_CanarySetting defines the desired state of StageCanarySetting
-type Stage_CanarySetting struct {
-	// DeploymentRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-deploymentid
-	DeploymentRef metav1alpha1.ObjectReference `json:"deploymentRef,omitempty" cloudformation:"DeploymentId,Parameter"`
-
-	// PercentTraffic http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-percenttraffic
-	PercentTraffic int `json:"percentTraffic,omitempty" cloudformation:"PercentTraffic,Parameter"`
-
-	// StageVariableOverrides http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-stagevariableoverrides
-	StageVariableOverrides map[string]string `json:"stageVariableOverrides,omitempty" cloudformation:"StageVariableOverrides"`
-
-	// UseStageCache http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-usestagecache
-	UseStageCache bool `json:"useStageCache,omitempty" cloudformation:"UseStageCache,Parameter"`
+	// Variables http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-stage.html#cfn-apigateway-stage-variables
+	Variables map[string]string `json:"variables,omitempty" cloudformation:"Variables"`
 }
 
 // Stage_AccessLogSetting defines the desired state of StageAccessLogSetting
@@ -89,22 +74,28 @@ type Stage_AccessLogSetting struct {
 	Format string `json:"format,omitempty" cloudformation:"Format,Parameter"`
 }
 
+// Stage_CanarySetting defines the desired state of StageCanarySetting
+type Stage_CanarySetting struct {
+	// StageVariableOverrides http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-stagevariableoverrides
+	StageVariableOverrides map[string]string `json:"stageVariableOverrides,omitempty" cloudformation:"StageVariableOverrides"`
+
+	// UseStageCache http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-usestagecache
+	UseStageCache bool `json:"useStageCache,omitempty" cloudformation:"UseStageCache,Parameter"`
+
+	// DeploymentRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-deploymentid
+	DeploymentRef metav1alpha1.ObjectReference `json:"deploymentRef,omitempty" cloudformation:"DeploymentId,Parameter"`
+
+	// PercentTraffic http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-stage-canarysetting.html#cfn-apigateway-stage-canarysetting-percenttraffic
+	PercentTraffic int `json:"percentTraffic,omitempty" cloudformation:"PercentTraffic,Parameter"`
+}
+
 // Stage_MethodSetting defines the desired state of StageMethodSetting
 type Stage_MethodSetting struct {
-	// ThrottlingBurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-throttlingburstlimit
-	ThrottlingBurstLimit int `json:"throttlingBurstLimit,omitempty" cloudformation:"ThrottlingBurstLimit,Parameter"`
-
-	// CacheDataEncrypted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-cachedataencrypted
-	CacheDataEncrypted bool `json:"cacheDataEncrypted,omitempty" cloudformation:"CacheDataEncrypted,Parameter"`
+	// ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-throttlingratelimit
+	ThrottlingRateLimit int `json:"throttlingRateLimit,omitempty" cloudformation:"ThrottlingRateLimit,Parameter"`
 
 	// CacheTtlInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-cachettlinseconds
 	CacheTtlInSeconds int `json:"cacheTtlInSeconds,omitempty" cloudformation:"CacheTtlInSeconds,Parameter"`
-
-	// HttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-httpmethod
-	HttpMethod string `json:"httpMethod,omitempty" cloudformation:"HttpMethod,Parameter"`
-
-	// MetricsEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-metricsenabled
-	MetricsEnabled bool `json:"metricsEnabled,omitempty" cloudformation:"MetricsEnabled,Parameter"`
 
 	// CachingEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-cachingenabled
 	CachingEnabled bool `json:"cachingEnabled,omitempty" cloudformation:"CachingEnabled,Parameter"`
@@ -112,14 +103,23 @@ type Stage_MethodSetting struct {
 	// DataTraceEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-datatraceenabled
 	DataTraceEnabled bool `json:"dataTraceEnabled,omitempty" cloudformation:"DataTraceEnabled,Parameter"`
 
+	// LoggingLevel http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-logginglevel
+	LoggingLevel string `json:"loggingLevel,omitempty" cloudformation:"LoggingLevel,Parameter"`
+
+	// MetricsEnabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-metricsenabled
+	MetricsEnabled bool `json:"metricsEnabled,omitempty" cloudformation:"MetricsEnabled,Parameter"`
+
+	// ThrottlingBurstLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-throttlingburstlimit
+	ThrottlingBurstLimit int `json:"throttlingBurstLimit,omitempty" cloudformation:"ThrottlingBurstLimit,Parameter"`
+
+	// CacheDataEncrypted http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-cachedataencrypted
+	CacheDataEncrypted bool `json:"cacheDataEncrypted,omitempty" cloudformation:"CacheDataEncrypted,Parameter"`
+
 	// ResourcePath http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-resourcepath
 	ResourcePath string `json:"resourcePath,omitempty" cloudformation:"ResourcePath,Parameter"`
 
-	// ThrottlingRateLimit http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-throttlingratelimit
-	ThrottlingRateLimit int `json:"throttlingRateLimit,omitempty" cloudformation:"ThrottlingRateLimit,Parameter"`
-
-	// LoggingLevel http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-logginglevel
-	LoggingLevel string `json:"loggingLevel,omitempty" cloudformation:"LoggingLevel,Parameter"`
+	// HttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-stage-methodsetting.html#cfn-apigateway-stage-methodsetting-httpmethod
+	HttpMethod string `json:"httpMethod,omitempty" cloudformation:"HttpMethod,Parameter"`
 }
 
 // StageStatus defines the observed state of Stage

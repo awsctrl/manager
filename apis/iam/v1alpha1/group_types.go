@@ -40,11 +40,11 @@ type GroupSpec struct {
 
 // Group_Policy defines the desired state of GroupPolicy
 type Group_Policy struct {
-	// PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
-	PolicyName string `json:"policyName,omitempty" cloudformation:"PolicyName,Parameter"`
-
 	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policydocument
 	PolicyDocument string `json:"policyDocument,omitempty" cloudformation:"PolicyDocument,Parameter"`
+
+	// PolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-policy.html#cfn-iam-policies-policyname
+	PolicyName string `json:"policyName,omitempty" cloudformation:"PolicyName,Parameter"`
 }
 
 // GroupStatus defines the observed state of Group

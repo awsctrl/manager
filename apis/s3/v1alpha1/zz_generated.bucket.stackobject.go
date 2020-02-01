@@ -55,10 +55,6 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 				"Name": in.Name + "Ref",
 			},
 		},
-		"Arn": map[string]interface{}{
-			"Value":  cloudformation.GetAtt("Bucket", "Arn"),
-			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
-		},
 		"DomainName": map[string]interface{}{
 			"Value":  cloudformation.GetAtt("Bucket", "DomainName"),
 			"Export": map[string]interface{}{"Name": in.Name + "DomainName"},
@@ -75,9 +71,115 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 			"Value":  cloudformation.GetAtt("Bucket", "WebsiteURL"),
 			"Export": map[string]interface{}{"Name": in.Name + "WebsiteURL"},
 		},
+		"Arn": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("Bucket", "Arn"),
+			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
+		},
 	}
 
 	s3Bucket := &s3.Bucket{}
+
+	if in.Spec.AccessControl != "" {
+		s3Bucket.AccessControl = in.Spec.AccessControl
+	}
+
+	if !reflect.DeepEqual(in.Spec.AccelerateConfiguration, Bucket_AccelerateConfiguration{}) {
+		s3BucketAccelerateConfiguration := s3.Bucket_AccelerateConfiguration{}
+
+		if in.Spec.AccelerateConfiguration.AccelerationStatus != "" {
+			s3BucketAccelerateConfiguration.AccelerationStatus = in.Spec.AccelerateConfiguration.AccelerationStatus
+		}
+
+		s3Bucket.AccelerateConfiguration = &s3BucketAccelerateConfiguration
+	}
+
+	if !reflect.DeepEqual(in.Spec.CorsConfiguration, Bucket_CorsConfiguration{}) {
+		s3BucketCorsConfiguration := s3.Bucket_CorsConfiguration{}
+
+		s3BucketCorsConfigurationCorsRules := []s3.Bucket_CorsRule{}
+
+		for _, item := range in.Spec.CorsConfiguration.CorsRules {
+			s3BucketCorsConfigurationCorsRule := s3.Bucket_CorsRule{}
+
+			if len(item.AllowedHeaders) > 0 {
+				s3BucketCorsConfigurationCorsRule.AllowedHeaders = item.AllowedHeaders
+			}
+
+			if len(item.AllowedMethods) > 0 {
+				s3BucketCorsConfigurationCorsRule.AllowedMethods = item.AllowedMethods
+			}
+
+			if len(item.AllowedOrigins) > 0 {
+				s3BucketCorsConfigurationCorsRule.AllowedOrigins = item.AllowedOrigins
+			}
+
+			if len(item.ExposedHeaders) > 0 {
+				s3BucketCorsConfigurationCorsRule.ExposedHeaders = item.ExposedHeaders
+			}
+
+			// TODO(christopherhein) move these to a defaulter
+			s3BucketCorsConfigurationCorsRuleRefItem := item.Ref.DeepCopy()
+
+			if s3BucketCorsConfigurationCorsRuleRefItem.ObjectRef.Namespace == "" {
+				s3BucketCorsConfigurationCorsRuleRefItem.ObjectRef.Namespace = in.Namespace
+			}
+
+			item.Ref = *s3BucketCorsConfigurationCorsRuleRefItem
+			id, err := item.Ref.String(client)
+			if err != nil {
+				return "", err
+			}
+
+			if id != "" {
+				s3BucketCorsConfigurationCorsRule.Id = id
+			}
+
+			if item.MaxAge != s3BucketCorsConfigurationCorsRule.MaxAge {
+				s3BucketCorsConfigurationCorsRule.MaxAge = item.MaxAge
+			}
+
+		}
+
+		if len(s3BucketCorsConfigurationCorsRules) > 0 {
+			s3BucketCorsConfiguration.CorsRules = s3BucketCorsConfigurationCorsRules
+		}
+
+		s3Bucket.CorsConfiguration = &s3BucketCorsConfiguration
+	}
+
+	if !reflect.DeepEqual(in.Spec.ObjectLockConfiguration, Bucket_ObjectLockConfiguration{}) {
+		s3BucketObjectLockConfiguration := s3.Bucket_ObjectLockConfiguration{}
+
+		if in.Spec.ObjectLockConfiguration.ObjectLockEnabled != "" {
+			s3BucketObjectLockConfiguration.ObjectLockEnabled = in.Spec.ObjectLockConfiguration.ObjectLockEnabled
+		}
+
+		if !reflect.DeepEqual(in.Spec.ObjectLockConfiguration.Rule, Bucket_ObjectLockRule{}) {
+			s3BucketObjectLockConfigurationObjectLockRule := s3.Bucket_ObjectLockRule{}
+
+			if !reflect.DeepEqual(in.Spec.ObjectLockConfiguration.Rule.DefaultRetention, Bucket_DefaultRetention{}) {
+				s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention := s3.Bucket_DefaultRetention{}
+
+				if in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Years != s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Years {
+					s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Years = in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Years
+				}
+
+				if in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Days != s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Days {
+					s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Days = in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Days
+				}
+
+				if in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Mode != "" {
+					s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Mode = in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Mode
+				}
+
+				s3BucketObjectLockConfigurationObjectLockRule.DefaultRetention = &s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention
+			}
+
+			s3BucketObjectLockConfiguration.Rule = &s3BucketObjectLockConfigurationObjectLockRule
+		}
+
+		s3Bucket.ObjectLockConfiguration = &s3BucketObjectLockConfiguration
+	}
 
 	if !reflect.DeepEqual(in.Spec.WebsiteConfiguration, Bucket_WebsiteConfiguration{}) {
 		s3BucketWebsiteConfiguration := s3.Bucket_WebsiteConfiguration{}
@@ -109,20 +211,6 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 		for _, item := range in.Spec.WebsiteConfiguration.RoutingRules {
 			s3BucketWebsiteConfigurationRoutingRule := s3.Bucket_RoutingRule{}
 
-			if !reflect.DeepEqual(item.RoutingRuleCondition, Bucket_RoutingRuleCondition{}) {
-				s3BucketWebsiteConfigurationRoutingRuleRoutingRuleCondition := s3.Bucket_RoutingRuleCondition{}
-
-				if item.RoutingRuleCondition.HttpErrorCodeReturnedEquals != "" {
-					s3BucketWebsiteConfigurationRoutingRuleRoutingRuleCondition.HttpErrorCodeReturnedEquals = item.RoutingRuleCondition.HttpErrorCodeReturnedEquals
-				}
-
-				if item.RoutingRuleCondition.KeyPrefixEquals != "" {
-					s3BucketWebsiteConfigurationRoutingRuleRoutingRuleCondition.KeyPrefixEquals = item.RoutingRuleCondition.KeyPrefixEquals
-				}
-
-				s3BucketWebsiteConfigurationRoutingRule.RoutingRuleCondition = &s3BucketWebsiteConfigurationRoutingRuleRoutingRuleCondition
-			}
-
 			if !reflect.DeepEqual(item.RedirectRule, Bucket_RedirectRule{}) {
 				s3BucketWebsiteConfigurationRoutingRuleRedirectRule := s3.Bucket_RedirectRule{}
 
@@ -149,6 +237,20 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 				s3BucketWebsiteConfigurationRoutingRule.RedirectRule = &s3BucketWebsiteConfigurationRoutingRuleRedirectRule
 			}
 
+			if !reflect.DeepEqual(item.RoutingRuleCondition, Bucket_RoutingRuleCondition{}) {
+				s3BucketWebsiteConfigurationRoutingRuleRoutingRuleCondition := s3.Bucket_RoutingRuleCondition{}
+
+				if item.RoutingRuleCondition.HttpErrorCodeReturnedEquals != "" {
+					s3BucketWebsiteConfigurationRoutingRuleRoutingRuleCondition.HttpErrorCodeReturnedEquals = item.RoutingRuleCondition.HttpErrorCodeReturnedEquals
+				}
+
+				if item.RoutingRuleCondition.KeyPrefixEquals != "" {
+					s3BucketWebsiteConfigurationRoutingRuleRoutingRuleCondition.KeyPrefixEquals = item.RoutingRuleCondition.KeyPrefixEquals
+				}
+
+				s3BucketWebsiteConfigurationRoutingRule.RoutingRuleCondition = &s3BucketWebsiteConfigurationRoutingRuleRoutingRuleCondition
+			}
+
 		}
 
 		if len(s3BucketWebsiteConfigurationRoutingRules) > 0 {
@@ -158,168 +260,275 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 		s3Bucket.WebsiteConfiguration = &s3BucketWebsiteConfiguration
 	}
 
-	if !reflect.DeepEqual(in.Spec.AccelerateConfiguration, Bucket_AccelerateConfiguration{}) {
-		s3BucketAccelerateConfiguration := s3.Bucket_AccelerateConfiguration{}
+	if !reflect.DeepEqual(in.Spec.BucketEncryption, Bucket_BucketEncryption{}) {
+		s3BucketBucketEncryption := s3.Bucket_BucketEncryption{}
 
-		if in.Spec.AccelerateConfiguration.AccelerationStatus != "" {
-			s3BucketAccelerateConfiguration.AccelerationStatus = in.Spec.AccelerateConfiguration.AccelerationStatus
+		s3BucketBucketEncryptionServerSideEncryptionConfiguration := []s3.Bucket_ServerSideEncryptionRule{}
+
+		for _, item := range in.Spec.BucketEncryption.ServerSideEncryptionConfiguration {
+			s3BucketBucketEncryptionServerSideEncryptionRule := s3.Bucket_ServerSideEncryptionRule{}
+
+			if !reflect.DeepEqual(item.ServerSideEncryptionByDefault, Bucket_ServerSideEncryptionByDefault{}) {
+				s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefault := s3.Bucket_ServerSideEncryptionByDefault{}
+
+				// TODO(christopherhein) move these to a defaulter
+				s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefaultKMSMasterKeyRefItem := item.ServerSideEncryptionByDefault.KMSMasterKeyRef.DeepCopy()
+
+				if s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefaultKMSMasterKeyRefItem.ObjectRef.Namespace == "" {
+					s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefaultKMSMasterKeyRefItem.ObjectRef.Namespace = in.Namespace
+				}
+
+				item.ServerSideEncryptionByDefault.KMSMasterKeyRef = *s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefaultKMSMasterKeyRefItem
+				kMSMasterKeyID, err := item.ServerSideEncryptionByDefault.KMSMasterKeyRef.String(client)
+				if err != nil {
+					return "", err
+				}
+
+				if kMSMasterKeyID != "" {
+					s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefault.KMSMasterKeyID = kMSMasterKeyID
+				}
+
+				if item.ServerSideEncryptionByDefault.SSEAlgorithm != "" {
+					s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefault.SSEAlgorithm = item.ServerSideEncryptionByDefault.SSEAlgorithm
+				}
+
+				s3BucketBucketEncryptionServerSideEncryptionRule.ServerSideEncryptionByDefault = &s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefault
+			}
+
 		}
 
-		s3Bucket.AccelerateConfiguration = &s3BucketAccelerateConfiguration
+		if len(s3BucketBucketEncryptionServerSideEncryptionConfiguration) > 0 {
+			s3BucketBucketEncryption.ServerSideEncryptionConfiguration = s3BucketBucketEncryptionServerSideEncryptionConfiguration
+		}
+
+		s3Bucket.BucketEncryption = &s3BucketBucketEncryption
 	}
 
-	if !reflect.DeepEqual(in.Spec.NotificationConfiguration, Bucket_NotificationConfiguration{}) {
-		s3BucketNotificationConfiguration := s3.Bucket_NotificationConfiguration{}
+	if !reflect.DeepEqual(in.Spec.LoggingConfiguration, Bucket_LoggingConfiguration{}) {
+		s3BucketLoggingConfiguration := s3.Bucket_LoggingConfiguration{}
 
-		s3BucketNotificationConfigurationLambdaConfigurations := []s3.Bucket_LambdaConfiguration{}
+		if in.Spec.LoggingConfiguration.DestinationBucketName != "" {
+			s3BucketLoggingConfiguration.DestinationBucketName = in.Spec.LoggingConfiguration.DestinationBucketName
+		}
 
-		for _, item := range in.Spec.NotificationConfiguration.LambdaConfigurations {
-			s3BucketNotificationConfigurationLambdaConfiguration := s3.Bucket_LambdaConfiguration{}
+		if in.Spec.LoggingConfiguration.LogFilePrefix != "" {
+			s3BucketLoggingConfiguration.LogFilePrefix = in.Spec.LoggingConfiguration.LogFilePrefix
+		}
 
-			if item.Function != "" {
-				s3BucketNotificationConfigurationLambdaConfiguration.Function = item.Function
+		s3Bucket.LoggingConfiguration = &s3BucketLoggingConfiguration
+	}
+
+	s3BucketMetricsConfigurations := []s3.Bucket_MetricsConfiguration{}
+
+	for _, item := range in.Spec.MetricsConfigurations {
+		s3BucketMetricsConfiguration := s3.Bucket_MetricsConfiguration{}
+
+		// TODO(christopherhein) move these to a defaulter
+		s3BucketMetricsConfigurationRefItem := item.Ref.DeepCopy()
+
+		if s3BucketMetricsConfigurationRefItem.ObjectRef.Namespace == "" {
+			s3BucketMetricsConfigurationRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		item.Ref = *s3BucketMetricsConfigurationRefItem
+		id, err := item.Ref.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if id != "" {
+			s3BucketMetricsConfiguration.Id = id
+		}
+
+		if item.Prefix != "" {
+			s3BucketMetricsConfiguration.Prefix = item.Prefix
+		}
+
+		s3BucketMetricsConfigurationTagFilters := []s3.Bucket_TagFilter{}
+
+		for _, item := range item.TagFilters {
+			s3BucketMetricsConfigurationTagFilter := s3.Bucket_TagFilter{}
+
+			if item.Value != "" {
+				s3BucketMetricsConfigurationTagFilter.Value = item.Value
 			}
 
-			if item.Event != "" {
-				s3BucketNotificationConfigurationLambdaConfiguration.Event = item.Event
+			if item.Key != "" {
+				s3BucketMetricsConfigurationTagFilter.Key = item.Key
 			}
 
-			if !reflect.DeepEqual(item.Filter, Bucket_NotificationFilter{}) {
-				s3BucketNotificationConfigurationLambdaConfigurationNotificationFilter := s3.Bucket_NotificationFilter{}
+		}
 
-				if !reflect.DeepEqual(item.Filter.S3Key, Bucket_S3KeyFilter{}) {
-					s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilter := s3.Bucket_S3KeyFilter{}
+		if len(s3BucketMetricsConfigurationTagFilters) > 0 {
+			s3BucketMetricsConfiguration.TagFilters = s3BucketMetricsConfigurationTagFilters
+		}
 
-					s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterRules := []s3.Bucket_FilterRule{}
+	}
 
-					for _, item := range item.Filter.S3Key.Rules {
-						s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterFilterRule := s3.Bucket_FilterRule{}
+	if len(s3BucketMetricsConfigurations) > 0 {
+		s3Bucket.MetricsConfigurations = s3BucketMetricsConfigurations
+	}
+	if !reflect.DeepEqual(in.Spec.LifecycleConfiguration, Bucket_LifecycleConfiguration{}) {
+		s3BucketLifecycleConfiguration := s3.Bucket_LifecycleConfiguration{}
 
-						if item.Value != "" {
-							s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterFilterRule.Value = item.Value
-						}
+		s3BucketLifecycleConfigurationRules := []s3.Bucket_Rule{}
 
-						if item.Name != "" {
-							s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterFilterRule.Name = item.Name
-						}
+		for _, item := range in.Spec.LifecycleConfiguration.Rules {
+			s3BucketLifecycleConfigurationRule := s3.Bucket_Rule{}
 
-					}
+			if item.ExpirationInDays != s3BucketLifecycleConfigurationRule.ExpirationInDays {
+				s3BucketLifecycleConfigurationRule.ExpirationInDays = item.ExpirationInDays
+			}
 
-					if len(s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterRules) > 0 {
-						s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilter.Rules = s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterRules
-					}
+			if !reflect.DeepEqual(item.NoncurrentVersionTransition, Bucket_NoncurrentVersionTransition{}) {
+				s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition := s3.Bucket_NoncurrentVersionTransition{}
 
-					s3BucketNotificationConfigurationLambdaConfigurationNotificationFilter.S3Key = &s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilter
+				if item.NoncurrentVersionTransition.StorageClass != "" {
+					s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.StorageClass = item.NoncurrentVersionTransition.StorageClass
 				}
 
-				s3BucketNotificationConfigurationLambdaConfiguration.Filter = &s3BucketNotificationConfigurationLambdaConfigurationNotificationFilter
-			}
-
-		}
-
-		if len(s3BucketNotificationConfigurationLambdaConfigurations) > 0 {
-			s3BucketNotificationConfiguration.LambdaConfigurations = s3BucketNotificationConfigurationLambdaConfigurations
-		}
-		s3BucketNotificationConfigurationQueueConfigurations := []s3.Bucket_QueueConfiguration{}
-
-		for _, item := range in.Spec.NotificationConfiguration.QueueConfigurations {
-			s3BucketNotificationConfigurationQueueConfiguration := s3.Bucket_QueueConfiguration{}
-
-			if item.Event != "" {
-				s3BucketNotificationConfigurationQueueConfiguration.Event = item.Event
-			}
-
-			if !reflect.DeepEqual(item.Filter, Bucket_NotificationFilter{}) {
-				s3BucketNotificationConfigurationQueueConfigurationNotificationFilter := s3.Bucket_NotificationFilter{}
-
-				if !reflect.DeepEqual(item.Filter.S3Key, Bucket_S3KeyFilter{}) {
-					s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilter := s3.Bucket_S3KeyFilter{}
-
-					s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterRules := []s3.Bucket_FilterRule{}
-
-					for _, item := range item.Filter.S3Key.Rules {
-						s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterFilterRule := s3.Bucket_FilterRule{}
-
-						if item.Value != "" {
-							s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterFilterRule.Value = item.Value
-						}
-
-						if item.Name != "" {
-							s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterFilterRule.Name = item.Name
-						}
-
-					}
-
-					if len(s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterRules) > 0 {
-						s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilter.Rules = s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterRules
-					}
-
-					s3BucketNotificationConfigurationQueueConfigurationNotificationFilter.S3Key = &s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilter
+				if item.NoncurrentVersionTransition.TransitionInDays != s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.TransitionInDays {
+					s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.TransitionInDays = item.NoncurrentVersionTransition.TransitionInDays
 				}
 
-				s3BucketNotificationConfigurationQueueConfiguration.Filter = &s3BucketNotificationConfigurationQueueConfigurationNotificationFilter
+				s3BucketLifecycleConfigurationRule.NoncurrentVersionTransition = &s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition
 			}
 
-			if item.Queue != "" {
-				s3BucketNotificationConfigurationQueueConfiguration.Queue = item.Queue
-			}
+			s3BucketLifecycleConfigurationRuleNoncurrentVersionTransitions := []s3.Bucket_NoncurrentVersionTransition{}
 
-		}
+			for _, item := range item.NoncurrentVersionTransitions {
+				s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition := s3.Bucket_NoncurrentVersionTransition{}
 
-		if len(s3BucketNotificationConfigurationQueueConfigurations) > 0 {
-			s3BucketNotificationConfiguration.QueueConfigurations = s3BucketNotificationConfigurationQueueConfigurations
-		}
-		s3BucketNotificationConfigurationTopicConfigurations := []s3.Bucket_TopicConfiguration{}
-
-		for _, item := range in.Spec.NotificationConfiguration.TopicConfigurations {
-			s3BucketNotificationConfigurationTopicConfiguration := s3.Bucket_TopicConfiguration{}
-
-			if item.Event != "" {
-				s3BucketNotificationConfigurationTopicConfiguration.Event = item.Event
-			}
-
-			if !reflect.DeepEqual(item.Filter, Bucket_NotificationFilter{}) {
-				s3BucketNotificationConfigurationTopicConfigurationNotificationFilter := s3.Bucket_NotificationFilter{}
-
-				if !reflect.DeepEqual(item.Filter.S3Key, Bucket_S3KeyFilter{}) {
-					s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilter := s3.Bucket_S3KeyFilter{}
-
-					s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterRules := []s3.Bucket_FilterRule{}
-
-					for _, item := range item.Filter.S3Key.Rules {
-						s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterFilterRule := s3.Bucket_FilterRule{}
-
-						if item.Name != "" {
-							s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterFilterRule.Name = item.Name
-						}
-
-						if item.Value != "" {
-							s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterFilterRule.Value = item.Value
-						}
-
-					}
-
-					if len(s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterRules) > 0 {
-						s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilter.Rules = s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterRules
-					}
-
-					s3BucketNotificationConfigurationTopicConfigurationNotificationFilter.S3Key = &s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilter
+				if item.StorageClass != "" {
+					s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.StorageClass = item.StorageClass
 				}
 
-				s3BucketNotificationConfigurationTopicConfiguration.Filter = &s3BucketNotificationConfigurationTopicConfigurationNotificationFilter
+				if item.TransitionInDays != s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.TransitionInDays {
+					s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.TransitionInDays = item.TransitionInDays
+				}
+
 			}
 
-			if item.Topic != "" {
-				s3BucketNotificationConfigurationTopicConfiguration.Topic = item.Topic
+			if len(s3BucketLifecycleConfigurationRuleNoncurrentVersionTransitions) > 0 {
+				s3BucketLifecycleConfigurationRule.NoncurrentVersionTransitions = s3BucketLifecycleConfigurationRuleNoncurrentVersionTransitions
+			}
+			if item.Status != "" {
+				s3BucketLifecycleConfigurationRule.Status = item.Status
+			}
+
+			// TODO(christopherhein) move these to a defaulter
+			s3BucketLifecycleConfigurationRuleRefItem := item.Ref.DeepCopy()
+
+			if s3BucketLifecycleConfigurationRuleRefItem.ObjectRef.Namespace == "" {
+				s3BucketLifecycleConfigurationRuleRefItem.ObjectRef.Namespace = in.Namespace
+			}
+
+			item.Ref = *s3BucketLifecycleConfigurationRuleRefItem
+			id, err := item.Ref.String(client)
+			if err != nil {
+				return "", err
+			}
+
+			if id != "" {
+				s3BucketLifecycleConfigurationRule.Id = id
+			}
+
+			if !reflect.DeepEqual(item.Transition, Bucket_Transition{}) {
+				s3BucketLifecycleConfigurationRuleTransition := s3.Bucket_Transition{}
+
+				if item.Transition.TransitionInDays != s3BucketLifecycleConfigurationRuleTransition.TransitionInDays {
+					s3BucketLifecycleConfigurationRuleTransition.TransitionInDays = item.Transition.TransitionInDays
+				}
+
+				if item.Transition.StorageClass != "" {
+					s3BucketLifecycleConfigurationRuleTransition.StorageClass = item.Transition.StorageClass
+				}
+
+				if item.Transition.TransitionDate != "" {
+					s3BucketLifecycleConfigurationRuleTransition.TransitionDate = item.Transition.TransitionDate
+				}
+
+				s3BucketLifecycleConfigurationRule.Transition = &s3BucketLifecycleConfigurationRuleTransition
+			}
+
+			if !reflect.DeepEqual(item.AbortIncompleteMultipartUpload, Bucket_AbortIncompleteMultipartUpload{}) {
+				s3BucketLifecycleConfigurationRuleAbortIncompleteMultipartUpload := s3.Bucket_AbortIncompleteMultipartUpload{}
+
+				if item.AbortIncompleteMultipartUpload.DaysAfterInitiation != s3BucketLifecycleConfigurationRuleAbortIncompleteMultipartUpload.DaysAfterInitiation {
+					s3BucketLifecycleConfigurationRuleAbortIncompleteMultipartUpload.DaysAfterInitiation = item.AbortIncompleteMultipartUpload.DaysAfterInitiation
+				}
+
+				s3BucketLifecycleConfigurationRule.AbortIncompleteMultipartUpload = &s3BucketLifecycleConfigurationRuleAbortIncompleteMultipartUpload
+			}
+
+			if item.Prefix != "" {
+				s3BucketLifecycleConfigurationRule.Prefix = item.Prefix
+			}
+
+			if item.NoncurrentVersionExpirationInDays != s3BucketLifecycleConfigurationRule.NoncurrentVersionExpirationInDays {
+				s3BucketLifecycleConfigurationRule.NoncurrentVersionExpirationInDays = item.NoncurrentVersionExpirationInDays
+			}
+
+			s3BucketLifecycleConfigurationRuleTagFilters := []s3.Bucket_TagFilter{}
+
+			for _, item := range item.TagFilters {
+				s3BucketLifecycleConfigurationRuleTagFilter := s3.Bucket_TagFilter{}
+
+				if item.Key != "" {
+					s3BucketLifecycleConfigurationRuleTagFilter.Key = item.Key
+				}
+
+				if item.Value != "" {
+					s3BucketLifecycleConfigurationRuleTagFilter.Value = item.Value
+				}
+
+			}
+
+			if len(s3BucketLifecycleConfigurationRuleTagFilters) > 0 {
+				s3BucketLifecycleConfigurationRule.TagFilters = s3BucketLifecycleConfigurationRuleTagFilters
+			}
+			s3BucketLifecycleConfigurationRuleTransitions := []s3.Bucket_Transition{}
+
+			for _, item := range item.Transitions {
+				s3BucketLifecycleConfigurationRuleTransition := s3.Bucket_Transition{}
+
+				if item.StorageClass != "" {
+					s3BucketLifecycleConfigurationRuleTransition.StorageClass = item.StorageClass
+				}
+
+				if item.TransitionDate != "" {
+					s3BucketLifecycleConfigurationRuleTransition.TransitionDate = item.TransitionDate
+				}
+
+				if item.TransitionInDays != s3BucketLifecycleConfigurationRuleTransition.TransitionInDays {
+					s3BucketLifecycleConfigurationRuleTransition.TransitionInDays = item.TransitionInDays
+				}
+
+			}
+
+			if len(s3BucketLifecycleConfigurationRuleTransitions) > 0 {
+				s3BucketLifecycleConfigurationRule.Transitions = s3BucketLifecycleConfigurationRuleTransitions
+			}
+			if item.ExpirationDate != "" {
+				s3BucketLifecycleConfigurationRule.ExpirationDate = item.ExpirationDate
 			}
 
 		}
 
-		if len(s3BucketNotificationConfigurationTopicConfigurations) > 0 {
-			s3BucketNotificationConfiguration.TopicConfigurations = s3BucketNotificationConfigurationTopicConfigurations
+		if len(s3BucketLifecycleConfigurationRules) > 0 {
+			s3BucketLifecycleConfiguration.Rules = s3BucketLifecycleConfigurationRules
 		}
 
-		s3Bucket.NotificationConfiguration = &s3BucketNotificationConfiguration
+		s3Bucket.LifecycleConfiguration = &s3BucketLifecycleConfiguration
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.BucketName == "" {
+		s3Bucket.BucketName = in.Name
+	}
+
+	if in.Spec.BucketName != "" {
+		s3Bucket.BucketName = in.Spec.BucketName
 	}
 
 	s3BucketInventoryConfigurations := []s3.Bucket_InventoryConfiguration{}
@@ -327,25 +536,16 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 	for _, item := range in.Spec.InventoryConfigurations {
 		s3BucketInventoryConfiguration := s3.Bucket_InventoryConfiguration{}
 
+		if item.Prefix != "" {
+			s3BucketInventoryConfiguration.Prefix = item.Prefix
+		}
+
+		if item.ScheduleFrequency != "" {
+			s3BucketInventoryConfiguration.ScheduleFrequency = item.ScheduleFrequency
+		}
+
 		if !reflect.DeepEqual(item.Destination, Bucket_Destination{}) {
 			s3BucketInventoryConfigurationDestination := s3.Bucket_Destination{}
-
-			// TODO(christopherhein) move these to a defaulter
-			s3BucketInventoryConfigurationDestinationBucketAccountRefItem := item.Destination.BucketAccountRef.DeepCopy()
-
-			if s3BucketInventoryConfigurationDestinationBucketAccountRefItem.ObjectRef.Namespace == "" {
-				s3BucketInventoryConfigurationDestinationBucketAccountRefItem.ObjectRef.Namespace = in.Namespace
-			}
-
-			item.Destination.BucketAccountRef = *s3BucketInventoryConfigurationDestinationBucketAccountRefItem
-			bucketAccountId, err := item.Destination.BucketAccountRef.String(client)
-			if err != nil {
-				return "", err
-			}
-
-			if bucketAccountId != "" {
-				s3BucketInventoryConfigurationDestination.BucketAccountId = bucketAccountId
-			}
 
 			// TODO(christopherhein) move these to a defaulter
 			s3BucketInventoryConfigurationDestinationBucketRefItem := item.Destination.BucketRef.DeepCopy()
@@ -370,6 +570,23 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 
 			if item.Destination.Prefix != "" {
 				s3BucketInventoryConfigurationDestination.Prefix = item.Destination.Prefix
+			}
+
+			// TODO(christopherhein) move these to a defaulter
+			s3BucketInventoryConfigurationDestinationBucketAccountRefItem := item.Destination.BucketAccountRef.DeepCopy()
+
+			if s3BucketInventoryConfigurationDestinationBucketAccountRefItem.ObjectRef.Namespace == "" {
+				s3BucketInventoryConfigurationDestinationBucketAccountRefItem.ObjectRef.Namespace = in.Namespace
+			}
+
+			item.Destination.BucketAccountRef = *s3BucketInventoryConfigurationDestinationBucketAccountRefItem
+			bucketAccountId, err := item.Destination.BucketAccountRef.String(client)
+			if err != nil {
+				return "", err
+			}
+
+			if bucketAccountId != "" {
+				s3BucketInventoryConfigurationDestination.BucketAccountId = bucketAccountId
 			}
 
 			s3BucketInventoryConfiguration.Destination = &s3BucketInventoryConfigurationDestination
@@ -404,33 +621,36 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 			s3BucketInventoryConfiguration.OptionalFields = item.OptionalFields
 		}
 
-		if item.Prefix != "" {
-			s3BucketInventoryConfiguration.Prefix = item.Prefix
-		}
-
-		if item.ScheduleFrequency != "" {
-			s3BucketInventoryConfiguration.ScheduleFrequency = item.ScheduleFrequency
-		}
-
 	}
 
 	if len(s3BucketInventoryConfigurations) > 0 {
 		s3Bucket.InventoryConfigurations = s3BucketInventoryConfigurations
 	}
-	if !reflect.DeepEqual(in.Spec.VersioningConfiguration, Bucket_VersioningConfiguration{}) {
-		s3BucketVersioningConfiguration := s3.Bucket_VersioningConfiguration{}
-
-		if in.Spec.VersioningConfiguration.Status != "" {
-			s3BucketVersioningConfiguration.Status = in.Spec.VersioningConfiguration.Status
-		}
-
-		s3Bucket.VersioningConfiguration = &s3BucketVersioningConfiguration
-	}
-
 	s3BucketAnalyticsConfigurations := []s3.Bucket_AnalyticsConfiguration{}
 
 	for _, item := range in.Spec.AnalyticsConfigurations {
 		s3BucketAnalyticsConfiguration := s3.Bucket_AnalyticsConfiguration{}
+
+		// TODO(christopherhein) move these to a defaulter
+		s3BucketAnalyticsConfigurationRefItem := item.Ref.DeepCopy()
+
+		if s3BucketAnalyticsConfigurationRefItem.ObjectRef.Namespace == "" {
+			s3BucketAnalyticsConfigurationRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		item.Ref = *s3BucketAnalyticsConfigurationRefItem
+		id, err := item.Ref.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if id != "" {
+			s3BucketAnalyticsConfiguration.Id = id
+		}
+
+		if item.Prefix != "" {
+			s3BucketAnalyticsConfiguration.Prefix = item.Prefix
+		}
 
 		if !reflect.DeepEqual(item.StorageClassAnalysis, Bucket_StorageClassAnalysis{}) {
 			s3BucketAnalyticsConfigurationStorageClassAnalysis := s3.Bucket_StorageClassAnalysis{}
@@ -440,27 +660,6 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 
 				if !reflect.DeepEqual(item.StorageClassAnalysis.DataExport.Destination, Bucket_Destination{}) {
 					s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestination := s3.Bucket_Destination{}
-
-					// TODO(christopherhein) move these to a defaulter
-					s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestinationBucketRefItem := item.StorageClassAnalysis.DataExport.Destination.BucketRef.DeepCopy()
-
-					if s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestinationBucketRefItem.ObjectRef.Namespace == "" {
-						s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestinationBucketRefItem.ObjectRef.Namespace = in.Namespace
-					}
-
-					item.StorageClassAnalysis.DataExport.Destination.BucketRef = *s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestinationBucketRefItem
-					bucketArn, err := item.StorageClassAnalysis.DataExport.Destination.BucketRef.String(client)
-					if err != nil {
-						return "", err
-					}
-
-					if bucketArn != "" {
-						s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestination.BucketArn = bucketArn
-					}
-
-					if item.StorageClassAnalysis.DataExport.Destination.Format != "" {
-						s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestination.Format = item.StorageClassAnalysis.DataExport.Destination.Format
-					}
 
 					if item.StorageClassAnalysis.DataExport.Destination.Prefix != "" {
 						s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestination.Prefix = item.StorageClassAnalysis.DataExport.Destination.Prefix
@@ -481,6 +680,27 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 
 					if bucketAccountId != "" {
 						s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestination.BucketAccountId = bucketAccountId
+					}
+
+					// TODO(christopherhein) move these to a defaulter
+					s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestinationBucketRefItem := item.StorageClassAnalysis.DataExport.Destination.BucketRef.DeepCopy()
+
+					if s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestinationBucketRefItem.ObjectRef.Namespace == "" {
+						s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestinationBucketRefItem.ObjectRef.Namespace = in.Namespace
+					}
+
+					item.StorageClassAnalysis.DataExport.Destination.BucketRef = *s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestinationBucketRefItem
+					bucketArn, err := item.StorageClassAnalysis.DataExport.Destination.BucketRef.String(client)
+					if err != nil {
+						return "", err
+					}
+
+					if bucketArn != "" {
+						s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestination.BucketArn = bucketArn
+					}
+
+					if item.StorageClassAnalysis.DataExport.Destination.Format != "" {
+						s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestination.Format = item.StorageClassAnalysis.DataExport.Destination.Format
 					}
 
 					s3BucketAnalyticsConfigurationStorageClassAnalysisDataExport.Destination = &s3BucketAnalyticsConfigurationStorageClassAnalysisDataExportDestination
@@ -514,299 +734,56 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 		if len(s3BucketAnalyticsConfigurationTagFilters) > 0 {
 			s3BucketAnalyticsConfiguration.TagFilters = s3BucketAnalyticsConfigurationTagFilters
 		}
-		// TODO(christopherhein) move these to a defaulter
-		s3BucketAnalyticsConfigurationRefItem := item.Ref.DeepCopy()
-
-		if s3BucketAnalyticsConfigurationRefItem.ObjectRef.Namespace == "" {
-			s3BucketAnalyticsConfigurationRefItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		item.Ref = *s3BucketAnalyticsConfigurationRefItem
-		id, err := item.Ref.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if id != "" {
-			s3BucketAnalyticsConfiguration.Id = id
-		}
-
-		if item.Prefix != "" {
-			s3BucketAnalyticsConfiguration.Prefix = item.Prefix
-		}
 
 	}
 
 	if len(s3BucketAnalyticsConfigurations) > 0 {
 		s3Bucket.AnalyticsConfigurations = s3BucketAnalyticsConfigurations
 	}
-	if !reflect.DeepEqual(in.Spec.LifecycleConfiguration, Bucket_LifecycleConfiguration{}) {
-		s3BucketLifecycleConfiguration := s3.Bucket_LifecycleConfiguration{}
-
-		s3BucketLifecycleConfigurationRules := []s3.Bucket_Rule{}
-
-		for _, item := range in.Spec.LifecycleConfiguration.Rules {
-			s3BucketLifecycleConfigurationRule := s3.Bucket_Rule{}
-
-			s3BucketLifecycleConfigurationRuleTransitions := []s3.Bucket_Transition{}
-
-			for _, item := range item.Transitions {
-				s3BucketLifecycleConfigurationRuleTransition := s3.Bucket_Transition{}
-
-				if item.TransitionInDays != s3BucketLifecycleConfigurationRuleTransition.TransitionInDays {
-					s3BucketLifecycleConfigurationRuleTransition.TransitionInDays = item.TransitionInDays
-				}
-
-				if item.StorageClass != "" {
-					s3BucketLifecycleConfigurationRuleTransition.StorageClass = item.StorageClass
-				}
-
-				if item.TransitionDate != "" {
-					s3BucketLifecycleConfigurationRuleTransition.TransitionDate = item.TransitionDate
-				}
-
-			}
-
-			if len(s3BucketLifecycleConfigurationRuleTransitions) > 0 {
-				s3BucketLifecycleConfigurationRule.Transitions = s3BucketLifecycleConfigurationRuleTransitions
-			}
-			if item.ExpirationInDays != s3BucketLifecycleConfigurationRule.ExpirationInDays {
-				s3BucketLifecycleConfigurationRule.ExpirationInDays = item.ExpirationInDays
-			}
-
-			// TODO(christopherhein) move these to a defaulter
-			s3BucketLifecycleConfigurationRuleRefItem := item.Ref.DeepCopy()
-
-			if s3BucketLifecycleConfigurationRuleRefItem.ObjectRef.Namespace == "" {
-				s3BucketLifecycleConfigurationRuleRefItem.ObjectRef.Namespace = in.Namespace
-			}
-
-			item.Ref = *s3BucketLifecycleConfigurationRuleRefItem
-			id, err := item.Ref.String(client)
-			if err != nil {
-				return "", err
-			}
-
-			if id != "" {
-				s3BucketLifecycleConfigurationRule.Id = id
-			}
-
-			if item.NoncurrentVersionExpirationInDays != s3BucketLifecycleConfigurationRule.NoncurrentVersionExpirationInDays {
-				s3BucketLifecycleConfigurationRule.NoncurrentVersionExpirationInDays = item.NoncurrentVersionExpirationInDays
-			}
-
-			s3BucketLifecycleConfigurationRuleNoncurrentVersionTransitions := []s3.Bucket_NoncurrentVersionTransition{}
-
-			for _, item := range item.NoncurrentVersionTransitions {
-				s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition := s3.Bucket_NoncurrentVersionTransition{}
-
-				if item.StorageClass != "" {
-					s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.StorageClass = item.StorageClass
-				}
-
-				if item.TransitionInDays != s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.TransitionInDays {
-					s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.TransitionInDays = item.TransitionInDays
-				}
-
-			}
-
-			if len(s3BucketLifecycleConfigurationRuleNoncurrentVersionTransitions) > 0 {
-				s3BucketLifecycleConfigurationRule.NoncurrentVersionTransitions = s3BucketLifecycleConfigurationRuleNoncurrentVersionTransitions
-			}
-			if !reflect.DeepEqual(item.Transition, Bucket_Transition{}) {
-				s3BucketLifecycleConfigurationRuleTransition := s3.Bucket_Transition{}
-
-				if item.Transition.StorageClass != "" {
-					s3BucketLifecycleConfigurationRuleTransition.StorageClass = item.Transition.StorageClass
-				}
-
-				if item.Transition.TransitionDate != "" {
-					s3BucketLifecycleConfigurationRuleTransition.TransitionDate = item.Transition.TransitionDate
-				}
-
-				if item.Transition.TransitionInDays != s3BucketLifecycleConfigurationRuleTransition.TransitionInDays {
-					s3BucketLifecycleConfigurationRuleTransition.TransitionInDays = item.Transition.TransitionInDays
-				}
-
-				s3BucketLifecycleConfigurationRule.Transition = &s3BucketLifecycleConfigurationRuleTransition
-			}
-
-			s3BucketLifecycleConfigurationRuleTagFilters := []s3.Bucket_TagFilter{}
-
-			for _, item := range item.TagFilters {
-				s3BucketLifecycleConfigurationRuleTagFilter := s3.Bucket_TagFilter{}
-
-				if item.Key != "" {
-					s3BucketLifecycleConfigurationRuleTagFilter.Key = item.Key
-				}
-
-				if item.Value != "" {
-					s3BucketLifecycleConfigurationRuleTagFilter.Value = item.Value
-				}
-
-			}
-
-			if len(s3BucketLifecycleConfigurationRuleTagFilters) > 0 {
-				s3BucketLifecycleConfigurationRule.TagFilters = s3BucketLifecycleConfigurationRuleTagFilters
-			}
-			if item.Prefix != "" {
-				s3BucketLifecycleConfigurationRule.Prefix = item.Prefix
-			}
-
-			if !reflect.DeepEqual(item.AbortIncompleteMultipartUpload, Bucket_AbortIncompleteMultipartUpload{}) {
-				s3BucketLifecycleConfigurationRuleAbortIncompleteMultipartUpload := s3.Bucket_AbortIncompleteMultipartUpload{}
-
-				if item.AbortIncompleteMultipartUpload.DaysAfterInitiation != s3BucketLifecycleConfigurationRuleAbortIncompleteMultipartUpload.DaysAfterInitiation {
-					s3BucketLifecycleConfigurationRuleAbortIncompleteMultipartUpload.DaysAfterInitiation = item.AbortIncompleteMultipartUpload.DaysAfterInitiation
-				}
-
-				s3BucketLifecycleConfigurationRule.AbortIncompleteMultipartUpload = &s3BucketLifecycleConfigurationRuleAbortIncompleteMultipartUpload
-			}
-
-			if item.ExpirationDate != "" {
-				s3BucketLifecycleConfigurationRule.ExpirationDate = item.ExpirationDate
-			}
-
-			if !reflect.DeepEqual(item.NoncurrentVersionTransition, Bucket_NoncurrentVersionTransition{}) {
-				s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition := s3.Bucket_NoncurrentVersionTransition{}
-
-				if item.NoncurrentVersionTransition.StorageClass != "" {
-					s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.StorageClass = item.NoncurrentVersionTransition.StorageClass
-				}
-
-				if item.NoncurrentVersionTransition.TransitionInDays != s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.TransitionInDays {
-					s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition.TransitionInDays = item.NoncurrentVersionTransition.TransitionInDays
-				}
-
-				s3BucketLifecycleConfigurationRule.NoncurrentVersionTransition = &s3BucketLifecycleConfigurationRuleNoncurrentVersionTransition
-			}
-
-			if item.Status != "" {
-				s3BucketLifecycleConfigurationRule.Status = item.Status
-			}
-
-		}
-
-		if len(s3BucketLifecycleConfigurationRules) > 0 {
-			s3BucketLifecycleConfiguration.Rules = s3BucketLifecycleConfigurationRules
-		}
-
-		s3Bucket.LifecycleConfiguration = &s3BucketLifecycleConfiguration
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	if in.Spec.BucketName == "" {
-		s3Bucket.BucketName = in.Name
-	}
-
-	if in.Spec.BucketName != "" {
-		s3Bucket.BucketName = in.Spec.BucketName
-	}
-
-	s3BucketMetricsConfigurations := []s3.Bucket_MetricsConfiguration{}
-
-	for _, item := range in.Spec.MetricsConfigurations {
-		s3BucketMetricsConfiguration := s3.Bucket_MetricsConfiguration{}
-
-		// TODO(christopherhein) move these to a defaulter
-		s3BucketMetricsConfigurationRefItem := item.Ref.DeepCopy()
-
-		if s3BucketMetricsConfigurationRefItem.ObjectRef.Namespace == "" {
-			s3BucketMetricsConfigurationRefItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		item.Ref = *s3BucketMetricsConfigurationRefItem
-		id, err := item.Ref.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if id != "" {
-			s3BucketMetricsConfiguration.Id = id
-		}
-
-		if item.Prefix != "" {
-			s3BucketMetricsConfiguration.Prefix = item.Prefix
-		}
-
-		s3BucketMetricsConfigurationTagFilters := []s3.Bucket_TagFilter{}
-
-		for _, item := range item.TagFilters {
-			s3BucketMetricsConfigurationTagFilter := s3.Bucket_TagFilter{}
-
-			if item.Key != "" {
-				s3BucketMetricsConfigurationTagFilter.Key = item.Key
-			}
-
-			if item.Value != "" {
-				s3BucketMetricsConfigurationTagFilter.Value = item.Value
-			}
-
-		}
-
-		if len(s3BucketMetricsConfigurationTagFilters) > 0 {
-			s3BucketMetricsConfiguration.TagFilters = s3BucketMetricsConfigurationTagFilters
-		}
-
-	}
-
-	if len(s3BucketMetricsConfigurations) > 0 {
-		s3Bucket.MetricsConfigurations = s3BucketMetricsConfigurations
-	}
-	if !reflect.DeepEqual(in.Spec.LoggingConfiguration, Bucket_LoggingConfiguration{}) {
-		s3BucketLoggingConfiguration := s3.Bucket_LoggingConfiguration{}
-
-		if in.Spec.LoggingConfiguration.LogFilePrefix != "" {
-			s3BucketLoggingConfiguration.LogFilePrefix = in.Spec.LoggingConfiguration.LogFilePrefix
-		}
-
-		if in.Spec.LoggingConfiguration.DestinationBucketName != "" {
-			s3BucketLoggingConfiguration.DestinationBucketName = in.Spec.LoggingConfiguration.DestinationBucketName
-		}
-
-		s3Bucket.LoggingConfiguration = &s3BucketLoggingConfiguration
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.ObjectLockEnabled || !in.Spec.ObjectLockEnabled {
 		s3Bucket.ObjectLockEnabled = in.Spec.ObjectLockEnabled
 	}
 
-	if in.Spec.AccessControl != "" {
-		s3Bucket.AccessControl = in.Spec.AccessControl
+	if !reflect.DeepEqual(in.Spec.PublicAccessBlockConfiguration, Bucket_PublicAccessBlockConfiguration{}) {
+		s3BucketPublicAccessBlockConfiguration := s3.Bucket_PublicAccessBlockConfiguration{}
+
+		if in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls || !in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls {
+			s3BucketPublicAccessBlockConfiguration.BlockPublicAcls = in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls
+		}
+
+		if in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy || !in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy {
+			s3BucketPublicAccessBlockConfiguration.BlockPublicPolicy = in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy
+		}
+
+		if in.Spec.PublicAccessBlockConfiguration.IgnorePublicAcls || !in.Spec.PublicAccessBlockConfiguration.IgnorePublicAcls {
+			s3BucketPublicAccessBlockConfiguration.IgnorePublicAcls = in.Spec.PublicAccessBlockConfiguration.IgnorePublicAcls
+		}
+
+		if in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets || !in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets {
+			s3BucketPublicAccessBlockConfiguration.RestrictPublicBuckets = in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets
+		}
+
+		s3Bucket.PublicAccessBlockConfiguration = &s3BucketPublicAccessBlockConfiguration
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if !reflect.DeepEqual(in.Spec.VersioningConfiguration, Bucket_VersioningConfiguration{}) {
+		s3BucketVersioningConfiguration := s3.Bucket_VersioningConfiguration{}
+
+		if in.Spec.VersioningConfiguration.Status != "" {
+			s3BucketVersioningConfiguration.Status = in.Spec.VersioningConfiguration.Status
+		}
+
+		s3Bucket.VersioningConfiguration = &s3BucketVersioningConfiguration
 	}
 
 	if !reflect.DeepEqual(in.Spec.ReplicationConfiguration, Bucket_ReplicationConfiguration{}) {
 		s3BucketReplicationConfiguration := s3.Bucket_ReplicationConfiguration{}
 
-		if in.Spec.ReplicationConfiguration.Role != "" {
-			s3BucketReplicationConfiguration.Role = in.Spec.ReplicationConfiguration.Role
-		}
-
 		s3BucketReplicationConfigurationRules := []s3.Bucket_ReplicationRule{}
 
 		for _, item := range in.Spec.ReplicationConfiguration.Rules {
 			s3BucketReplicationConfigurationReplicationRule := s3.Bucket_ReplicationRule{}
-
-			if item.Prefix != "" {
-				s3BucketReplicationConfigurationReplicationRule.Prefix = item.Prefix
-			}
-
-			if !reflect.DeepEqual(item.SourceSelectionCriteria, Bucket_SourceSelectionCriteria{}) {
-				s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteria := s3.Bucket_SourceSelectionCriteria{}
-
-				if !reflect.DeepEqual(item.SourceSelectionCriteria.SseKmsEncryptedObjects, Bucket_SseKmsEncryptedObjects{}) {
-					s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteriaSseKmsEncryptedObjects := s3.Bucket_SseKmsEncryptedObjects{}
-
-					if item.SourceSelectionCriteria.SseKmsEncryptedObjects.Status != "" {
-						s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteriaSseKmsEncryptedObjects.Status = item.SourceSelectionCriteria.SseKmsEncryptedObjects.Status
-					}
-
-					s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteria.SseKmsEncryptedObjects = &s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteriaSseKmsEncryptedObjects
-				}
-
-				s3BucketReplicationConfigurationReplicationRule.SourceSelectionCriteria = &s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteria
-			}
 
 			if item.Status != "" {
 				s3BucketReplicationConfigurationReplicationRule.Status = item.Status
@@ -880,167 +857,190 @@ func (in *Bucket) GetTemplate(client dynamic.Interface) (string, error) {
 				s3BucketReplicationConfigurationReplicationRule.Id = id
 			}
 
+			if item.Prefix != "" {
+				s3BucketReplicationConfigurationReplicationRule.Prefix = item.Prefix
+			}
+
+			if !reflect.DeepEqual(item.SourceSelectionCriteria, Bucket_SourceSelectionCriteria{}) {
+				s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteria := s3.Bucket_SourceSelectionCriteria{}
+
+				if !reflect.DeepEqual(item.SourceSelectionCriteria.SseKmsEncryptedObjects, Bucket_SseKmsEncryptedObjects{}) {
+					s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteriaSseKmsEncryptedObjects := s3.Bucket_SseKmsEncryptedObjects{}
+
+					if item.SourceSelectionCriteria.SseKmsEncryptedObjects.Status != "" {
+						s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteriaSseKmsEncryptedObjects.Status = item.SourceSelectionCriteria.SseKmsEncryptedObjects.Status
+					}
+
+					s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteria.SseKmsEncryptedObjects = &s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteriaSseKmsEncryptedObjects
+				}
+
+				s3BucketReplicationConfigurationReplicationRule.SourceSelectionCriteria = &s3BucketReplicationConfigurationReplicationRuleSourceSelectionCriteria
+			}
+
 		}
 
 		if len(s3BucketReplicationConfigurationRules) > 0 {
 			s3BucketReplicationConfiguration.Rules = s3BucketReplicationConfigurationRules
 		}
+		if in.Spec.ReplicationConfiguration.Role != "" {
+			s3BucketReplicationConfiguration.Role = in.Spec.ReplicationConfiguration.Role
+		}
 
 		s3Bucket.ReplicationConfiguration = &s3BucketReplicationConfiguration
 	}
 
-	if !reflect.DeepEqual(in.Spec.CorsConfiguration, Bucket_CorsConfiguration{}) {
-		s3BucketCorsConfiguration := s3.Bucket_CorsConfiguration{}
+	if !reflect.DeepEqual(in.Spec.NotificationConfiguration, Bucket_NotificationConfiguration{}) {
+		s3BucketNotificationConfiguration := s3.Bucket_NotificationConfiguration{}
 
-		s3BucketCorsConfigurationCorsRules := []s3.Bucket_CorsRule{}
+		s3BucketNotificationConfigurationLambdaConfigurations := []s3.Bucket_LambdaConfiguration{}
 
-		for _, item := range in.Spec.CorsConfiguration.CorsRules {
-			s3BucketCorsConfigurationCorsRule := s3.Bucket_CorsRule{}
+		for _, item := range in.Spec.NotificationConfiguration.LambdaConfigurations {
+			s3BucketNotificationConfigurationLambdaConfiguration := s3.Bucket_LambdaConfiguration{}
 
-			if item.MaxAge != s3BucketCorsConfigurationCorsRule.MaxAge {
-				s3BucketCorsConfigurationCorsRule.MaxAge = item.MaxAge
+			if item.Function != "" {
+				s3BucketNotificationConfigurationLambdaConfiguration.Function = item.Function
 			}
 
-			if len(item.AllowedHeaders) > 0 {
-				s3BucketCorsConfigurationCorsRule.AllowedHeaders = item.AllowedHeaders
+			if item.Event != "" {
+				s3BucketNotificationConfigurationLambdaConfiguration.Event = item.Event
 			}
 
-			if len(item.AllowedMethods) > 0 {
-				s3BucketCorsConfigurationCorsRule.AllowedMethods = item.AllowedMethods
-			}
+			if !reflect.DeepEqual(item.Filter, Bucket_NotificationFilter{}) {
+				s3BucketNotificationConfigurationLambdaConfigurationNotificationFilter := s3.Bucket_NotificationFilter{}
 
-			if len(item.AllowedOrigins) > 0 {
-				s3BucketCorsConfigurationCorsRule.AllowedOrigins = item.AllowedOrigins
-			}
+				if !reflect.DeepEqual(item.Filter.S3Key, Bucket_S3KeyFilter{}) {
+					s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilter := s3.Bucket_S3KeyFilter{}
 
-			if len(item.ExposedHeaders) > 0 {
-				s3BucketCorsConfigurationCorsRule.ExposedHeaders = item.ExposedHeaders
-			}
+					s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterRules := []s3.Bucket_FilterRule{}
 
-			// TODO(christopherhein) move these to a defaulter
-			s3BucketCorsConfigurationCorsRuleRefItem := item.Ref.DeepCopy()
+					for _, item := range item.Filter.S3Key.Rules {
+						s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterFilterRule := s3.Bucket_FilterRule{}
 
-			if s3BucketCorsConfigurationCorsRuleRefItem.ObjectRef.Namespace == "" {
-				s3BucketCorsConfigurationCorsRuleRefItem.ObjectRef.Namespace = in.Namespace
-			}
+						if item.Name != "" {
+							s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterFilterRule.Name = item.Name
+						}
 
-			item.Ref = *s3BucketCorsConfigurationCorsRuleRefItem
-			id, err := item.Ref.String(client)
-			if err != nil {
-				return "", err
-			}
+						if item.Value != "" {
+							s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterFilterRule.Value = item.Value
+						}
 
-			if id != "" {
-				s3BucketCorsConfigurationCorsRule.Id = id
-			}
+					}
 
-		}
+					if len(s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterRules) > 0 {
+						s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilter.Rules = s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilterRules
+					}
 
-		if len(s3BucketCorsConfigurationCorsRules) > 0 {
-			s3BucketCorsConfiguration.CorsRules = s3BucketCorsConfigurationCorsRules
-		}
-
-		s3Bucket.CorsConfiguration = &s3BucketCorsConfiguration
-	}
-
-	if !reflect.DeepEqual(in.Spec.BucketEncryption, Bucket_BucketEncryption{}) {
-		s3BucketBucketEncryption := s3.Bucket_BucketEncryption{}
-
-		s3BucketBucketEncryptionServerSideEncryptionConfiguration := []s3.Bucket_ServerSideEncryptionRule{}
-
-		for _, item := range in.Spec.BucketEncryption.ServerSideEncryptionConfiguration {
-			s3BucketBucketEncryptionServerSideEncryptionRule := s3.Bucket_ServerSideEncryptionRule{}
-
-			if !reflect.DeepEqual(item.ServerSideEncryptionByDefault, Bucket_ServerSideEncryptionByDefault{}) {
-				s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefault := s3.Bucket_ServerSideEncryptionByDefault{}
-
-				// TODO(christopherhein) move these to a defaulter
-				s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefaultKMSMasterKeyRefItem := item.ServerSideEncryptionByDefault.KMSMasterKeyRef.DeepCopy()
-
-				if s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefaultKMSMasterKeyRefItem.ObjectRef.Namespace == "" {
-					s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefaultKMSMasterKeyRefItem.ObjectRef.Namespace = in.Namespace
+					s3BucketNotificationConfigurationLambdaConfigurationNotificationFilter.S3Key = &s3BucketNotificationConfigurationLambdaConfigurationNotificationFilterS3KeyFilter
 				}
 
-				item.ServerSideEncryptionByDefault.KMSMasterKeyRef = *s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefaultKMSMasterKeyRefItem
-				kMSMasterKeyID, err := item.ServerSideEncryptionByDefault.KMSMasterKeyRef.String(client)
-				if err != nil {
-					return "", err
-				}
-
-				if kMSMasterKeyID != "" {
-					s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefault.KMSMasterKeyID = kMSMasterKeyID
-				}
-
-				if item.ServerSideEncryptionByDefault.SSEAlgorithm != "" {
-					s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefault.SSEAlgorithm = item.ServerSideEncryptionByDefault.SSEAlgorithm
-				}
-
-				s3BucketBucketEncryptionServerSideEncryptionRule.ServerSideEncryptionByDefault = &s3BucketBucketEncryptionServerSideEncryptionRuleServerSideEncryptionByDefault
+				s3BucketNotificationConfigurationLambdaConfiguration.Filter = &s3BucketNotificationConfigurationLambdaConfigurationNotificationFilter
 			}
 
 		}
 
-		if len(s3BucketBucketEncryptionServerSideEncryptionConfiguration) > 0 {
-			s3BucketBucketEncryption.ServerSideEncryptionConfiguration = s3BucketBucketEncryptionServerSideEncryptionConfiguration
+		if len(s3BucketNotificationConfigurationLambdaConfigurations) > 0 {
+			s3BucketNotificationConfiguration.LambdaConfigurations = s3BucketNotificationConfigurationLambdaConfigurations
 		}
+		s3BucketNotificationConfigurationQueueConfigurations := []s3.Bucket_QueueConfiguration{}
 
-		s3Bucket.BucketEncryption = &s3BucketBucketEncryption
-	}
+		for _, item := range in.Spec.NotificationConfiguration.QueueConfigurations {
+			s3BucketNotificationConfigurationQueueConfiguration := s3.Bucket_QueueConfiguration{}
 
-	if !reflect.DeepEqual(in.Spec.ObjectLockConfiguration, Bucket_ObjectLockConfiguration{}) {
-		s3BucketObjectLockConfiguration := s3.Bucket_ObjectLockConfiguration{}
-
-		if !reflect.DeepEqual(in.Spec.ObjectLockConfiguration.Rule, Bucket_ObjectLockRule{}) {
-			s3BucketObjectLockConfigurationObjectLockRule := s3.Bucket_ObjectLockRule{}
-
-			if !reflect.DeepEqual(in.Spec.ObjectLockConfiguration.Rule.DefaultRetention, Bucket_DefaultRetention{}) {
-				s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention := s3.Bucket_DefaultRetention{}
-
-				if in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Mode != "" {
-					s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Mode = in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Mode
-				}
-
-				if in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Years != s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Years {
-					s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Years = in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Years
-				}
-
-				if in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Days != s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Days {
-					s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention.Days = in.Spec.ObjectLockConfiguration.Rule.DefaultRetention.Days
-				}
-
-				s3BucketObjectLockConfigurationObjectLockRule.DefaultRetention = &s3BucketObjectLockConfigurationObjectLockRuleDefaultRetention
+			if item.Queue != "" {
+				s3BucketNotificationConfigurationQueueConfiguration.Queue = item.Queue
 			}
 
-			s3BucketObjectLockConfiguration.Rule = &s3BucketObjectLockConfigurationObjectLockRule
+			if item.Event != "" {
+				s3BucketNotificationConfigurationQueueConfiguration.Event = item.Event
+			}
+
+			if !reflect.DeepEqual(item.Filter, Bucket_NotificationFilter{}) {
+				s3BucketNotificationConfigurationQueueConfigurationNotificationFilter := s3.Bucket_NotificationFilter{}
+
+				if !reflect.DeepEqual(item.Filter.S3Key, Bucket_S3KeyFilter{}) {
+					s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilter := s3.Bucket_S3KeyFilter{}
+
+					s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterRules := []s3.Bucket_FilterRule{}
+
+					for _, item := range item.Filter.S3Key.Rules {
+						s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterFilterRule := s3.Bucket_FilterRule{}
+
+						if item.Name != "" {
+							s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterFilterRule.Name = item.Name
+						}
+
+						if item.Value != "" {
+							s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterFilterRule.Value = item.Value
+						}
+
+					}
+
+					if len(s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterRules) > 0 {
+						s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilter.Rules = s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilterRules
+					}
+
+					s3BucketNotificationConfigurationQueueConfigurationNotificationFilter.S3Key = &s3BucketNotificationConfigurationQueueConfigurationNotificationFilterS3KeyFilter
+				}
+
+				s3BucketNotificationConfigurationQueueConfiguration.Filter = &s3BucketNotificationConfigurationQueueConfigurationNotificationFilter
+			}
+
 		}
 
-		if in.Spec.ObjectLockConfiguration.ObjectLockEnabled != "" {
-			s3BucketObjectLockConfiguration.ObjectLockEnabled = in.Spec.ObjectLockConfiguration.ObjectLockEnabled
+		if len(s3BucketNotificationConfigurationQueueConfigurations) > 0 {
+			s3BucketNotificationConfiguration.QueueConfigurations = s3BucketNotificationConfigurationQueueConfigurations
+		}
+		s3BucketNotificationConfigurationTopicConfigurations := []s3.Bucket_TopicConfiguration{}
+
+		for _, item := range in.Spec.NotificationConfiguration.TopicConfigurations {
+			s3BucketNotificationConfigurationTopicConfiguration := s3.Bucket_TopicConfiguration{}
+
+			if item.Event != "" {
+				s3BucketNotificationConfigurationTopicConfiguration.Event = item.Event
+			}
+
+			if !reflect.DeepEqual(item.Filter, Bucket_NotificationFilter{}) {
+				s3BucketNotificationConfigurationTopicConfigurationNotificationFilter := s3.Bucket_NotificationFilter{}
+
+				if !reflect.DeepEqual(item.Filter.S3Key, Bucket_S3KeyFilter{}) {
+					s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilter := s3.Bucket_S3KeyFilter{}
+
+					s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterRules := []s3.Bucket_FilterRule{}
+
+					for _, item := range item.Filter.S3Key.Rules {
+						s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterFilterRule := s3.Bucket_FilterRule{}
+
+						if item.Name != "" {
+							s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterFilterRule.Name = item.Name
+						}
+
+						if item.Value != "" {
+							s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterFilterRule.Value = item.Value
+						}
+
+					}
+
+					if len(s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterRules) > 0 {
+						s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilter.Rules = s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilterRules
+					}
+
+					s3BucketNotificationConfigurationTopicConfigurationNotificationFilter.S3Key = &s3BucketNotificationConfigurationTopicConfigurationNotificationFilterS3KeyFilter
+				}
+
+				s3BucketNotificationConfigurationTopicConfiguration.Filter = &s3BucketNotificationConfigurationTopicConfigurationNotificationFilter
+			}
+
+			if item.Topic != "" {
+				s3BucketNotificationConfigurationTopicConfiguration.Topic = item.Topic
+			}
+
 		}
 
-		s3Bucket.ObjectLockConfiguration = &s3BucketObjectLockConfiguration
-	}
-
-	if !reflect.DeepEqual(in.Spec.PublicAccessBlockConfiguration, Bucket_PublicAccessBlockConfiguration{}) {
-		s3BucketPublicAccessBlockConfiguration := s3.Bucket_PublicAccessBlockConfiguration{}
-
-		if in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets || !in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets {
-			s3BucketPublicAccessBlockConfiguration.RestrictPublicBuckets = in.Spec.PublicAccessBlockConfiguration.RestrictPublicBuckets
+		if len(s3BucketNotificationConfigurationTopicConfigurations) > 0 {
+			s3BucketNotificationConfiguration.TopicConfigurations = s3BucketNotificationConfigurationTopicConfigurations
 		}
 
-		if in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls || !in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls {
-			s3BucketPublicAccessBlockConfiguration.BlockPublicAcls = in.Spec.PublicAccessBlockConfiguration.BlockPublicAcls
-		}
-
-		if in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy || !in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy {
-			s3BucketPublicAccessBlockConfiguration.BlockPublicPolicy = in.Spec.PublicAccessBlockConfiguration.BlockPublicPolicy
-		}
-
-		if in.Spec.PublicAccessBlockConfiguration.IgnorePublicAcls || !in.Spec.PublicAccessBlockConfiguration.IgnorePublicAcls {
-			s3BucketPublicAccessBlockConfiguration.IgnorePublicAcls = in.Spec.PublicAccessBlockConfiguration.IgnorePublicAcls
-		}
-
-		s3Bucket.PublicAccessBlockConfiguration = &s3BucketPublicAccessBlockConfiguration
+		s3Bucket.NotificationConfiguration = &s3BucketNotificationConfiguration
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

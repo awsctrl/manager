@@ -59,20 +59,40 @@ func (in *EventSourceMapping) GetTemplate(client dynamic.Interface) (string, err
 
 	lambdaEventSourceMapping := &lambda.EventSourceMapping{}
 
-	if in.Spec.MaximumRecordAgeInSeconds != lambdaEventSourceMapping.MaximumRecordAgeInSeconds {
-		lambdaEventSourceMapping.MaximumRecordAgeInSeconds = in.Spec.MaximumRecordAgeInSeconds
+	if !reflect.DeepEqual(in.Spec.DestinationConfig, EventSourceMapping_DestinationConfig{}) {
+		lambdaEventSourceMappingDestinationConfig := lambda.EventSourceMapping_DestinationConfig{}
+
+		if !reflect.DeepEqual(in.Spec.DestinationConfig.OnFailure, EventSourceMapping_OnFailure{}) {
+			lambdaEventSourceMappingDestinationConfigOnFailure := lambda.EventSourceMapping_OnFailure{}
+
+			if in.Spec.DestinationConfig.OnFailure.Destination != "" {
+				lambdaEventSourceMappingDestinationConfigOnFailure.Destination = in.Spec.DestinationConfig.OnFailure.Destination
+			}
+
+			lambdaEventSourceMappingDestinationConfig.OnFailure = &lambdaEventSourceMappingDestinationConfigOnFailure
+		}
+
+		lambdaEventSourceMapping.DestinationConfig = &lambdaEventSourceMappingDestinationConfig
+	}
+
+	if in.Spec.StartingPosition != "" {
+		lambdaEventSourceMapping.StartingPosition = in.Spec.StartingPosition
+	}
+
+	if in.Spec.BatchSize != lambdaEventSourceMapping.BatchSize {
+		lambdaEventSourceMapping.BatchSize = in.Spec.BatchSize
+	}
+
+	if in.Spec.MaximumRetryAttempts != lambdaEventSourceMapping.MaximumRetryAttempts {
+		lambdaEventSourceMapping.MaximumRetryAttempts = in.Spec.MaximumRetryAttempts
 	}
 
 	if in.Spec.ParallelizationFactor != lambdaEventSourceMapping.ParallelizationFactor {
 		lambdaEventSourceMapping.ParallelizationFactor = in.Spec.ParallelizationFactor
 	}
 
-	if in.Spec.BisectBatchOnFunctionError || !in.Spec.BisectBatchOnFunctionError {
-		lambdaEventSourceMapping.BisectBatchOnFunctionError = in.Spec.BisectBatchOnFunctionError
-	}
-
-	if in.Spec.FunctionName != "" {
-		lambdaEventSourceMapping.FunctionName = in.Spec.FunctionName
+	if in.Spec.Enabled || !in.Spec.Enabled {
+		lambdaEventSourceMapping.Enabled = in.Spec.Enabled
 	}
 
 	// TODO(christopherhein) move these to a defaulter
@@ -92,40 +112,20 @@ func (in *EventSourceMapping) GetTemplate(client dynamic.Interface) (string, err
 		lambdaEventSourceMapping.EventSourceArn = eventSourceArn
 	}
 
+	if in.Spec.FunctionName != "" {
+		lambdaEventSourceMapping.FunctionName = in.Spec.FunctionName
+	}
+
+	if in.Spec.BisectBatchOnFunctionError || !in.Spec.BisectBatchOnFunctionError {
+		lambdaEventSourceMapping.BisectBatchOnFunctionError = in.Spec.BisectBatchOnFunctionError
+	}
+
 	if in.Spec.MaximumBatchingWindowInSeconds != lambdaEventSourceMapping.MaximumBatchingWindowInSeconds {
 		lambdaEventSourceMapping.MaximumBatchingWindowInSeconds = in.Spec.MaximumBatchingWindowInSeconds
 	}
 
-	if in.Spec.MaximumRetryAttempts != lambdaEventSourceMapping.MaximumRetryAttempts {
-		lambdaEventSourceMapping.MaximumRetryAttempts = in.Spec.MaximumRetryAttempts
-	}
-
-	if in.Spec.StartingPosition != "" {
-		lambdaEventSourceMapping.StartingPosition = in.Spec.StartingPosition
-	}
-
-	if in.Spec.BatchSize != lambdaEventSourceMapping.BatchSize {
-		lambdaEventSourceMapping.BatchSize = in.Spec.BatchSize
-	}
-
-	if in.Spec.Enabled || !in.Spec.Enabled {
-		lambdaEventSourceMapping.Enabled = in.Spec.Enabled
-	}
-
-	if !reflect.DeepEqual(in.Spec.DestinationConfig, EventSourceMapping_DestinationConfig{}) {
-		lambdaEventSourceMappingDestinationConfig := lambda.EventSourceMapping_DestinationConfig{}
-
-		if !reflect.DeepEqual(in.Spec.DestinationConfig.OnFailure, EventSourceMapping_OnFailure{}) {
-			lambdaEventSourceMappingDestinationConfigOnFailure := lambda.EventSourceMapping_OnFailure{}
-
-			if in.Spec.DestinationConfig.OnFailure.Destination != "" {
-				lambdaEventSourceMappingDestinationConfigOnFailure.Destination = in.Spec.DestinationConfig.OnFailure.Destination
-			}
-
-			lambdaEventSourceMappingDestinationConfig.OnFailure = &lambdaEventSourceMappingDestinationConfigOnFailure
-		}
-
-		lambdaEventSourceMapping.DestinationConfig = &lambdaEventSourceMappingDestinationConfig
+	if in.Spec.MaximumRecordAgeInSeconds != lambdaEventSourceMapping.MaximumRecordAgeInSeconds {
+		lambdaEventSourceMapping.MaximumRecordAgeInSeconds = in.Spec.MaximumRecordAgeInSeconds
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

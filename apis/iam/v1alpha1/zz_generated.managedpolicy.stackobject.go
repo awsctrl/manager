@@ -59,6 +59,15 @@ func (in *ManagedPolicy) GetTemplate(client dynamic.Interface) (string, error) {
 
 	iamManagedPolicy := &iam.ManagedPolicy{}
 
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.ManagedPolicyName == "" {
+		iamManagedPolicy.ManagedPolicyName = in.Name
+	}
+
+	if in.Spec.ManagedPolicyName != "" {
+		iamManagedPolicy.ManagedPolicyName = in.Spec.ManagedPolicyName
+	}
+
 	if in.Spec.Path != "" {
 		iamManagedPolicy.Path = in.Spec.Path
 	}
@@ -86,15 +95,6 @@ func (in *ManagedPolicy) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if len(in.Spec.Groups) > 0 {
 		iamManagedPolicy.Groups = in.Spec.Groups
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	if in.Spec.ManagedPolicyName == "" {
-		iamManagedPolicy.ManagedPolicyName = in.Name
-	}
-
-	if in.Spec.ManagedPolicyName != "" {
-		iamManagedPolicy.ManagedPolicyName = in.Spec.ManagedPolicyName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

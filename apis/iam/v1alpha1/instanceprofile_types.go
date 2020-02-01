@@ -25,14 +25,14 @@ import (
 type InstanceProfileSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// InstanceProfileName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html#cfn-iam-instanceprofile-instanceprofilename
-	InstanceProfileName string `json:"instanceProfileName,omitempty" cloudformation:"InstanceProfileName,Parameter"`
-
 	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html#cfn-iam-instanceprofile-path
 	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
 
 	// Roles http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html#cfn-iam-instanceprofile-roles
 	Roles []string `json:"roles,omitempty" cloudformation:"Roles"`
+
+	// InstanceProfileName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html#cfn-iam-instanceprofile-instanceprofilename
+	InstanceProfileName string `json:"instanceProfileName,omitempty" cloudformation:"InstanceProfileName,Parameter"`
 }
 
 // InstanceProfileStatus defines the observed state of InstanceProfile

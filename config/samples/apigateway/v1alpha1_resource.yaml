@@ -4,12 +4,12 @@ metadata:
   name: resource-sample
 spec:
   pathPart: stack
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample
     key: ResourceRef
-  parent:
+  parentRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample

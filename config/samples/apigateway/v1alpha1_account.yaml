@@ -2,5 +2,6 @@ apiVersion: apigateway.awsctrl.io/v1alpha1
 kind: Account
 metadata:
   name: account-sample
-spec: {}
-  # cloudWatchRoleArn: arn:aws:iam::860055033182:role/awsctrl-apigateway-account
+spec:
+  cloudWatchRoleRef:
+    arn: arn:aws:iam::860055033182:role/awsctrl-apigateway-account

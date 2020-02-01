@@ -8,12 +8,12 @@ spec:
   integration:
     integrationHttpMethod: POST
     type: MOCK
-  resource: 
+  resourceRef: 
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample
     key: RootResourceId
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample

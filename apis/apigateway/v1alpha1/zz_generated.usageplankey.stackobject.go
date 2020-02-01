@@ -58,6 +58,23 @@ func (in *UsagePlanKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayUsagePlanKey := &apigateway.UsagePlanKey{}
 
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayUsagePlanKeyKeyRefItem := in.Spec.KeyRef.DeepCopy()
+
+	if apigatewayUsagePlanKeyKeyRefItem.ObjectRef.Namespace == "" {
+		apigatewayUsagePlanKeyKeyRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.KeyRef = *apigatewayUsagePlanKeyKeyRefItem
+	keyId, err := in.Spec.KeyRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if keyId != "" {
+		apigatewayUsagePlanKey.KeyId = keyId
+	}
+
 	if in.Spec.KeyType != "" {
 		apigatewayUsagePlanKey.KeyType = in.Spec.KeyType
 	}
@@ -77,23 +94,6 @@ func (in *UsagePlanKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if usagePlanId != "" {
 		apigatewayUsagePlanKey.UsagePlanId = usagePlanId
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayUsagePlanKeyKeyRefItem := in.Spec.KeyRef.DeepCopy()
-
-	if apigatewayUsagePlanKeyKeyRefItem.ObjectRef.Namespace == "" {
-		apigatewayUsagePlanKeyKeyRefItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.KeyRef = *apigatewayUsagePlanKeyKeyRefItem
-	keyId, err := in.Spec.KeyRef.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if keyId != "" {
-		apigatewayUsagePlanKey.KeyId = keyId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

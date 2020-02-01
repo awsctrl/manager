@@ -62,6 +62,10 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayAuthorizer.AuthorizerCredentials = in.Spec.AuthorizerCredentials
 	}
 
+	if in.Spec.IdentitySource != "" {
+		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
+	}
+
 	if in.Spec.Name != "" {
 		apigatewayAuthorizer.Name = in.Spec.Name
 	}
@@ -70,12 +74,8 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayAuthorizer.AuthorizerResultTtlInSeconds = in.Spec.AuthorizerResultTtlInSeconds
 	}
 
-	if in.Spec.AuthorizerUri != "" {
-		apigatewayAuthorizer.AuthorizerUri = in.Spec.AuthorizerUri
-	}
-
-	if in.Spec.IdentitySource != "" {
-		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
+	if in.Spec.Type != "" {
+		apigatewayAuthorizer.Type = in.Spec.Type
 	}
 
 	if in.Spec.IdentityValidationExpression != "" {
@@ -97,12 +97,8 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayAuthorizer.ProviderARNs = apigatewayAuthorizerProviderRefs
 	}
 
-	if in.Spec.Type != "" {
-		apigatewayAuthorizer.Type = in.Spec.Type
-	}
-
-	if in.Spec.AuthType != "" {
-		apigatewayAuthorizer.AuthType = in.Spec.AuthType
+	if in.Spec.AuthorizerUri != "" {
+		apigatewayAuthorizer.AuthorizerUri = in.Spec.AuthorizerUri
 	}
 
 	// TODO(christopherhein) move these to a defaulter
@@ -120,6 +116,10 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if restApiId != "" {
 		apigatewayAuthorizer.RestApiId = restApiId
+	}
+
+	if in.Spec.AuthType != "" {
+		apigatewayAuthorizer.AuthType = in.Spec.AuthType
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

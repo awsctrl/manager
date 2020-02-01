@@ -58,38 +58,6 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayApiKey := &apigateway.ApiKey{}
 
-	apigatewayApiKeyStageKeys := []apigateway.ApiKey_StageKey{}
-
-	for _, item := range in.Spec.StageKeys {
-		apigatewayApiKeyStageKey := apigateway.ApiKey_StageKey{}
-
-		// TODO(christopherhein) move these to a defaulter
-		apigatewayApiKeyStageKeyRestApiRefItem := item.RestApiRef.DeepCopy()
-
-		if apigatewayApiKeyStageKeyRestApiRefItem.ObjectRef.Namespace == "" {
-			apigatewayApiKeyStageKeyRestApiRefItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		item.RestApiRef = *apigatewayApiKeyStageKeyRestApiRefItem
-		restApiId, err := item.RestApiRef.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if restApiId != "" {
-			apigatewayApiKeyStageKey.RestApiId = restApiId
-		}
-
-		if item.StageName != "" {
-			apigatewayApiKeyStageKey.StageName = item.StageName
-		}
-
-	}
-
-	if len(apigatewayApiKeyStageKeys) > 0 {
-		apigatewayApiKey.StageKeys = apigatewayApiKeyStageKeys
-	}
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if in.Spec.Value != "" {
 		apigatewayApiKey.Value = in.Spec.Value
 	}
@@ -126,6 +94,39 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 	if in.Spec.Name != "" {
 		apigatewayApiKey.Name = in.Spec.Name
 	}
+
+	apigatewayApiKeyStageKeys := []apigateway.ApiKey_StageKey{}
+
+	for _, item := range in.Spec.StageKeys {
+		apigatewayApiKeyStageKey := apigateway.ApiKey_StageKey{}
+
+		// TODO(christopherhein) move these to a defaulter
+		apigatewayApiKeyStageKeyRestApiRefItem := item.RestApiRef.DeepCopy()
+
+		if apigatewayApiKeyStageKeyRestApiRefItem.ObjectRef.Namespace == "" {
+			apigatewayApiKeyStageKeyRestApiRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		item.RestApiRef = *apigatewayApiKeyStageKeyRestApiRefItem
+		restApiId, err := item.RestApiRef.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if restApiId != "" {
+			apigatewayApiKeyStageKey.RestApiId = restApiId
+		}
+
+		if item.StageName != "" {
+			apigatewayApiKeyStageKey.StageName = item.StageName
+		}
+
+	}
+
+	if len(apigatewayApiKeyStageKeys) > 0 {
+		apigatewayApiKey.StageKeys = apigatewayApiKeyStageKeys
+	}
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 
 	template.Resources = map[string]cloudformation.Resource{
 		"ApiKey": apigatewayApiKey,

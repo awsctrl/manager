@@ -64,20 +64,16 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayRestApi := &apigateway.RestApi{}
 
-	if in.Spec.MinimumCompressionSize != apigatewayRestApi.MinimumCompressionSize {
-		apigatewayRestApi.MinimumCompressionSize = in.Spec.MinimumCompressionSize
-	}
-
-	if len(in.Spec.BinaryMediaTypes) > 0 {
-		apigatewayRestApi.BinaryMediaTypes = in.Spec.BinaryMediaTypes
-	}
-
-	if in.Spec.Description != "" {
-		apigatewayRestApi.Description = in.Spec.Description
+	if in.Spec.CloneFrom != "" {
+		apigatewayRestApi.CloneFrom = in.Spec.CloneFrom
 	}
 
 	if !reflect.DeepEqual(in.Spec.EndpointConfiguration, RestApi_EndpointConfiguration{}) {
 		apigatewayRestApiEndpointConfiguration := apigateway.RestApi_EndpointConfiguration{}
+
+		if len(in.Spec.EndpointConfiguration.Types) > 0 {
+			apigatewayRestApiEndpointConfiguration.Types = in.Spec.EndpointConfiguration.Types
+		}
 
 		if len(in.Spec.EndpointConfiguration.VpcEndpointRefs) > 0 {
 			apigatewayRestApiEndpointConfigurationVpcEndpointRefs := []string{}
@@ -94,22 +90,14 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayRestApiEndpointConfiguration.VpcEndpointIds = apigatewayRestApiEndpointConfigurationVpcEndpointRefs
 		}
 
-		if len(in.Spec.EndpointConfiguration.Types) > 0 {
-			apigatewayRestApiEndpointConfiguration.Types = in.Spec.EndpointConfiguration.Types
-		}
-
 		apigatewayRestApi.EndpointConfiguration = &apigatewayRestApiEndpointConfiguration
 	}
 
+	if in.Spec.Name != "" {
+		apigatewayRestApi.Name = in.Spec.Name
+	}
+
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	if in.Spec.ApiKeySourceType != "" {
-		apigatewayRestApi.ApiKeySourceType = in.Spec.ApiKeySourceType
-	}
-
-	if in.Spec.CloneFrom != "" {
-		apigatewayRestApi.CloneFrom = in.Spec.CloneFrom
-	}
-
 	if in.Spec.Body != "" {
 		apigatewayRestApiJSON := make(map[string]interface{})
 		err := json.Unmarshal([]byte(in.Spec.Body), &apigatewayRestApiJSON)
@@ -122,14 +110,6 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 	if !reflect.DeepEqual(in.Spec.BodyS3Location, RestApi_S3Location{}) {
 		apigatewayRestApiS3Location := apigateway.RestApi_S3Location{}
 
-		if in.Spec.BodyS3Location.Version != "" {
-			apigatewayRestApiS3Location.Version = in.Spec.BodyS3Location.Version
-		}
-
-		if in.Spec.BodyS3Location.Bucket != "" {
-			apigatewayRestApiS3Location.Bucket = in.Spec.BodyS3Location.Bucket
-		}
-
 		if in.Spec.BodyS3Location.ETag != "" {
 			apigatewayRestApiS3Location.ETag = in.Spec.BodyS3Location.ETag
 		}
@@ -138,11 +118,23 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayRestApiS3Location.Key = in.Spec.BodyS3Location.Key
 		}
 
+		if in.Spec.BodyS3Location.Version != "" {
+			apigatewayRestApiS3Location.Version = in.Spec.BodyS3Location.Version
+		}
+
+		if in.Spec.BodyS3Location.Bucket != "" {
+			apigatewayRestApiS3Location.Bucket = in.Spec.BodyS3Location.Bucket
+		}
+
 		apigatewayRestApi.BodyS3Location = &apigatewayRestApiS3Location
 	}
 
-	if in.Spec.Name != "" {
-		apigatewayRestApi.Name = in.Spec.Name
+	if in.Spec.ApiKeySourceType != "" {
+		apigatewayRestApi.ApiKeySourceType = in.Spec.ApiKeySourceType
+	}
+
+	if in.Spec.MinimumCompressionSize != apigatewayRestApi.MinimumCompressionSize {
+		apigatewayRestApi.MinimumCompressionSize = in.Spec.MinimumCompressionSize
 	}
 
 	if !reflect.DeepEqual(in.Spec.Parameters, map[string]string{}) {
@@ -158,8 +150,16 @@ func (in *RestApi) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayRestApi.Policy = apigatewayRestApiJSON
 	}
 
+	if len(in.Spec.BinaryMediaTypes) > 0 {
+		apigatewayRestApi.BinaryMediaTypes = in.Spec.BinaryMediaTypes
+	}
+
 	if in.Spec.FailOnWarnings || !in.Spec.FailOnWarnings {
 		apigatewayRestApi.FailOnWarnings = in.Spec.FailOnWarnings
+	}
+
+	if in.Spec.Description != "" {
+		apigatewayRestApi.Description = in.Spec.Description
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

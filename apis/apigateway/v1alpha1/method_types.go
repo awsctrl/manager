@@ -25,11 +25,8 @@ import (
 type MethodSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// AuthorizationType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-authorizationtype
-	AuthorizationType string `json:"authorizationType,omitempty" cloudformation:"AuthorizationType,Parameter"`
-
-	// AuthorizerRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-authorizerid
-	AuthorizerRef metav1alpha1.ObjectReference `json:"authorizerRef,omitempty" cloudformation:"AuthorizerId,Parameter"`
+	// OperationName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-operationname
+	OperationName string `json:"operationName,omitempty" cloudformation:"OperationName,Parameter"`
 
 	// MethodResponses http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-methodresponses
 	MethodResponses []Method_MethodResponse `json:"methodResponses,omitempty" cloudformation:"MethodResponses"`
@@ -37,17 +34,23 @@ type MethodSpec struct {
 	// AuthorizationScopes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-authorizationscopes
 	AuthorizationScopes []string `json:"authorizationScopes,omitempty" cloudformation:"AuthorizationScopes"`
 
+	// AuthorizerRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-authorizerid
+	AuthorizerRef metav1alpha1.ObjectReference `json:"authorizerRef,omitempty" cloudformation:"AuthorizerId,Parameter"`
+
+	// HttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-httpmethod
+	HttpMethod string `json:"httpMethod,omitempty" cloudformation:"HttpMethod,Parameter"`
+
 	// Integration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-integration
 	Integration Method_Integration `json:"integration,omitempty" cloudformation:"Integration"`
 
-	// OperationName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-operationname
-	OperationName string `json:"operationName,omitempty" cloudformation:"OperationName,Parameter"`
-
-	// ResourceRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-resourceid
-	ResourceRef metav1alpha1.ObjectReference `json:"resourceRef,omitempty" cloudformation:"ResourceId,Parameter"`
-
 	// ApiKeyRequired http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-apikeyrequired
 	ApiKeyRequired bool `json:"apiKeyRequired,omitempty" cloudformation:"ApiKeyRequired,Parameter"`
+
+	// RequestValidatorRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-requestvalidatorid
+	RequestValidatorRef metav1alpha1.ObjectReference `json:"requestValidatorRef,omitempty" cloudformation:"RequestValidatorId,Parameter"`
+
+	// RequestModels http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-requestmodels
+	RequestModels map[string]string `json:"requestModels,omitempty" cloudformation:"RequestModels"`
 
 	// RequestParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-requestparameters
 	RequestParameters map[string]bool `json:"requestParameters,omitempty" cloudformation:"RequestParameters"`
@@ -55,77 +58,11 @@ type MethodSpec struct {
 	// RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-restapiid
 	RestApiRef metav1alpha1.ObjectReference `json:"restApiRef,omitempty" cloudformation:"RestApiId,Parameter"`
 
-	// HttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-httpmethod
-	HttpMethod string `json:"httpMethod,omitempty" cloudformation:"HttpMethod,Parameter"`
+	// AuthorizationType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-authorizationtype
+	AuthorizationType string `json:"authorizationType,omitempty" cloudformation:"AuthorizationType,Parameter"`
 
-	// RequestModels http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-requestmodels
-	RequestModels map[string]string `json:"requestModels,omitempty" cloudformation:"RequestModels"`
-
-	// RequestValidatorRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-requestvalidatorid
-	RequestValidatorRef metav1alpha1.ObjectReference `json:"requestValidatorRef,omitempty" cloudformation:"RequestValidatorId,Parameter"`
-}
-
-// Method_Integration defines the desired state of MethodIntegration
-type Method_Integration struct {
-	// Uri http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-uri
-	Uri string `json:"uri,omitempty" cloudformation:"Uri,Parameter"`
-
-	// ConnectionType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-connectiontype
-	ConnectionType string `json:"connectionType,omitempty" cloudformation:"ConnectionType,Parameter"`
-
-	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-type
-	Type string `json:"type,omitempty" cloudformation:"Type,Parameter"`
-
-	// CacheNamespace http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-cachenamespace
-	CacheNamespace string `json:"cacheNamespace,omitempty" cloudformation:"CacheNamespace,Parameter"`
-
-	// ContentHandling http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-contenthandling
-	ContentHandling string `json:"contentHandling,omitempty" cloudformation:"ContentHandling,Parameter"`
-
-	// RequestParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-requestparameters
-	RequestParameters map[string]string `json:"requestParameters,omitempty" cloudformation:"RequestParameters"`
-
-	// Credentials http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-credentials
-	Credentials string `json:"credentials,omitempty" cloudformation:"Credentials,Parameter"`
-
-	// PassthroughBehavior http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-passthroughbehavior
-	PassthroughBehavior string `json:"passthroughBehavior,omitempty" cloudformation:"PassthroughBehavior,Parameter"`
-
-	// ConnectionRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-connectionid
-	ConnectionRef metav1alpha1.ObjectReference `json:"connectionRef,omitempty" cloudformation:"ConnectionId,Parameter"`
-
-	// IntegrationHttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-integrationhttpmethod
-	IntegrationHttpMethod string `json:"integrationHttpMethod,omitempty" cloudformation:"IntegrationHttpMethod,Parameter"`
-
-	// RequestTemplates http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-requesttemplates
-	RequestTemplates map[string]string `json:"requestTemplates,omitempty" cloudformation:"RequestTemplates"`
-
-	// TimeoutInMillis http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-timeoutinmillis
-	TimeoutInMillis int `json:"timeoutInMillis,omitempty" cloudformation:"TimeoutInMillis,Parameter"`
-
-	// CacheKeyParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-cachekeyparameters
-	CacheKeyParameters []string `json:"cacheKeyParameters,omitempty" cloudformation:"CacheKeyParameters"`
-
-	// IntegrationResponses http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-integrationresponses
-	IntegrationResponses []Method_IntegrationResponse `json:"integrationResponses,omitempty" cloudformation:"IntegrationResponses"`
-}
-
-// Method_IntegrationResponse defines the desired state of MethodIntegrationResponse
-type Method_IntegrationResponse struct {
-	// ContentHandling http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integrationresponse-contenthandling
-	ContentHandling string `json:"contentHandling,omitempty" cloudformation:"ContentHandling,Parameter"`
-
-	// ResponseParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-responseparameters
-	ResponseParameters map[string]string `json:"responseParameters,omitempty" cloudformation:"ResponseParameters"`
-
-	// ResponseTemplates http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-responsetemplates
-	ResponseTemplates map[string]string `json:"responseTemplates,omitempty" cloudformation:"ResponseTemplates"`
-
-	// SelectionPattern http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-selectionpattern
-	SelectionPattern string `json:"selectionPattern,omitempty" cloudformation:"SelectionPattern,Parameter"`
-
-	// StatusCode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-statuscode
-	StatusCode string `json:"statusCode,omitempty" cloudformation:"StatusCode,Parameter"`
+	// ResourceRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-method.html#cfn-apigateway-method-resourceid
+	ResourceRef metav1alpha1.ObjectReference `json:"resourceRef,omitempty" cloudformation:"ResourceId,Parameter"`
 }
 
 // Method_MethodResponse defines the desired state of MethodMethodResponse
@@ -138,6 +75,69 @@ type Method_MethodResponse struct {
 
 	// StatusCode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-methodresponse.html#cfn-apigateway-method-methodresponse-statuscode
 	StatusCode string `json:"statusCode,omitempty" cloudformation:"StatusCode,Parameter"`
+}
+
+// Method_Integration defines the desired state of MethodIntegration
+type Method_Integration struct {
+	// RequestTemplates http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-requesttemplates
+	RequestTemplates map[string]string `json:"requestTemplates,omitempty" cloudformation:"RequestTemplates"`
+
+	// ConnectionType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-connectiontype
+	ConnectionType string `json:"connectionType,omitempty" cloudformation:"ConnectionType,Parameter"`
+
+	// CacheNamespace http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-cachenamespace
+	CacheNamespace string `json:"cacheNamespace,omitempty" cloudformation:"CacheNamespace,Parameter"`
+
+	// Credentials http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-credentials
+	Credentials string `json:"credentials,omitempty" cloudformation:"Credentials,Parameter"`
+
+	// CacheKeyParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-cachekeyparameters
+	CacheKeyParameters []string `json:"cacheKeyParameters,omitempty" cloudformation:"CacheKeyParameters"`
+
+	// TimeoutInMillis http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-timeoutinmillis
+	TimeoutInMillis int `json:"timeoutInMillis,omitempty" cloudformation:"TimeoutInMillis,Parameter"`
+
+	// PassthroughBehavior http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-passthroughbehavior
+	PassthroughBehavior string `json:"passthroughBehavior,omitempty" cloudformation:"PassthroughBehavior,Parameter"`
+
+	// ContentHandling http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-contenthandling
+	ContentHandling string `json:"contentHandling,omitempty" cloudformation:"ContentHandling,Parameter"`
+
+	// IntegrationHttpMethod http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-integrationhttpmethod
+	IntegrationHttpMethod string `json:"integrationHttpMethod,omitempty" cloudformation:"IntegrationHttpMethod,Parameter"`
+
+	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-type
+	Type string `json:"type,omitempty" cloudformation:"Type,Parameter"`
+
+	// RequestParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-requestparameters
+	RequestParameters map[string]string `json:"requestParameters,omitempty" cloudformation:"RequestParameters"`
+
+	// Uri http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-uri
+	Uri string `json:"uri,omitempty" cloudformation:"Uri,Parameter"`
+
+	// IntegrationResponses http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-integrationresponses
+	IntegrationResponses []Method_IntegrationResponse `json:"integrationResponses,omitempty" cloudformation:"IntegrationResponses"`
+
+	// ConnectionRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration.html#cfn-apigateway-method-integration-connectionid
+	ConnectionRef metav1alpha1.ObjectReference `json:"connectionRef,omitempty" cloudformation:"ConnectionId,Parameter"`
+}
+
+// Method_IntegrationResponse defines the desired state of MethodIntegrationResponse
+type Method_IntegrationResponse struct {
+	// StatusCode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-statuscode
+	StatusCode string `json:"statusCode,omitempty" cloudformation:"StatusCode,Parameter"`
+
+	// ContentHandling http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integrationresponse-contenthandling
+	ContentHandling string `json:"contentHandling,omitempty" cloudformation:"ContentHandling,Parameter"`
+
+	// ResponseParameters http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-responseparameters
+	ResponseParameters map[string]string `json:"responseParameters,omitempty" cloudformation:"ResponseParameters"`
+
+	// ResponseTemplates http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-responsetemplates
+	ResponseTemplates map[string]string `json:"responseTemplates,omitempty" cloudformation:"ResponseTemplates"`
+
+	// SelectionPattern http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apitgateway-method-integration-integrationresponse.html#cfn-apigateway-method-integration-integrationresponse-selectionpattern
+	SelectionPattern string `json:"selectionPattern,omitempty" cloudformation:"SelectionPattern,Parameter"`
 }
 
 // MethodStatus defines the observed state of Method

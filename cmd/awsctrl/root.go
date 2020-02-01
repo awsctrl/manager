@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package cmd contains all the necessary information to run the controller
-package cmd
+// Package main contains all the necessary information to run the controller
+package main
 
 import (
 	"fmt"
@@ -27,27 +27,22 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "manager",
-	Short: "Manager will run all controllers selected against the configured cluster",
+	Use:   "awsctrl",
+	Short: "awsctrl will run all controllers selected against the configured cluster",
 	Long: `AWS Controller is a CLI library for Kubernetes which allows developers
 to manage AWS infrastructure using Kubernetes Custom Resources.
 
 This CLI used for running the server component with plans
 to extend to installing, and auto-generating configs.
 
-$ manager help
-
-This will export all the commands currently exposed.`,
+$ awsctrl help`,
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
+// execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
+func execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-}
-
-func init() {
 }

@@ -59,19 +59,6 @@ func (in *Policy) GetTemplate(client dynamic.Interface) (string, error) {
 
 	iamPolicy := &iam.Policy{}
 
-	// TODO(christopherhein) move these to a defaulter
-	if in.Spec.PolicyName == "" {
-		iamPolicy.PolicyName = in.Name
-	}
-
-	if in.Spec.PolicyName != "" {
-		iamPolicy.PolicyName = in.Spec.PolicyName
-	}
-
-	if len(in.Spec.Roles) > 0 {
-		iamPolicy.Roles = in.Spec.Roles
-	}
-
 	if len(in.Spec.Users) > 0 {
 		iamPolicy.Users = in.Spec.Users
 	}
@@ -87,6 +74,19 @@ func (in *Policy) GetTemplate(client dynamic.Interface) (string, error) {
 			return "", err
 		}
 		iamPolicy.PolicyDocument = iamPolicyJSON
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.PolicyName == "" {
+		iamPolicy.PolicyName = in.Name
+	}
+
+	if in.Spec.PolicyName != "" {
+		iamPolicy.PolicyName = in.Spec.PolicyName
+	}
+
+	if len(in.Spec.Roles) > 0 {
+		iamPolicy.Roles = in.Spec.Roles
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

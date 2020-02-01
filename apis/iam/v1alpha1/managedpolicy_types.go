@@ -25,15 +25,6 @@ import (
 type ManagedPolicySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Groups http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-groups
-	Groups []string `json:"groups,omitempty" cloudformation:"Groups"`
-
-	// ManagedPolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-managedpolicyname
-	ManagedPolicyName string `json:"managedPolicyName,omitempty" cloudformation:"ManagedPolicyName,Parameter"`
-
-	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-ec2-dhcpoptions-path
-	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
-
 	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-policydocument
 	PolicyDocument string `json:"policyDocument,omitempty" cloudformation:"PolicyDocument,Parameter"`
 
@@ -45,6 +36,15 @@ type ManagedPolicySpec struct {
 
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
+	// Groups http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-groups
+	Groups []string `json:"groups,omitempty" cloudformation:"Groups"`
+
+	// ManagedPolicyName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-managedpolicyname
+	ManagedPolicyName string `json:"managedPolicyName,omitempty" cloudformation:"ManagedPolicyName,Parameter"`
+
+	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-ec2-dhcpoptions-path
+	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
 }
 
 // ManagedPolicyStatus defines the observed state of ManagedPolicy

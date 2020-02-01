@@ -59,10 +59,6 @@ func (in *EventInvokeConfig) GetTemplate(client dynamic.Interface) (string, erro
 
 	lambdaEventInvokeConfig := &lambda.EventInvokeConfig{}
 
-	if in.Spec.Qualifier != "" {
-		lambdaEventInvokeConfig.Qualifier = in.Spec.Qualifier
-	}
-
 	if !reflect.DeepEqual(in.Spec.DestinationConfig, EventInvokeConfig_DestinationConfig{}) {
 		lambdaEventInvokeConfigDestinationConfig := lambda.EventInvokeConfig_DestinationConfig{}
 
@@ -99,6 +95,10 @@ func (in *EventInvokeConfig) GetTemplate(client dynamic.Interface) (string, erro
 
 	if in.Spec.MaximumRetryAttempts != lambdaEventInvokeConfig.MaximumRetryAttempts {
 		lambdaEventInvokeConfig.MaximumRetryAttempts = in.Spec.MaximumRetryAttempts
+	}
+
+	if in.Spec.Qualifier != "" {
+		lambdaEventInvokeConfig.Qualifier = in.Spec.Qualifier
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

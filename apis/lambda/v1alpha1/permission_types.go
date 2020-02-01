@@ -25,6 +25,9 @@ import (
 type PermissionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Action http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-action
+	Action string `json:"action,omitempty" cloudformation:"Action,Parameter"`
+
 	// EventSourceToken http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-eventsourcetoken
 	EventSourceToken string `json:"eventSourceToken,omitempty" cloudformation:"EventSourceToken,Parameter"`
 
@@ -39,9 +42,6 @@ type PermissionSpec struct {
 
 	// SourceRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-sourcearn
 	SourceRef metav1alpha1.ObjectReference `json:"sourceRef,omitempty" cloudformation:"SourceArn,Parameter"`
-
-	// Action http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html#cfn-lambda-permission-action
-	Action string `json:"action,omitempty" cloudformation:"Action,Parameter"`
 }
 
 // PermissionStatus defines the observed state of Permission

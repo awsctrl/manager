@@ -59,6 +59,10 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 
 	route53RecordSetGroup := &route53.RecordSetGroup{}
 
+	if in.Spec.Comment != "" {
+		route53RecordSetGroup.Comment = in.Spec.Comment
+	}
+
 	// TODO(christopherhein) move these to a defaulter
 	route53RecordSetGroupHostedZoneRefItem := in.Spec.HostedZoneRef.DeepCopy()
 
@@ -89,67 +93,37 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 			route53RecordSetGroupRecordSet.Type = item.Type
 		}
 
-		if !reflect.DeepEqual(item.GeoLocation, RecordSetGroup_GeoLocation{}) {
-			route53RecordSetGroupRecordSetGeoLocation := route53.RecordSetGroup_GeoLocation{}
-
-			if item.GeoLocation.ContinentCode != "" {
-				route53RecordSetGroupRecordSetGeoLocation.ContinentCode = item.GeoLocation.ContinentCode
-			}
-
-			if item.GeoLocation.CountryCode != "" {
-				route53RecordSetGroupRecordSetGeoLocation.CountryCode = item.GeoLocation.CountryCode
-			}
-
-			if item.GeoLocation.SubdivisionCode != "" {
-				route53RecordSetGroupRecordSetGeoLocation.SubdivisionCode = item.GeoLocation.SubdivisionCode
-			}
-
-			route53RecordSetGroupRecordSet.GeoLocation = &route53RecordSetGroupRecordSetGeoLocation
-		}
-
-		if item.Failover != "" {
-			route53RecordSetGroupRecordSet.Failover = item.Failover
-		}
-
-		if item.SetIdentifier != "" {
-			route53RecordSetGroupRecordSet.SetIdentifier = item.SetIdentifier
-		}
-
 		// TODO(christopherhein) move these to a defaulter
-		route53RecordSetGroupRecordSetHostedZoneRefItem := item.HostedZoneRef.DeepCopy()
+		route53RecordSetGroupRecordSetHealthCheckRefItem := item.HealthCheckRef.DeepCopy()
 
-		if route53RecordSetGroupRecordSetHostedZoneRefItem.ObjectRef.Namespace == "" {
-			route53RecordSetGroupRecordSetHostedZoneRefItem.ObjectRef.Namespace = in.Namespace
+		if route53RecordSetGroupRecordSetHealthCheckRefItem.ObjectRef.Namespace == "" {
+			route53RecordSetGroupRecordSetHealthCheckRefItem.ObjectRef.Namespace = in.Namespace
 		}
 
-		item.HostedZoneRef = *route53RecordSetGroupRecordSetHostedZoneRefItem
-		hostedZoneId, err := item.HostedZoneRef.String(client)
+		item.HealthCheckRef = *route53RecordSetGroupRecordSetHealthCheckRefItem
+		healthCheckId, err := item.HealthCheckRef.String(client)
 		if err != nil {
 			return "", err
 		}
 
-		if hostedZoneId != "" {
-			route53RecordSetGroupRecordSet.HostedZoneId = hostedZoneId
-		}
-
-		if item.TTL != "" {
-			route53RecordSetGroupRecordSet.TTL = item.TTL
+		if healthCheckId != "" {
+			route53RecordSetGroupRecordSet.HealthCheckId = healthCheckId
 		}
 
 		if item.Name != "" {
 			route53RecordSetGroupRecordSet.Name = item.Name
 		}
 
-		if item.Region != "" {
-			route53RecordSetGroupRecordSet.Region = item.Region
-		}
-
 		if len(item.ResourceRecords) > 0 {
 			route53RecordSetGroupRecordSet.ResourceRecords = item.ResourceRecords
 		}
 
-		if item.MultiValueAnswer || !item.MultiValueAnswer {
-			route53RecordSetGroupRecordSet.MultiValueAnswer = item.MultiValueAnswer
+		if item.HostedZoneName != "" {
+			route53RecordSetGroupRecordSet.HostedZoneName = item.HostedZoneName
+		}
+
+		if item.TTL != "" {
+			route53RecordSetGroupRecordSet.TTL = item.TTL
 		}
 
 		if !reflect.DeepEqual(item.AliasTarget, RecordSetGroup_AliasTarget{}) {
@@ -183,42 +157,69 @@ func (in *RecordSetGroup) GetTemplate(client dynamic.Interface) (string, error) 
 			route53RecordSetGroupRecordSet.AliasTarget = &route53RecordSetGroupRecordSetAliasTarget
 		}
 
-		if item.Comment != "" {
-			route53RecordSetGroupRecordSet.Comment = item.Comment
-		}
-
-		// TODO(christopherhein) move these to a defaulter
-		route53RecordSetGroupRecordSetHealthCheckRefItem := item.HealthCheckRef.DeepCopy()
-
-		if route53RecordSetGroupRecordSetHealthCheckRefItem.ObjectRef.Namespace == "" {
-			route53RecordSetGroupRecordSetHealthCheckRefItem.ObjectRef.Namespace = in.Namespace
-		}
-
-		item.HealthCheckRef = *route53RecordSetGroupRecordSetHealthCheckRefItem
-		healthCheckId, err := item.HealthCheckRef.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if healthCheckId != "" {
-			route53RecordSetGroupRecordSet.HealthCheckId = healthCheckId
-		}
-
-		if item.HostedZoneName != "" {
-			route53RecordSetGroupRecordSet.HostedZoneName = item.HostedZoneName
+		if item.Failover != "" {
+			route53RecordSetGroupRecordSet.Failover = item.Failover
 		}
 
 		if item.Weight != route53RecordSetGroupRecordSet.Weight {
 			route53RecordSetGroupRecordSet.Weight = item.Weight
 		}
 
+		if item.Comment != "" {
+			route53RecordSetGroupRecordSet.Comment = item.Comment
+		}
+
+		if item.Region != "" {
+			route53RecordSetGroupRecordSet.Region = item.Region
+		}
+
+		if item.SetIdentifier != "" {
+			route53RecordSetGroupRecordSet.SetIdentifier = item.SetIdentifier
+		}
+
+		if item.MultiValueAnswer || !item.MultiValueAnswer {
+			route53RecordSetGroupRecordSet.MultiValueAnswer = item.MultiValueAnswer
+		}
+
+		if !reflect.DeepEqual(item.GeoLocation, RecordSetGroup_GeoLocation{}) {
+			route53RecordSetGroupRecordSetGeoLocation := route53.RecordSetGroup_GeoLocation{}
+
+			if item.GeoLocation.CountryCode != "" {
+				route53RecordSetGroupRecordSetGeoLocation.CountryCode = item.GeoLocation.CountryCode
+			}
+
+			if item.GeoLocation.SubdivisionCode != "" {
+				route53RecordSetGroupRecordSetGeoLocation.SubdivisionCode = item.GeoLocation.SubdivisionCode
+			}
+
+			if item.GeoLocation.ContinentCode != "" {
+				route53RecordSetGroupRecordSetGeoLocation.ContinentCode = item.GeoLocation.ContinentCode
+			}
+
+			route53RecordSetGroupRecordSet.GeoLocation = &route53RecordSetGroupRecordSetGeoLocation
+		}
+
+		// TODO(christopherhein) move these to a defaulter
+		route53RecordSetGroupRecordSetHostedZoneRefItem := item.HostedZoneRef.DeepCopy()
+
+		if route53RecordSetGroupRecordSetHostedZoneRefItem.ObjectRef.Namespace == "" {
+			route53RecordSetGroupRecordSetHostedZoneRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		item.HostedZoneRef = *route53RecordSetGroupRecordSetHostedZoneRefItem
+		hostedZoneId, err := item.HostedZoneRef.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if hostedZoneId != "" {
+			route53RecordSetGroupRecordSet.HostedZoneId = hostedZoneId
+		}
+
 	}
 
 	if len(route53RecordSetGroupRecordSets) > 0 {
 		route53RecordSetGroup.RecordSets = route53RecordSetGroupRecordSets
-	}
-	if in.Spec.Comment != "" {
-		route53RecordSetGroup.Comment = in.Spec.Comment
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

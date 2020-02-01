@@ -55,49 +55,17 @@ func (in *Role) GetTemplate(client dynamic.Interface) (string, error) {
 				"Name": in.Name + "Ref",
 			},
 		},
-		"Arn": map[string]interface{}{
-			"Value":  cloudformation.GetAtt("Role", "Arn"),
-			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
-		},
 		"RoleId": map[string]interface{}{
 			"Value":  cloudformation.GetAtt("Role", "RoleId"),
 			"Export": map[string]interface{}{"Name": in.Name + "RoleId"},
 		},
+		"Arn": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("Role", "Arn"),
+			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
+		},
 	}
 
 	iamRole := &iam.Role{}
-
-	if in.Spec.AssumeRolePolicyDocument != "" {
-		iamRoleJSON := make(map[string]interface{})
-		err := json.Unmarshal([]byte(in.Spec.AssumeRolePolicyDocument), &iamRoleJSON)
-		if err != nil {
-			return "", err
-		}
-		iamRole.AssumeRolePolicyDocument = iamRoleJSON
-	}
-
-	if in.Spec.Description != "" {
-		iamRole.Description = in.Spec.Description
-	}
-
-	if len(in.Spec.ManagedPolicyRefs) > 0 {
-		iamRoleManagedPolicyRefs := []string{}
-
-		for _, item := range in.Spec.ManagedPolicyRefs {
-			iamRoleManagedPolicyRefsItem := item.DeepCopy()
-
-			if iamRoleManagedPolicyRefsItem.ObjectRef.Namespace == "" {
-				iamRoleManagedPolicyRefsItem.ObjectRef.Namespace = in.Namespace
-			}
-
-		}
-
-		iamRole.ManagedPolicyArns = iamRoleManagedPolicyRefs
-	}
-
-	if in.Spec.MaxSessionDuration != iamRole.MaxSessionDuration {
-		iamRole.MaxSessionDuration = in.Spec.MaxSessionDuration
-	}
 
 	iamRolePolicies := []iam.Role_Policy{}
 
@@ -122,13 +90,18 @@ func (in *Role) GetTemplate(client dynamic.Interface) (string, error) {
 	if len(iamRolePolicies) > 0 {
 		iamRole.Policies = iamRolePolicies
 	}
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	if in.Spec.PermissionsBoundary != "" {
-		iamRole.PermissionsBoundary = in.Spec.PermissionsBoundary
+	if in.Spec.MaxSessionDuration != iamRole.MaxSessionDuration {
+		iamRole.MaxSessionDuration = in.Spec.MaxSessionDuration
 	}
 
-	if in.Spec.Path != "" {
-		iamRole.Path = in.Spec.Path
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.AssumeRolePolicyDocument != "" {
+		iamRoleJSON := make(map[string]interface{})
+		err := json.Unmarshal([]byte(in.Spec.AssumeRolePolicyDocument), &iamRoleJSON)
+		if err != nil {
+			return "", err
+		}
+		iamRole.AssumeRolePolicyDocument = iamRoleJSON
 	}
 
 	// TODO(christopherhein) move these to a defaulter
@@ -138,6 +111,33 @@ func (in *Role) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.RoleName != "" {
 		iamRole.RoleName = in.Spec.RoleName
+	}
+
+	if in.Spec.Description != "" {
+		iamRole.Description = in.Spec.Description
+	}
+
+	if len(in.Spec.ManagedPolicyRefs) > 0 {
+		iamRoleManagedPolicyRefs := []string{}
+
+		for _, item := range in.Spec.ManagedPolicyRefs {
+			iamRoleManagedPolicyRefsItem := item.DeepCopy()
+
+			if iamRoleManagedPolicyRefsItem.ObjectRef.Namespace == "" {
+				iamRoleManagedPolicyRefsItem.ObjectRef.Namespace = in.Namespace
+			}
+
+		}
+
+		iamRole.ManagedPolicyArns = iamRoleManagedPolicyRefs
+	}
+
+	if in.Spec.Path != "" {
+		iamRole.Path = in.Spec.Path
+	}
+
+	if in.Spec.PermissionsBoundary != "" {
+		iamRole.PermissionsBoundary = in.Spec.PermissionsBoundary
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

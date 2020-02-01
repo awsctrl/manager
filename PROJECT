@@ -2,131 +2,86 @@ domain: awsctrl.io
 multigroup: true
 repo: awsctrl.io
 resources:
-- group: apigateway
-  kind: DocumentationPart
-  version: v1alpha1
 - group: iam
-  kind: Group
-  version: v1alpha1
-- group: apigateway
-  kind: Resource
-  version: v1alpha1
-- group: apigateway
-  kind: DocumentationVersion
+  kind: InstanceProfile
   version: v1alpha1
 - group: route53
   kind: HealthCheck
   version: v1alpha1
 - group: apigateway
-  kind: Deployment
+  kind: UsagePlan
   version: v1alpha1
-- group: ecr
-  kind: Repository
+- group: apigateway
+  kind: BasePathMapping
+  version: v1alpha1
+- group: s3
+  kind: Bucket
   version: v1alpha1
 - group: lambda
   kind: LayerVersionPermission
   version: v1alpha1
 - group: apigateway
-  kind: Model
+  kind: Deployment
   version: v1alpha1
 - group: apigateway
-  kind: ClientCertificate
-  version: v1alpha1
-- group: lambda
-  kind: Permission
-  version: v1alpha1
-- group: certificatemanager
-  kind: Certificate
-  version: v1alpha1
-- group: iam
-  kind: Policy
-  version: v1alpha1
-- group: lambda
-  kind: Version
-  version: v1alpha1
-- group: lambda
-  kind: Function
-  version: v1alpha1
-- group: iam
-  kind: Role
-  version: v1alpha1
-- group: iam
-  kind: ManagedPolicy
-  version: v1alpha1
-- group: apigateway
-  kind: UsagePlan
+  kind: ApiKey
   version: v1alpha1
 - group: lambda
   kind: EventInvokeConfig
   version: v1alpha1
-- group: s3
-  kind: Bucket
-  version: v1alpha1
-- group: s3
-  kind: BucketPolicy
-  version: v1alpha1
 - group: apigateway
-  kind: VpcLink
+  kind: Account
   version: v1alpha1
-- group: route53
-  kind: RecordSetGroup
+- group: lambda
+  kind: Permission
   version: v1alpha1
-- group: apigateway
-  kind: Stage
+- group: lambda
+  kind: Version
+  version: v1alpha1
+- group: iam
+  kind: ServiceLinkedRole
   version: v1alpha1
 - group: iam
   kind: AccessKey
   version: v1alpha1
 - group: iam
-  kind: ServiceLinkedRole
-  version: v1alpha1
-- group: apigateway
-  kind: GatewayResponse
-  version: v1alpha1
-- group: apigateway
-  kind: Account
-  version: v1alpha1
-- group: cloud9
-  kind: EnvironmentEC2
-  version: v1alpha1
-- group: apigateway
-  kind: RequestValidator
-  version: v1alpha1
-- group: lambda
-  kind: LayerVersion
-  version: v1alpha1
-- group: apigateway
-  kind: Authorizer
-  version: v1alpha1
-- group: route53
-  kind: RecordSet
-  version: v1alpha1
-- group: s3
-  kind: AccessPoint
-  version: v1alpha1
-- group: iam
-  kind: InstanceProfile
-  version: v1alpha1
-- group: lambda
-  kind: EventSourceMapping
-  version: v1alpha1
-- group: apigateway
-  kind: UsagePlanKey
+  kind: ManagedPolicy
   version: v1alpha1
 - group: iam
   kind: UserToGroupAddition
   version: v1alpha1
 - group: apigateway
-  kind: Method
+  kind: VpcLink
+  version: v1alpha1
+- group: iam
+  kind: Group
+  version: v1alpha1
+- group: s3
+  kind: BucketPolicy
   version: v1alpha1
 - group: apigateway
-  kind: BasePathMapping
+  kind: Authorizer
+  version: v1alpha1
+- group: cloud9
+  kind: EnvironmentEC2
   version: v1alpha1
 - group: lambda
-  kind: Alias
+  kind: Function
   version: v1alpha1
 - group: apigateway
-  kind: DomainName
+  kind: RequestValidator
+  version: v1alpha1
+- group: route53
+  kind: RecordSetGroup
+  version: v1alpha1
+- group: s3
+  kind: AccessPoint
+  version: v1alpha1
+- group: apigateway
+  kind: Model
+  version: v1alpha1
+- group: iam
+  kind: Policy
   version: v1alpha1
 - group: iam
   kind: User
@@ -135,9 +90,54 @@ resources:
   kind: HostedZone
   version: v1alpha1
 - group: apigateway
-  kind: ApiKey
+  kind: DocumentationVersion
+  version: v1alpha1
+- group: lambda
+  kind: EventSourceMapping
+  version: v1alpha1
+- group: apigateway
+  kind: Resource
+  version: v1alpha1
+- group: lambda
+  kind: Alias
+  version: v1alpha1
+- group: apigateway
+  kind: GatewayResponse
+  version: v1alpha1
+- group: certificatemanager
+  kind: Certificate
+  version: v1alpha1
+- group: ecr
+  kind: Repository
+  version: v1alpha1
+- group: apigateway
+  kind: Stage
+  version: v1alpha1
+- group: iam
+  kind: Role
+  version: v1alpha1
+- group: lambda
+  kind: LayerVersion
+  version: v1alpha1
+- group: apigateway
+  kind: Method
+  version: v1alpha1
+- group: apigateway
+  kind: UsagePlanKey
+  version: v1alpha1
+- group: apigateway
+  kind: DomainName
+  version: v1alpha1
+- group: apigateway
+  kind: ClientCertificate
   version: v1alpha1
 - group: apigateway
   kind: RestApi
+  version: v1alpha1
+- group: route53
+  kind: RecordSet
+  version: v1alpha1
+- group: apigateway
+  kind: DocumentationPart
   version: v1alpha1
 version: "2"

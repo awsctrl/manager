@@ -7,5 +7,5 @@ spec:
   - CAPABILITY_NAMED_IAM
   userName: christopherhein
   # todo(christopherhein) change the code generation to support plural ids and arns
-  managedPolicyArns:
-  - arn:aws:iam::aws:policy/AdministratorAccess
+  managedPolicyRefs:
+  - arn: arn:aws:iam::aws:policy/AdministratorAccess

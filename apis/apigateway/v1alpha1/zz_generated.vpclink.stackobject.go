@@ -58,6 +58,14 @@ func (in *VpcLink) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayVpcLink := &apigateway.VpcLink{}
 
+	if in.Spec.Description != "" {
+		apigatewayVpcLink.Description = in.Spec.Description
+	}
+
+	if in.Spec.Name != "" {
+		apigatewayVpcLink.Name = in.Spec.Name
+	}
+
 	if len(in.Spec.TargetRefs) > 0 {
 		apigatewayVpcLinkTargetRefs := []string{}
 
@@ -71,14 +79,6 @@ func (in *VpcLink) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		apigatewayVpcLink.TargetArns = apigatewayVpcLinkTargetRefs
-	}
-
-	if in.Spec.Description != "" {
-		apigatewayVpcLink.Description = in.Spec.Description
-	}
-
-	if in.Spec.Name != "" {
-		apigatewayVpcLink.Name = in.Spec.Name
 	}
 
 	template.Resources = map[string]cloudformation.Resource{
