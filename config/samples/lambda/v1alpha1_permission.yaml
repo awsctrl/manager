@@ -6,5 +6,5 @@ spec:
   functionName: function-sample
   action: "lambda:InvokeFunction"
   principal: s3.amazonaws.com
-  Source: 
+  sourceRef: 
     arn: arn:aws:s3:::awsctrl-lambda-s3-trigger

@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-// Package cmd contains all the necessary information to run the controller
-package cmd
+// Package main contains all the necessary information to run the controller
+package main
 
 import (
 	"os"

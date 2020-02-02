@@ -3,7 +3,7 @@ kind: Model
 metadata:
   name: model-sample
 spec:
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample

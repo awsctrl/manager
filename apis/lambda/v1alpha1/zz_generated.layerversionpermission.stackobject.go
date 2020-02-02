@@ -58,10 +58,6 @@ func (in *LayerVersionPermission) GetTemplate(client dynamic.Interface) (string,
 
 	lambdaLayerVersionPermission := &lambda.LayerVersionPermission{}
 
-	if in.Spec.Action != "" {
-		lambdaLayerVersionPermission.Action = in.Spec.Action
-	}
-
 	// TODO(christopherhein) move these to a defaulter
 	lambdaLayerVersionPermissionLayerVersionRefItem := in.Spec.LayerVersionRef.DeepCopy()
 
@@ -98,6 +94,10 @@ func (in *LayerVersionPermission) GetTemplate(client dynamic.Interface) (string,
 
 	if in.Spec.Principal != "" {
 		lambdaLayerVersionPermission.Principal = in.Spec.Principal
+	}
+
+	if in.Spec.Action != "" {
+		lambdaLayerVersionPermission.Action = in.Spec.Action
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

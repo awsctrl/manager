@@ -55,14 +55,6 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 				"Name": in.Name + "Ref",
 			},
 		},
-		"RegionalHostedZoneId": map[string]interface{}{
-			"Value":  cloudformation.GetAtt("DomainName", "RegionalHostedZoneId"),
-			"Export": map[string]interface{}{"Name": in.Name + "RegionalHostedZoneId"},
-		},
-		"DistributionDomainName": map[string]interface{}{
-			"Value":  cloudformation.GetAtt("DomainName", "DistributionDomainName"),
-			"Export": map[string]interface{}{"Name": in.Name + "DistributionDomainName"},
-		},
 		"DistributionHostedZoneId": map[string]interface{}{
 			"Value":  cloudformation.GetAtt("DomainName", "DistributionHostedZoneId"),
 			"Export": map[string]interface{}{"Name": in.Name + "DistributionHostedZoneId"},
@@ -71,26 +63,17 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 			"Value":  cloudformation.GetAtt("DomainName", "RegionalDomainName"),
 			"Export": map[string]interface{}{"Name": in.Name + "RegionalDomainName"},
 		},
+		"RegionalHostedZoneId": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("DomainName", "RegionalHostedZoneId"),
+			"Export": map[string]interface{}{"Name": in.Name + "RegionalHostedZoneId"},
+		},
+		"DistributionDomainName": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("DomainName", "DistributionDomainName"),
+			"Export": map[string]interface{}{"Name": in.Name + "DistributionDomainName"},
+		},
 	}
 
 	apigatewayDomainName := &apigateway.DomainName{}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayDomainNameRegionalCertificateRefItem := in.Spec.RegionalCertificateRef.DeepCopy()
-
-	if apigatewayDomainNameRegionalCertificateRefItem.ObjectRef.Namespace == "" {
-		apigatewayDomainNameRegionalCertificateRefItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RegionalCertificateRef = *apigatewayDomainNameRegionalCertificateRefItem
-	regionalCertificateArn, err := in.Spec.RegionalCertificateRef.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if regionalCertificateArn != "" {
-		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
-	}
 
 	if in.Spec.SecurityPolicy != "" {
 		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
@@ -126,6 +109,23 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		apigatewayDomainName.EndpointConfiguration = &apigatewayDomainNameEndpointConfiguration
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayDomainNameRegionalCertificateRefItem := in.Spec.RegionalCertificateRef.DeepCopy()
+
+	if apigatewayDomainNameRegionalCertificateRefItem.ObjectRef.Namespace == "" {
+		apigatewayDomainNameRegionalCertificateRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RegionalCertificateRef = *apigatewayDomainNameRegionalCertificateRefItem
+	regionalCertificateArn, err := in.Spec.RegionalCertificateRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if regionalCertificateArn != "" {
+		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

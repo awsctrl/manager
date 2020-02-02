@@ -22,6 +22,9 @@ all: manager
 # Stub for ci
 test-unit: test
 
+# Install CI will configure
+install-ci: kubebuilder set-env kind #kubectl kubectl-context kubectl-verify 
+
 # Run tests
 test: generate fmt vet manifests
 	go test `go list ./... | grep -v e2e` -coverprofile unit.out -covermode atomic
@@ -50,11 +53,11 @@ test-e2e: generate fmt vet manifests
 
 # Build manager binary
 manager: generate fmt vet
-	go build -o bin/awsctrl main.go
+	go build ./cmd/awsctrl
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
 run: generate fmt vet manifests install
-	go run ./main.go start
+	go run ./cmd/awsctrl/main.go start
 
 # Install CRDs into a cluster
 install: manifests
@@ -89,28 +92,6 @@ docker-build: test
 # Push the docker image
 docker-push:
 	docker push ${IMG}
-
-# find or download controller-gen
-# download controller-gen if necessary
-controller-gen:
-ifeq (, $(shell which controller-gen))
-	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.4
-CONTROLLER_GEN=$(GOBIN)/controller-gen
-else
-CONTROLLER_GEN=$(shell which controller-gen)
-endif
-
-# Install CI will configure
-install-ci: kubebuilder set-env kind #kubectl kubectl-context kubectl-verify 
-
-# Install kind if not installed
-kind:
-ifeq (, $(shell which kind))
-	go get sigs.k8s.io/kind
-KIND=$(GOBIN)/kind
-else
-KIND=$(shell which kind)
-endif
 
 # Create kind cluster for testing
 kind-create-%: kind
@@ -152,6 +133,26 @@ set-env:
 	export GO111MODULE=on
 	export USE_EXISTING_CLUSTER=true
 	export POD_NAMESPACE=default
+
+# find or download controller-gen
+# download controller-gen if necessary
+controller-gen:
+ifeq (, $(shell which controller-gen))
+	go get sigs.k8s.io/controller-tools/cmd/controller-gen@v0.2.4
+CONTROLLER_GEN=$(GOBIN)/controller-gen
+else
+CONTROLLER_GEN=$(shell which controller-gen)
+endif
+
+# find or download kind
+# download kind if necessary
+kind:
+ifeq (, $(shell which kind))
+	go get sigs.k8s.io/kind
+KIND=$(GOBIN)/kind
+else
+KIND=$(shell which kind)
+endif
 
 # find or download generator
 # download generator if necessary

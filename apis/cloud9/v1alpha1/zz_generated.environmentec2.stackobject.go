@@ -54,13 +54,13 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 				"Name": in.Name + "Ref",
 			},
 		},
-		"Name": map[string]interface{}{
-			"Value":  cloudformation.GetAtt("EnvironmentEC2", "Name"),
-			"Export": map[string]interface{}{"Name": in.Name + "Name"},
-		},
 		"Arn": map[string]interface{}{
 			"Value":  cloudformation.GetAtt("EnvironmentEC2", "Arn"),
 			"Export": map[string]interface{}{"Name": in.Name + "Arn"},
+		},
+		"Name": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("EnvironmentEC2", "Name"),
+			"Export": map[string]interface{}{"Name": in.Name + "Name"},
 		},
 	}
 
@@ -100,12 +100,12 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 	for _, item := range in.Spec.Repositories {
 		cloud9EnvironmentEC2Repository := cloud9.EnvironmentEC2_Repository{}
 
-		if item.PathComponent != "" {
-			cloud9EnvironmentEC2Repository.PathComponent = item.PathComponent
-		}
-
 		if item.RepositoryUrl != "" {
 			cloud9EnvironmentEC2Repository.RepositoryUrl = item.RepositoryUrl
+		}
+
+		if item.PathComponent != "" {
+			cloud9EnvironmentEC2Repository.PathComponent = item.PathComponent
 		}
 
 	}

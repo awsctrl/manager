@@ -25,14 +25,14 @@ import (
 type DocumentationPartSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Location http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationpart.html#cfn-apigateway-documentationpart-location
-	Location DocumentationPart_Location `json:"location,omitempty" cloudformation:"Location"`
-
 	// Properties http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationpart.html#cfn-apigateway-documentationpart-properties
 	Properties string `json:"properties,omitempty" cloudformation:"Properties,Parameter"`
 
 	// RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationpart.html#cfn-apigateway-documentationpart-restapiid
 	RestApiRef metav1alpha1.ObjectReference `json:"restApiRef,omitempty" cloudformation:"RestApiId,Parameter"`
+
+	// Location http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-documentationpart.html#cfn-apigateway-documentationpart-location
+	Location DocumentationPart_Location `json:"location,omitempty" cloudformation:"Location"`
 }
 
 // DocumentationPart_Location defines the desired state of DocumentationPartLocation

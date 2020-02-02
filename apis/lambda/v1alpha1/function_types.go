@@ -25,8 +25,14 @@ import (
 type FunctionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Environment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-environment
-	Environment Function_Environment `json:"environment,omitempty" cloudformation:"Environment"`
+	// Code http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-code
+	Code Function_Code `json:"code,omitempty" cloudformation:"Code"`
+
+	// DeadLetterConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-deadletterconfig
+	DeadLetterConfig Function_DeadLetterConfig `json:"deadLetterConfig,omitempty" cloudformation:"DeadLetterConfig"`
+
+	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-functionname
+	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
 
 	// ReservedConcurrentExecutions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-reservedconcurrentexecutions
 	ReservedConcurrentExecutions int `json:"reservedConcurrentExecutions,omitempty" cloudformation:"ReservedConcurrentExecutions,Parameter"`
@@ -34,29 +40,8 @@ type FunctionSpec struct {
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 
-	// DeadLetterConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-deadletterconfig
-	DeadLetterConfig Function_DeadLetterConfig `json:"deadLetterConfig,omitempty" cloudformation:"DeadLetterConfig"`
-
-	// Runtime http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-runtime
-	Runtime string `json:"runtime,omitempty" cloudformation:"Runtime,Parameter"`
-
-	// Code http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-code
-	Code Function_Code `json:"code,omitempty" cloudformation:"Code"`
-
-	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-functionname
-	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
-
 	// Role http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-role
 	Role string `json:"role,omitempty" cloudformation:"Role,Parameter"`
-
-	// VpcConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-vpcconfig
-	VpcConfig Function_VpcConfig `json:"vpcConfig,omitempty" cloudformation:"VpcConfig"`
-
-	// Layers http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-layers
-	Layers []string `json:"layers,omitempty" cloudformation:"Layers"`
-
-	// MemorySize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-memorysize
-	MemorySize int `json:"memorySize,omitempty" cloudformation:"MemorySize,Parameter"`
 
 	// TracingConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-tracingconfig
 	TracingConfig Function_TracingConfig `json:"tracingConfig,omitempty" cloudformation:"TracingConfig"`
@@ -64,11 +49,26 @@ type FunctionSpec struct {
 	// Handler http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-handler
 	Handler string `json:"handler,omitempty" cloudformation:"Handler,Parameter"`
 
-	// KmsKeyRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-kmskeyarn
-	KmsKeyRef metav1alpha1.ObjectReference `json:"kmsKeyRef,omitempty" cloudformation:"KmsKeyArn,Parameter"`
+	// Environment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-environment
+	Environment Function_Environment `json:"environment,omitempty" cloudformation:"Environment"`
+
+	// Layers http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-layers
+	Layers []string `json:"layers,omitempty" cloudformation:"Layers"`
+
+	// MemorySize http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-memorysize
+	MemorySize int `json:"memorySize,omitempty" cloudformation:"MemorySize,Parameter"`
+
+	// Runtime http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-runtime
+	Runtime string `json:"runtime,omitempty" cloudformation:"Runtime,Parameter"`
 
 	// Timeout http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-timeout
 	Timeout int `json:"timeout,omitempty" cloudformation:"Timeout,Parameter"`
+
+	// KmsKeyRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-kmskeyarn
+	KmsKeyRef metav1alpha1.ObjectReference `json:"kmsKeyRef,omitempty" cloudformation:"KmsKeyArn,Parameter"`
+
+	// VpcConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-function.html#cfn-lambda-function-vpcconfig
+	VpcConfig Function_VpcConfig `json:"vpcConfig,omitempty" cloudformation:"VpcConfig"`
 }
 
 // Function_Environment defines the desired state of FunctionEnvironment
@@ -77,19 +77,19 @@ type Function_Environment struct {
 	Variables map[string]string `json:"variables,omitempty" cloudformation:"Variables"`
 }
 
+// Function_VpcConfig defines the desired state of FunctionVpcConfig
+type Function_VpcConfig struct {
+	// SubnetRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-subnetids
+	SubnetRefs []metav1alpha1.ObjectReference `json:"subnetRefs,omitempty" cloudformation:"SubnetIds"`
+
+	// SecurityGroupRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-securitygroupids
+	SecurityGroupRefs []metav1alpha1.ObjectReference `json:"securityGroupRefs,omitempty" cloudformation:"SecurityGroupIds"`
+}
+
 // Function_TracingConfig defines the desired state of FunctionTracingConfig
 type Function_TracingConfig struct {
 	// Mode http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-tracingconfig.html#cfn-lambda-function-tracingconfig-mode
 	Mode string `json:"mode,omitempty" cloudformation:"Mode,Parameter"`
-}
-
-// Function_VpcConfig defines the desired state of FunctionVpcConfig
-type Function_VpcConfig struct {
-	// SecurityGroupRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-securitygroupids
-	SecurityGroupRefs []metav1alpha1.ObjectReference `json:"securityGroupRefs,omitempty" cloudformation:"SecurityGroupIds"`
-
-	// SubnetRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-vpcconfig.html#cfn-lambda-function-vpcconfig-subnetids
-	SubnetRefs []metav1alpha1.ObjectReference `json:"subnetRefs,omitempty" cloudformation:"SubnetIds"`
 }
 
 // Function_DeadLetterConfig defines the desired state of FunctionDeadLetterConfig
@@ -100,6 +100,9 @@ type Function_DeadLetterConfig struct {
 
 // Function_Code defines the desired state of FunctionCode
 type Function_Code struct {
+	// ZipFile http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-zipfile
+	ZipFile string `json:"zipFile,omitempty" cloudformation:"ZipFile,Parameter"`
+
 	// S3Bucket http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-s3bucket
 	S3Bucket string `json:"s3Bucket,omitempty" cloudformation:"S3Bucket,Parameter"`
 
@@ -108,9 +111,6 @@ type Function_Code struct {
 
 	// S3ObjectVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-s3objectversion
 	S3ObjectVersion string `json:"s3ObjectVersion,omitempty" cloudformation:"S3ObjectVersion,Parameter"`
-
-	// ZipFile http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html#cfn-lambda-function-code-zipfile
-	ZipFile string `json:"zipFile,omitempty" cloudformation:"ZipFile,Parameter"`
 }
 
 // FunctionStatus defines the observed state of Function

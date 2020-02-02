@@ -25,6 +25,12 @@ import (
 type UserSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-policies
+	Policies []User_Policy `json:"policies,omitempty" cloudformation:"Policies"`
+
+	// UserName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-username
+	UserName string `json:"userName,omitempty" cloudformation:"UserName,Parameter"`
+
 	// Groups http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-groups
 	Groups []string `json:"groups,omitempty" cloudformation:"Groups"`
 
@@ -39,12 +45,6 @@ type UserSpec struct {
 
 	// PermissionsBoundary http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-permissionsboundary
 	PermissionsBoundary string `json:"permissionsBoundary,omitempty" cloudformation:"PermissionsBoundary,Parameter"`
-
-	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-policies
-	Policies []User_Policy `json:"policies,omitempty" cloudformation:"Policies"`
-
-	// UserName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-user.html#cfn-iam-user-username
-	UserName string `json:"userName,omitempty" cloudformation:"UserName,Parameter"`
 }
 
 // User_LoginProfile defines the desired state of UserLoginProfile

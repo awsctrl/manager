@@ -59,24 +59,6 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 
 	route53HostedZone := &route53.HostedZone{}
 
-	route53HostedZoneHostedZoneTags := []route53.HostedZone_HostedZoneTag{}
-
-	for _, item := range in.Spec.HostedZoneTags {
-		route53HostedZoneHostedZoneTag := route53.HostedZone_HostedZoneTag{}
-
-		if item.Key != "" {
-			route53HostedZoneHostedZoneTag.Key = item.Key
-		}
-
-		if item.Value != "" {
-			route53HostedZoneHostedZoneTag.Value = item.Value
-		}
-
-	}
-
-	if len(route53HostedZoneHostedZoneTags) > 0 {
-		route53HostedZone.HostedZoneTags = route53HostedZoneHostedZoneTags
-	}
 	if in.Spec.Name != "" {
 		route53HostedZone.Name = in.Spec.Name
 	}
@@ -143,6 +125,25 @@ func (in *HostedZone) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		route53HostedZone.HostedZoneConfig = &route53HostedZoneHostedZoneConfig
+	}
+
+	route53HostedZoneHostedZoneTags := []route53.HostedZone_HostedZoneTag{}
+
+	for _, item := range in.Spec.HostedZoneTags {
+		route53HostedZoneHostedZoneTag := route53.HostedZone_HostedZoneTag{}
+
+		if item.Key != "" {
+			route53HostedZoneHostedZoneTag.Key = item.Key
+		}
+
+		if item.Value != "" {
+			route53HostedZoneHostedZoneTag.Value = item.Value
+		}
+
+	}
+
+	if len(route53HostedZoneHostedZoneTags) > 0 {
+		route53HostedZone.HostedZoneTags = route53HostedZoneHostedZoneTags
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

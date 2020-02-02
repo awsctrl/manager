@@ -58,6 +58,18 @@ func (in *Permission) GetTemplate(client dynamic.Interface) (string, error) {
 
 	lambdaPermission := &lambda.Permission{}
 
+	if in.Spec.FunctionName != "" {
+		lambdaPermission.FunctionName = in.Spec.FunctionName
+	}
+
+	if in.Spec.Principal != "" {
+		lambdaPermission.Principal = in.Spec.Principal
+	}
+
+	if in.Spec.SourceAccount != "" {
+		lambdaPermission.SourceAccount = in.Spec.SourceAccount
+	}
+
 	// TODO(christopherhein) move these to a defaulter
 	lambdaPermissionSourceRefItem := in.Spec.SourceRef.DeepCopy()
 
@@ -81,18 +93,6 @@ func (in *Permission) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.EventSourceToken != "" {
 		lambdaPermission.EventSourceToken = in.Spec.EventSourceToken
-	}
-
-	if in.Spec.FunctionName != "" {
-		lambdaPermission.FunctionName = in.Spec.FunctionName
-	}
-
-	if in.Spec.Principal != "" {
-		lambdaPermission.Principal = in.Spec.Principal
-	}
-
-	if in.Spec.SourceAccount != "" {
-		lambdaPermission.SourceAccount = in.Spec.SourceAccount
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

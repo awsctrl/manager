@@ -25,6 +25,15 @@ import (
 type ApiKeySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// GenerateDistinctId http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-generatedistinctid
+	GenerateDistinctId bool `json:"generateDistinctId,omitempty" cloudformation:"GenerateDistinctId,Parameter"`
+
+	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-name
+	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
+
+	// StageKeys http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-stagekeys
+	StageKeys []ApiKey_StageKey `json:"stageKeys,omitempty" cloudformation:"StageKeys"`
+
 	// Value http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-value
 	Value string `json:"value,omitempty" cloudformation:"Value,Parameter"`
 
@@ -36,15 +45,6 @@ type ApiKeySpec struct {
 
 	// Enabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-enabled
 	Enabled bool `json:"enabled,omitempty" cloudformation:"Enabled,Parameter"`
-
-	// GenerateDistinctId http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-generatedistinctid
-	GenerateDistinctId bool `json:"generateDistinctId,omitempty" cloudformation:"GenerateDistinctId,Parameter"`
-
-	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-name
-	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
-
-	// StageKeys http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-stagekeys
-	StageKeys []ApiKey_StageKey `json:"stageKeys,omitempty" cloudformation:"StageKeys"`
 }
 
 // ApiKey_StageKey defines the desired state of ApiKeyStageKey

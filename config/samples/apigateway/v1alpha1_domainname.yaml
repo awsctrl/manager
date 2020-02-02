@@ -7,7 +7,7 @@ spec:
   endpointConfiguration:
     types:
     - REGIONAL
-  regionalCertificate:
+  regionalCertificateRef:
     kind: Certificate
     apiVersion: certificatemanager.awsctrl.io/v1alpha1
     name: certificate-sample

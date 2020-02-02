@@ -9,7 +9,7 @@ spec:
   enabled: true
   stageKeys:
   - stageName: "Test"
-    restApi:
+    restApiRef:
       kind: RestApi
       apiVersion: apigateway.awsctrl.io/v1alpha1
       name: restapi-sample

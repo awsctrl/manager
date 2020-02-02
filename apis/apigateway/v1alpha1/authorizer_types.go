@@ -28,11 +28,23 @@ type AuthorizerSpec struct {
 	// AuthorizerResultTtlInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-authorizerresultttlinseconds
 	AuthorizerResultTtlInSeconds int `json:"authorizerResultTtlInSeconds,omitempty" cloudformation:"AuthorizerResultTtlInSeconds,Parameter"`
 
-	// AuthorizerUri http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-authorizeruri
-	AuthorizerUri string `json:"authorizerUri,omitempty" cloudformation:"AuthorizerUri,Parameter"`
+	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-type
+	Type string `json:"type,omitempty" cloudformation:"Type,Parameter"`
+
+	// AuthorizerCredentials http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-authorizercredentials
+	AuthorizerCredentials string `json:"authorizerCredentials,omitempty" cloudformation:"AuthorizerCredentials,Parameter"`
 
 	// IdentitySource http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-identitysource
 	IdentitySource string `json:"identitySource,omitempty" cloudformation:"IdentitySource,Parameter"`
+
+	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-name
+	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
+
+	// RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-restapiid
+	RestApiRef metav1alpha1.ObjectReference `json:"restApiRef,omitempty" cloudformation:"RestApiId,Parameter"`
+
+	// AuthType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-authtype
+	AuthType string `json:"authType,omitempty" cloudformation:"AuthType,Parameter"`
 
 	// IdentityValidationExpression http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-identityvalidationexpression
 	IdentityValidationExpression string `json:"identityValidationExpression,omitempty" cloudformation:"IdentityValidationExpression,Parameter"`
@@ -40,20 +52,8 @@ type AuthorizerSpec struct {
 	// ProviderRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-providerarns
 	ProviderRefs []metav1alpha1.ObjectReference `json:"providerRefs,omitempty" cloudformation:"ProviderARNs"`
 
-	// Type http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-type
-	Type string `json:"type,omitempty" cloudformation:"Type,Parameter"`
-
-	// AuthType http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-authtype
-	AuthType string `json:"authType,omitempty" cloudformation:"AuthType,Parameter"`
-
-	// RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-restapiid
-	RestApiRef metav1alpha1.ObjectReference `json:"restApiRef,omitempty" cloudformation:"RestApiId,Parameter"`
-
-	// AuthorizerCredentials http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-authorizercredentials
-	AuthorizerCredentials string `json:"authorizerCredentials,omitempty" cloudformation:"AuthorizerCredentials,Parameter"`
-
-	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-name
-	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
+	// AuthorizerUri http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-authorizer.html#cfn-apigateway-authorizer-authorizeruri
+	AuthorizerUri string `json:"authorizerUri,omitempty" cloudformation:"AuthorizerUri,Parameter"`
 }
 
 // AuthorizerStatus defines the observed state of Authorizer

@@ -25,9 +25,6 @@ import (
 type LayerVersionPermissionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// Action http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-action
-	Action string `json:"action,omitempty" cloudformation:"Action,Parameter"`
-
 	// LayerVersionRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-layerversionarn
 	LayerVersionRef metav1alpha1.ObjectReference `json:"layerVersionRef,omitempty" cloudformation:"LayerVersionArn,Parameter"`
 
@@ -36,6 +33,9 @@ type LayerVersionPermissionSpec struct {
 
 	// Principal http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-principal
 	Principal string `json:"principal,omitempty" cloudformation:"Principal,Parameter"`
+
+	// Action http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-layerversionpermission.html#cfn-lambda-layerversionpermission-action
+	Action string `json:"action,omitempty" cloudformation:"Action,Parameter"`
 }
 
 // LayerVersionPermissionStatus defines the observed state of LayerVersionPermission

@@ -9,7 +9,7 @@ spec:
   type: TOKEN
   identitySource: "method.request.header.Auth"
   name: DefaultAuthorizer
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample

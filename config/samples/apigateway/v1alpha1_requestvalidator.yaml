@@ -6,7 +6,7 @@ spec:
   name: test-validator
   validateRequestBody: true
   validateRequestParameters: true
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample

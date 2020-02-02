@@ -50,12 +50,6 @@ type AccessPointSpec struct {
 	Bucket string `json:"bucket,omitempty" cloudformation:"Bucket,Parameter"`
 }
 
-// AccessPoint_VpcConfiguration defines the desired state of AccessPointVpcConfiguration
-type AccessPoint_VpcConfiguration struct {
-	// VpcRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-accesspoint-vpcconfiguration.html#cfn-s3-accesspoint-vpcconfiguration-vpcid
-	VpcRef metav1alpha1.ObjectReference `json:"vpcRef,omitempty" cloudformation:"VpcId,Parameter"`
-}
-
 // AccessPoint_PublicAccessBlockConfiguration defines the desired state of AccessPointPublicAccessBlockConfiguration
 type AccessPoint_PublicAccessBlockConfiguration struct {
 	// BlockPublicAcls http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-accesspoint-publicaccessblockconfiguration.html#cfn-s3-accesspoint-publicaccessblockconfiguration-blockpublicacls
@@ -69,6 +63,12 @@ type AccessPoint_PublicAccessBlockConfiguration struct {
 
 	// RestrictPublicBuckets http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-accesspoint-publicaccessblockconfiguration.html#cfn-s3-accesspoint-publicaccessblockconfiguration-restrictpublicbuckets
 	RestrictPublicBuckets bool `json:"restrictPublicBuckets,omitempty" cloudformation:"RestrictPublicBuckets,Parameter"`
+}
+
+// AccessPoint_VpcConfiguration defines the desired state of AccessPointVpcConfiguration
+type AccessPoint_VpcConfiguration struct {
+	// VpcRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-accesspoint-vpcconfiguration.html#cfn-s3-accesspoint-vpcconfiguration-vpcid
+	VpcRef metav1alpha1.ObjectReference `json:"vpcRef,omitempty" cloudformation:"VpcId,Parameter"`
 }
 
 // AccessPointStatus defines the observed state of AccessPoint

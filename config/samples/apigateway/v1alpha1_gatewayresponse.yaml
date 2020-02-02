@@ -8,7 +8,7 @@ spec:
 		gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
   responseType: "MISSING_AUTHENTICATION_TOKEN"
   statusCode:   "404"
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample

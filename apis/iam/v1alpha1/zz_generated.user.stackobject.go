@@ -64,43 +64,6 @@ func (in *User) GetTemplate(client dynamic.Interface) (string, error) {
 
 	iamUser := &iam.User{}
 
-	if !reflect.DeepEqual(in.Spec.LoginProfile, User_LoginProfile{}) {
-		iamUserLoginProfile := iam.User_LoginProfile{}
-
-		if in.Spec.LoginProfile.PasswordResetRequired || !in.Spec.LoginProfile.PasswordResetRequired {
-			iamUserLoginProfile.PasswordResetRequired = in.Spec.LoginProfile.PasswordResetRequired
-		}
-
-		if in.Spec.LoginProfile.Password != "" {
-			iamUserLoginProfile.Password = in.Spec.LoginProfile.Password
-		}
-
-		iamUser.LoginProfile = &iamUserLoginProfile
-	}
-
-	if len(in.Spec.ManagedPolicyRefs) > 0 {
-		iamUserManagedPolicyRefs := []string{}
-
-		for _, item := range in.Spec.ManagedPolicyRefs {
-			iamUserManagedPolicyRefsItem := item.DeepCopy()
-
-			if iamUserManagedPolicyRefsItem.ObjectRef.Namespace == "" {
-				iamUserManagedPolicyRefsItem.ObjectRef.Namespace = in.Namespace
-			}
-
-		}
-
-		iamUser.ManagedPolicyArns = iamUserManagedPolicyRefs
-	}
-
-	if in.Spec.Path != "" {
-		iamUser.Path = in.Spec.Path
-	}
-
-	if in.Spec.PermissionsBoundary != "" {
-		iamUser.PermissionsBoundary = in.Spec.PermissionsBoundary
-	}
-
 	iamUserPolicies := []iam.User_Policy{}
 
 	for _, item := range in.Spec.Policies {
@@ -136,6 +99,43 @@ func (in *User) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if len(in.Spec.Groups) > 0 {
 		iamUser.Groups = in.Spec.Groups
+	}
+
+	if !reflect.DeepEqual(in.Spec.LoginProfile, User_LoginProfile{}) {
+		iamUserLoginProfile := iam.User_LoginProfile{}
+
+		if in.Spec.LoginProfile.PasswordResetRequired || !in.Spec.LoginProfile.PasswordResetRequired {
+			iamUserLoginProfile.PasswordResetRequired = in.Spec.LoginProfile.PasswordResetRequired
+		}
+
+		if in.Spec.LoginProfile.Password != "" {
+			iamUserLoginProfile.Password = in.Spec.LoginProfile.Password
+		}
+
+		iamUser.LoginProfile = &iamUserLoginProfile
+	}
+
+	if len(in.Spec.ManagedPolicyRefs) > 0 {
+		iamUserManagedPolicyRefs := []string{}
+
+		for _, item := range in.Spec.ManagedPolicyRefs {
+			iamUserManagedPolicyRefsItem := item.DeepCopy()
+
+			if iamUserManagedPolicyRefsItem.ObjectRef.Namespace == "" {
+				iamUserManagedPolicyRefsItem.ObjectRef.Namespace = in.Namespace
+			}
+
+		}
+
+		iamUser.ManagedPolicyArns = iamUserManagedPolicyRefs
+	}
+
+	if in.Spec.Path != "" {
+		iamUser.Path = in.Spec.Path
+	}
+
+	if in.Spec.PermissionsBoundary != "" {
+		iamUser.PermissionsBoundary = in.Spec.PermissionsBoundary
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

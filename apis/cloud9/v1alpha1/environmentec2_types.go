@@ -25,15 +25,6 @@ import (
 type EnvironmentEC2Spec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// OwnerRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-ownerarn
-	OwnerRef metav1alpha1.ObjectReference `json:"ownerRef,omitempty" cloudformation:"OwnerArn,Parameter"`
-
-	// Repositories http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-repositories
-	Repositories []EnvironmentEC2_Repository `json:"repositories,omitempty" cloudformation:"Repositories"`
-
-	// SubnetRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-subnetid
-	SubnetRef metav1alpha1.ObjectReference `json:"subnetRef,omitempty" cloudformation:"SubnetId,Parameter"`
-
 	// AutomaticStopTimeMinutes http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-automaticstoptimeminutes
 	AutomaticStopTimeMinutes int `json:"automaticStopTimeMinutes,omitempty" cloudformation:"AutomaticStopTimeMinutes,Parameter"`
 
@@ -45,6 +36,15 @@ type EnvironmentEC2Spec struct {
 
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-name
 	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
+
+	// OwnerRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-ownerarn
+	OwnerRef metav1alpha1.ObjectReference `json:"ownerRef,omitempty" cloudformation:"OwnerArn,Parameter"`
+
+	// Repositories http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-repositories
+	Repositories []EnvironmentEC2_Repository `json:"repositories,omitempty" cloudformation:"Repositories"`
+
+	// SubnetRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-cloud9-environmentec2.html#cfn-cloud9-environmentec2-subnetid
+	SubnetRef metav1alpha1.ObjectReference `json:"subnetRef,omitempty" cloudformation:"SubnetId,Parameter"`
 }
 
 // EnvironmentEC2_Repository defines the desired state of EnvironmentEC2Repository

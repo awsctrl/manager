@@ -25,6 +25,12 @@ import (
 type EventInvokeConfigSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// MaximumRetryAttempts http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-maximumretryattempts
+	MaximumRetryAttempts int `json:"maximumRetryAttempts,omitempty" cloudformation:"MaximumRetryAttempts,Parameter"`
+
+	// Qualifier http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-qualifier
+	Qualifier string `json:"qualifier,omitempty" cloudformation:"Qualifier,Parameter"`
+
 	// DestinationConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig
 	DestinationConfig EventInvokeConfig_DestinationConfig `json:"destinationConfig,omitempty" cloudformation:"DestinationConfig"`
 
@@ -33,27 +39,21 @@ type EventInvokeConfigSpec struct {
 
 	// MaximumEventAgeInSeconds http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-maximumeventageinseconds
 	MaximumEventAgeInSeconds int `json:"maximumEventAgeInSeconds,omitempty" cloudformation:"MaximumEventAgeInSeconds,Parameter"`
+}
 
-	// MaximumRetryAttempts http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-maximumretryattempts
-	MaximumRetryAttempts int `json:"maximumRetryAttempts,omitempty" cloudformation:"MaximumRetryAttempts,Parameter"`
+// EventInvokeConfig_DestinationConfig defines the desired state of EventInvokeConfigDestinationConfig
+type EventInvokeConfig_DestinationConfig struct {
+	// OnSuccess http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onsuccess
+	OnSuccess EventInvokeConfig_OnSuccess `json:"onSuccess,omitempty" cloudformation:"OnSuccess"`
 
-	// Qualifier http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventinvokeconfig.html#cfn-lambda-eventinvokeconfig-qualifier
-	Qualifier string `json:"qualifier,omitempty" cloudformation:"Qualifier,Parameter"`
+	// OnFailure http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onfailure
+	OnFailure EventInvokeConfig_OnFailure `json:"onFailure,omitempty" cloudformation:"OnFailure"`
 }
 
 // EventInvokeConfig_OnSuccess defines the desired state of EventInvokeConfigOnSuccess
 type EventInvokeConfig_OnSuccess struct {
 	// Destination http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig-onsuccess.html#cfn-lambda-eventinvokeconfig-destinationconfig-onsuccess-destination
 	Destination string `json:"destination,omitempty" cloudformation:"Destination,Parameter"`
-}
-
-// EventInvokeConfig_DestinationConfig defines the desired state of EventInvokeConfigDestinationConfig
-type EventInvokeConfig_DestinationConfig struct {
-	// OnFailure http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onfailure
-	OnFailure EventInvokeConfig_OnFailure `json:"onFailure,omitempty" cloudformation:"OnFailure"`
-
-	// OnSuccess http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-eventinvokeconfig-destinationconfig.html#cfn-lambda-eventinvokeconfig-destinationconfig-onsuccess
-	OnSuccess EventInvokeConfig_OnSuccess `json:"onSuccess,omitempty" cloudformation:"OnSuccess"`
 }
 
 // EventInvokeConfig_OnFailure defines the desired state of EventInvokeConfigOnFailure

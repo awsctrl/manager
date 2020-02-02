@@ -23,5 +23,5 @@ spec:
       ]
     }
   path: /
-  managedPolicyArns:
-  - arn:aws:iam::aws:policy/AdministratorAccess
+  managedPolicyRefs:
+  - arn: arn:aws:iam::aws:policy/AdministratorAccess

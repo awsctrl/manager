@@ -63,29 +63,6 @@ func (in *Group) GetTemplate(client dynamic.Interface) (string, error) {
 
 	iamGroup := &iam.Group{}
 
-	iamGroupPolicies := []iam.Group_Policy{}
-
-	for _, item := range in.Spec.Policies {
-		iamGroupPolicy := iam.Group_Policy{}
-
-		if item.PolicyDocument != "" {
-			iamGroupPolicyJSON := make(map[string]interface{})
-			err := json.Unmarshal([]byte(item.PolicyDocument), &iamGroupPolicyJSON)
-			if err != nil {
-				return "", err
-			}
-			iamGroupPolicy.PolicyDocument = iamGroupPolicyJSON
-		}
-
-		if item.PolicyName != "" {
-			iamGroupPolicy.PolicyName = item.PolicyName
-		}
-
-	}
-
-	if len(iamGroupPolicies) > 0 {
-		iamGroup.Policies = iamGroupPolicies
-	}
 	// TODO(christopherhein) move these to a defaulter
 	if in.Spec.GroupName == "" {
 		iamGroup.GroupName = in.Name
@@ -112,6 +89,30 @@ func (in *Group) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.Path != "" {
 		iamGroup.Path = in.Spec.Path
+	}
+
+	iamGroupPolicies := []iam.Group_Policy{}
+
+	for _, item := range in.Spec.Policies {
+		iamGroupPolicy := iam.Group_Policy{}
+
+		if item.PolicyDocument != "" {
+			iamGroupPolicyJSON := make(map[string]interface{})
+			err := json.Unmarshal([]byte(item.PolicyDocument), &iamGroupPolicyJSON)
+			if err != nil {
+				return "", err
+			}
+			iamGroupPolicy.PolicyDocument = iamGroupPolicyJSON
+		}
+
+		if item.PolicyName != "" {
+			iamGroupPolicy.PolicyName = item.PolicyName
+		}
+
+	}
+
+	if len(iamGroupPolicies) > 0 {
+		iamGroup.Policies = iamGroupPolicies
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

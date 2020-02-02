@@ -25,14 +25,14 @@ import (
 type RepositorySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// LifecyclePolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-lifecyclepolicy
+	LifecyclePolicy Repository_LifecyclePolicy `json:"lifecyclePolicy,omitempty" cloudformation:"LifecyclePolicy"`
+
 	// RepositoryName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-repositoryname
 	RepositoryName string `json:"repositoryName,omitempty" cloudformation:"RepositoryName,Parameter"`
 
 	// RepositoryPolicyText http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-repositorypolicytext
 	RepositoryPolicyText string `json:"repositoryPolicyText,omitempty" cloudformation:"RepositoryPolicyText,Parameter"`
-
-	// LifecyclePolicy http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-ecr-repository.html#cfn-ecr-repository-lifecyclepolicy
-	LifecyclePolicy Repository_LifecyclePolicy `json:"lifecyclePolicy,omitempty" cloudformation:"LifecyclePolicy"`
 }
 
 // Repository_LifecyclePolicy defines the desired state of RepositoryLifecyclePolicy

@@ -4,7 +4,7 @@ metadata:
   name: deployment-sample
 spec:
   stageName: Staging
-  restApi:
+  restApiRef:
     kind: RestApi
     apiVersion: apigateway.awsctrl.io/v1alpha1
     name: restapi-sample
