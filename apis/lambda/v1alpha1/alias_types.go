@@ -25,6 +25,9 @@ import (
 type AliasSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
 	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-functionname
 	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
 
@@ -39,15 +42,6 @@ type AliasSpec struct {
 
 	// RoutingConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-routingconfig
 	RoutingConfig Alias_AliasRoutingConfiguration `json:"routingConfig,omitempty" cloudformation:"RoutingConfig"`
-
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-alias.html#cfn-lambda-alias-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
-}
-
-// Alias_ProvisionedConcurrencyConfiguration defines the desired state of AliasProvisionedConcurrencyConfiguration
-type Alias_ProvisionedConcurrencyConfiguration struct {
-	// ProvisionedConcurrentExecutions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-provisionedconcurrencyconfiguration.html#cfn-lambda-alias-provisionedconcurrencyconfiguration-provisionedconcurrentexecutions
-	ProvisionedConcurrentExecutions int `json:"provisionedConcurrentExecutions,omitempty" cloudformation:"ProvisionedConcurrentExecutions,Parameter"`
 }
 
 // Alias_AliasRoutingConfiguration defines the desired state of AliasAliasRoutingConfiguration
@@ -56,13 +50,19 @@ type Alias_AliasRoutingConfiguration struct {
 	AdditionalVersionWeights []Alias_VersionWeight `json:"additionalVersionWeights,omitempty" cloudformation:"AdditionalVersionWeights"`
 }
 
+// Alias_ProvisionedConcurrencyConfiguration defines the desired state of AliasProvisionedConcurrencyConfiguration
+type Alias_ProvisionedConcurrencyConfiguration struct {
+	// ProvisionedConcurrentExecutions http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-provisionedconcurrencyconfiguration.html#cfn-lambda-alias-provisionedconcurrencyconfiguration-provisionedconcurrentexecutions
+	ProvisionedConcurrentExecutions int `json:"provisionedConcurrentExecutions,omitempty" cloudformation:"ProvisionedConcurrentExecutions,Parameter"`
+}
+
 // Alias_VersionWeight defines the desired state of AliasVersionWeight
 type Alias_VersionWeight struct {
-	// FunctionWeight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionweight
-	FunctionWeight int `json:"functionWeight,omitempty" cloudformation:"FunctionWeight,Parameter"`
-
 	// FunctionVersion http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionversion
 	FunctionVersion string `json:"functionVersion,omitempty" cloudformation:"FunctionVersion,Parameter"`
+
+	// FunctionWeight http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-alias-versionweight.html#cfn-lambda-alias-versionweight-functionweight
+	FunctionWeight int `json:"functionWeight,omitempty" cloudformation:"FunctionWeight,Parameter"`
 }
 
 // AliasStatus defines the observed state of Alias

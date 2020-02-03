@@ -25,6 +25,9 @@ import (
 type GroupSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// GroupName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-groupname
+	GroupName string `json:"groupName,omitempty" cloudformation:"GroupName,Parameter"`
+
 	// ManagedPolicyRefs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-managepolicyarns
 	ManagedPolicyRefs []metav1alpha1.ObjectReference `json:"managedPolicyRefs,omitempty" cloudformation:"ManagedPolicyArns"`
 
@@ -33,9 +36,6 @@ type GroupSpec struct {
 
 	// Policies http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-policies
 	Policies []Group_Policy `json:"policies,omitempty" cloudformation:"Policies"`
-
-	// GroupName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html#cfn-iam-group-groupname
-	GroupName string `json:"groupName,omitempty" cloudformation:"GroupName,Parameter"`
 }
 
 // Group_Policy defines the desired state of GroupPolicy

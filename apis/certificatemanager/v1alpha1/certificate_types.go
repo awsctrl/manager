@@ -40,11 +40,11 @@ type CertificateSpec struct {
 
 // Certificate_DomainValidationOption defines the desired state of CertificateDomainValidationOption
 type Certificate_DomainValidationOption struct {
-	// ValidationDomain http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-certificatemanager-certificate-domainvalidationoption.html#cfn-certificatemanager-certificate-domainvalidationoption-validationdomain
-	ValidationDomain string `json:"validationDomain,omitempty" cloudformation:"ValidationDomain,Parameter"`
-
 	// DomainName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-certificatemanager-certificate-domainvalidationoption.html#cfn-certificatemanager-certificate-domainvalidationoptions-domainname
 	DomainName string `json:"domainName,omitempty" cloudformation:"DomainName,Parameter"`
+
+	// ValidationDomain http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-certificatemanager-certificate-domainvalidationoption.html#cfn-certificatemanager-certificate-domainvalidationoption-validationdomain
+	ValidationDomain string `json:"validationDomain,omitempty" cloudformation:"ValidationDomain,Parameter"`
 }
 
 // CertificateStatus defines the observed state of Certificate

@@ -5,8 +5,9 @@ metadata:
 spec:
   clusterName: awsctrl
   sync:
-    enabled: false
+    enabled: true
   aws:
     defaultRegion: us-west-2
     supportedRegions:
     - us-west-2
+    - us-east-2

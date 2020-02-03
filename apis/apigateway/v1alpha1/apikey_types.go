@@ -25,6 +25,15 @@ import (
 type ApiKeySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// CustomerRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-customerid
+	CustomerRef metav1alpha1.ObjectReference `json:"customerRef,omitempty" cloudformation:"CustomerId,Parameter"`
+
+	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-description
+	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
+
+	// Enabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-enabled
+	Enabled bool `json:"enabled,omitempty" cloudformation:"Enabled,Parameter"`
+
 	// GenerateDistinctId http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-generatedistinctid
 	GenerateDistinctId bool `json:"generateDistinctId,omitempty" cloudformation:"GenerateDistinctId,Parameter"`
 
@@ -36,24 +45,15 @@ type ApiKeySpec struct {
 
 	// Value http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-value
 	Value string `json:"value,omitempty" cloudformation:"Value,Parameter"`
-
-	// CustomerRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-customerid
-	CustomerRef metav1alpha1.ObjectReference `json:"customerRef,omitempty" cloudformation:"CustomerId,Parameter"`
-
-	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-description
-	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
-
-	// Enabled http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-apikey.html#cfn-apigateway-apikey-enabled
-	Enabled bool `json:"enabled,omitempty" cloudformation:"Enabled,Parameter"`
 }
 
 // ApiKey_StageKey defines the desired state of ApiKeyStageKey
 type ApiKey_StageKey struct {
-	// StageName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-apikey-stagekey.html#cfn-apigateway-apikey-stagekey-stagename
-	StageName string `json:"stageName,omitempty" cloudformation:"StageName,Parameter"`
-
 	// RestApiRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-apikey-stagekey.html#cfn-apigateway-apikey-stagekey-restapiid
 	RestApiRef metav1alpha1.ObjectReference `json:"restApiRef,omitempty" cloudformation:"RestApiId,Parameter"`
+
+	// StageName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-apigateway-apikey-stagekey.html#cfn-apigateway-apikey-stagekey-stagename
+	StageName string `json:"stageName,omitempty" cloudformation:"StageName,Parameter"`
 }
 
 // ApiKeyStatus defines the observed state of ApiKey

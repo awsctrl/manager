@@ -59,14 +59,6 @@ func (in *LayerVersion) GetTemplate(client dynamic.Interface) (string, error) {
 
 	lambdaLayerVersion := &lambda.LayerVersion{}
 
-	if in.Spec.LayerName != "" {
-		lambdaLayerVersion.LayerName = in.Spec.LayerName
-	}
-
-	if in.Spec.LicenseInfo != "" {
-		lambdaLayerVersion.LicenseInfo = in.Spec.LicenseInfo
-	}
-
 	if len(in.Spec.CompatibleRuntimes) > 0 {
 		lambdaLayerVersion.CompatibleRuntimes = in.Spec.CompatibleRuntimes
 	}
@@ -91,6 +83,14 @@ func (in *LayerVersion) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if in.Spec.Description != "" {
 		lambdaLayerVersion.Description = in.Spec.Description
+	}
+
+	if in.Spec.LayerName != "" {
+		lambdaLayerVersion.LayerName = in.Spec.LayerName
+	}
+
+	if in.Spec.LicenseInfo != "" {
+		lambdaLayerVersion.LicenseInfo = in.Spec.LicenseInfo
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

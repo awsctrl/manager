@@ -63,73 +63,8 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 
 	lambdaFunction := &lambda.Function{}
 
-	if in.Spec.Timeout != lambdaFunction.Timeout {
-		lambdaFunction.Timeout = in.Spec.Timeout
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	lambdaFunctionKmsKeyRefItem := in.Spec.KmsKeyRef.DeepCopy()
-
-	if lambdaFunctionKmsKeyRefItem.ObjectRef.Namespace == "" {
-		lambdaFunctionKmsKeyRefItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.KmsKeyRef = *lambdaFunctionKmsKeyRefItem
-	kmsKeyArn, err := in.Spec.KmsKeyRef.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if kmsKeyArn != "" {
-		lambdaFunction.KmsKeyArn = kmsKeyArn
-	}
-
-	if !reflect.DeepEqual(in.Spec.VpcConfig, Function_VpcConfig{}) {
-		lambdaFunctionVpcConfig := lambda.Function_VpcConfig{}
-
-		if len(in.Spec.VpcConfig.SecurityGroupRefs) > 0 {
-			lambdaFunctionVpcConfigSecurityGroupRefs := []string{}
-
-			for _, item := range in.Spec.VpcConfig.SecurityGroupRefs {
-				lambdaFunctionVpcConfigSecurityGroupRefsItem := item.DeepCopy()
-
-				if lambdaFunctionVpcConfigSecurityGroupRefsItem.ObjectRef.Namespace == "" {
-					lambdaFunctionVpcConfigSecurityGroupRefsItem.ObjectRef.Namespace = in.Namespace
-				}
-
-			}
-
-			lambdaFunctionVpcConfig.SecurityGroupIds = lambdaFunctionVpcConfigSecurityGroupRefs
-		}
-
-		if len(in.Spec.VpcConfig.SubnetRefs) > 0 {
-			lambdaFunctionVpcConfigSubnetRefs := []string{}
-
-			for _, item := range in.Spec.VpcConfig.SubnetRefs {
-				lambdaFunctionVpcConfigSubnetRefsItem := item.DeepCopy()
-
-				if lambdaFunctionVpcConfigSubnetRefsItem.ObjectRef.Namespace == "" {
-					lambdaFunctionVpcConfigSubnetRefsItem.ObjectRef.Namespace = in.Namespace
-				}
-
-			}
-
-			lambdaFunctionVpcConfig.SubnetIds = lambdaFunctionVpcConfigSubnetRefs
-		}
-
-		lambdaFunction.VpcConfig = &lambdaFunctionVpcConfig
-	}
-
 	if !reflect.DeepEqual(in.Spec.Code, Function_Code{}) {
 		lambdaFunctionCode := lambda.Function_Code{}
-
-		if in.Spec.Code.S3ObjectVersion != "" {
-			lambdaFunctionCode.S3ObjectVersion = in.Spec.Code.S3ObjectVersion
-		}
-
-		if in.Spec.Code.ZipFile != "" {
-			lambdaFunctionCode.ZipFile = in.Spec.Code.ZipFile
-		}
 
 		if in.Spec.Code.S3Bucket != "" {
 			lambdaFunctionCode.S3Bucket = in.Spec.Code.S3Bucket
@@ -137,6 +72,14 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 
 		if in.Spec.Code.S3Key != "" {
 			lambdaFunctionCode.S3Key = in.Spec.Code.S3Key
+		}
+
+		if in.Spec.Code.S3ObjectVersion != "" {
+			lambdaFunctionCode.S3ObjectVersion = in.Spec.Code.S3ObjectVersion
+		}
+
+		if in.Spec.Code.ZipFile != "" {
+			lambdaFunctionCode.ZipFile = in.Spec.Code.ZipFile
 		}
 
 		lambdaFunction.Code = &lambdaFunctionCode
@@ -165,40 +108,8 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 		lambdaFunction.DeadLetterConfig = &lambdaFunctionDeadLetterConfig
 	}
 
-	// TODO(christopherhein) move these to a defaulter
-	if in.Spec.FunctionName == "" {
-		lambdaFunction.FunctionName = in.Name
-	}
-
-	if in.Spec.FunctionName != "" {
-		lambdaFunction.FunctionName = in.Spec.FunctionName
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	if in.Spec.ReservedConcurrentExecutions != lambdaFunction.ReservedConcurrentExecutions {
-		lambdaFunction.ReservedConcurrentExecutions = in.Spec.ReservedConcurrentExecutions
-	}
-
 	if in.Spec.Description != "" {
 		lambdaFunction.Description = in.Spec.Description
-	}
-
-	if in.Spec.Role != "" {
-		lambdaFunction.Role = in.Spec.Role
-	}
-
-	if !reflect.DeepEqual(in.Spec.TracingConfig, Function_TracingConfig{}) {
-		lambdaFunctionTracingConfig := lambda.Function_TracingConfig{}
-
-		if in.Spec.TracingConfig.Mode != "" {
-			lambdaFunctionTracingConfig.Mode = in.Spec.TracingConfig.Mode
-		}
-
-		lambdaFunction.TracingConfig = &lambdaFunctionTracingConfig
-	}
-
-	if in.Spec.Handler != "" {
-		lambdaFunction.Handler = in.Spec.Handler
 	}
 
 	if !reflect.DeepEqual(in.Spec.Environment, Function_Environment{}) {
@@ -211,6 +122,36 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 		lambdaFunction.Environment = &lambdaFunctionEnvironment
 	}
 
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.FunctionName == "" {
+		lambdaFunction.FunctionName = in.Name
+	}
+
+	if in.Spec.FunctionName != "" {
+		lambdaFunction.FunctionName = in.Spec.FunctionName
+	}
+
+	if in.Spec.Handler != "" {
+		lambdaFunction.Handler = in.Spec.Handler
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	lambdaFunctionKmsKeyRefItem := in.Spec.KmsKeyRef.DeepCopy()
+
+	if lambdaFunctionKmsKeyRefItem.ObjectRef.Namespace == "" {
+		lambdaFunctionKmsKeyRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.KmsKeyRef = *lambdaFunctionKmsKeyRefItem
+	kmsKeyArn, err := in.Spec.KmsKeyRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if kmsKeyArn != "" {
+		lambdaFunction.KmsKeyArn = kmsKeyArn
+	}
+
 	if len(in.Spec.Layers) > 0 {
 		lambdaFunction.Layers = in.Spec.Layers
 	}
@@ -219,8 +160,83 @@ func (in *Function) GetTemplate(client dynamic.Interface) (string, error) {
 		lambdaFunction.MemorySize = in.Spec.MemorySize
 	}
 
+	if in.Spec.ReservedConcurrentExecutions != lambdaFunction.ReservedConcurrentExecutions {
+		lambdaFunction.ReservedConcurrentExecutions = in.Spec.ReservedConcurrentExecutions
+	}
+
+	if in.Spec.Role != "" {
+		lambdaFunction.Role = in.Spec.Role
+	}
+
 	if in.Spec.Runtime != "" {
 		lambdaFunction.Runtime = in.Spec.Runtime
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.Timeout != lambdaFunction.Timeout {
+		lambdaFunction.Timeout = in.Spec.Timeout
+	}
+
+	if !reflect.DeepEqual(in.Spec.TracingConfig, Function_TracingConfig{}) {
+		lambdaFunctionTracingConfig := lambda.Function_TracingConfig{}
+
+		if in.Spec.TracingConfig.Mode != "" {
+			lambdaFunctionTracingConfig.Mode = in.Spec.TracingConfig.Mode
+		}
+
+		lambdaFunction.TracingConfig = &lambdaFunctionTracingConfig
+	}
+
+	if !reflect.DeepEqual(in.Spec.VpcConfig, Function_VpcConfig{}) {
+		lambdaFunctionVpcConfig := lambda.Function_VpcConfig{}
+
+		if len(in.Spec.VpcConfig.SecurityGroupRefs) > 0 {
+			lambdaFunctionVpcConfigSecurityGroupRefs := []string{}
+
+			for _, item := range in.Spec.VpcConfig.SecurityGroupRefs {
+				lambdaFunctionVpcConfigSecurityGroupRefsItem := item.DeepCopy()
+
+				if lambdaFunctionVpcConfigSecurityGroupRefsItem.ObjectRef.Namespace == "" {
+					lambdaFunctionVpcConfigSecurityGroupRefsItem.ObjectRef.Namespace = in.Namespace
+				}
+
+				securityGroupIds, err := lambdaFunctionVpcConfigSecurityGroupRefsItem.String(client)
+				if err != nil {
+					return "", err
+				}
+
+				if securityGroupIds != "" {
+					lambdaFunctionVpcConfigSecurityGroupRefs = append(lambdaFunctionVpcConfigSecurityGroupRefs, securityGroupIds)
+				}
+			}
+
+			lambdaFunctionVpcConfig.SecurityGroupIds = lambdaFunctionVpcConfigSecurityGroupRefs
+		}
+
+		if len(in.Spec.VpcConfig.SubnetRefs) > 0 {
+			lambdaFunctionVpcConfigSubnetRefs := []string{}
+
+			for _, item := range in.Spec.VpcConfig.SubnetRefs {
+				lambdaFunctionVpcConfigSubnetRefsItem := item.DeepCopy()
+
+				if lambdaFunctionVpcConfigSubnetRefsItem.ObjectRef.Namespace == "" {
+					lambdaFunctionVpcConfigSubnetRefsItem.ObjectRef.Namespace = in.Namespace
+				}
+
+				subnetIds, err := lambdaFunctionVpcConfigSubnetRefsItem.String(client)
+				if err != nil {
+					return "", err
+				}
+
+				if subnetIds != "" {
+					lambdaFunctionVpcConfigSubnetRefs = append(lambdaFunctionVpcConfigSubnetRefs, subnetIds)
+				}
+			}
+
+			lambdaFunctionVpcConfig.SubnetIds = lambdaFunctionVpcConfigSubnetRefs
+		}
+
+		lambdaFunction.VpcConfig = &lambdaFunctionVpcConfig
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

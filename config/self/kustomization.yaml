@@ -1,0 +1,6 @@
+namespace: awsctrl-system
+
+namePrefix: awsctrl-
+
+resources:
+- config.yaml

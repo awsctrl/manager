@@ -66,6 +66,10 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 
 	cloud9EnvironmentEC2 := &cloud9.EnvironmentEC2{}
 
+	if in.Spec.AutomaticStopTimeMinutes != cloud9EnvironmentEC2.AutomaticStopTimeMinutes {
+		cloud9EnvironmentEC2.AutomaticStopTimeMinutes = in.Spec.AutomaticStopTimeMinutes
+	}
+
 	if in.Spec.Description != "" {
 		cloud9EnvironmentEC2.Description = in.Spec.Description
 	}
@@ -100,12 +104,12 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 	for _, item := range in.Spec.Repositories {
 		cloud9EnvironmentEC2Repository := cloud9.EnvironmentEC2_Repository{}
 
-		if item.RepositoryUrl != "" {
-			cloud9EnvironmentEC2Repository.RepositoryUrl = item.RepositoryUrl
-		}
-
 		if item.PathComponent != "" {
 			cloud9EnvironmentEC2Repository.PathComponent = item.PathComponent
+		}
+
+		if item.RepositoryUrl != "" {
+			cloud9EnvironmentEC2Repository.RepositoryUrl = item.RepositoryUrl
 		}
 
 	}
@@ -131,9 +135,6 @@ func (in *EnvironmentEC2) GetTemplate(client dynamic.Interface) (string, error) 
 	}
 
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
-	if in.Spec.AutomaticStopTimeMinutes != cloud9EnvironmentEC2.AutomaticStopTimeMinutes {
-		cloud9EnvironmentEC2.AutomaticStopTimeMinutes = in.Spec.AutomaticStopTimeMinutes
-	}
 
 	template.Resources = map[string]cloudformation.Resource{
 		"EnvironmentEC2": cloud9EnvironmentEC2,

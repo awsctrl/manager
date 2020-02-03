@@ -1,6 +1,6 @@
-
 # Image URL to use all building/pushing image targets
 IMG ?= r.awsctrl.io/manager:latest
+BUILD_IMG ?= 591784189070.dkr.ecr.us-west-2.amazonaws.com/manager:latest
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true"
 # Use AWS Client
@@ -57,7 +57,7 @@ manager: generate fmt vet
 
 # Run against the configured Kubernetes cluster in ~/.kube/config
 run: generate fmt vet manifests install
-	go run ./cmd/awsctrl/main.go start
+	go run ./cmd/awsctrl/ start
 
 # Install CRDs into a cluster
 install: manifests
@@ -85,13 +85,16 @@ generate: generator controller-gen
 	$(GENERATOR) run
 	$(CONTROLLER_GEN) object:headerFile=./hack/boilerplate.go.txt paths="./..."
 
+docker-login:
+	eval $(aws ecr get-login --region us-west-2 --no-include-email)
+
 # Build the docker image
 docker-build: test
-	docker build . -t ${IMG}
+	docker build . -t ${BUILD_IMG}
 
 # Push the docker image
-docker-push:
-	docker push ${IMG}
+docker-push: docker-login
+	docker push ${BUILD_IMG}
 
 # Create kind cluster for testing
 kind-create-%: kind

@@ -59,10 +59,6 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 
 	apigatewayGatewayResponse := &apigateway.GatewayResponse{}
 
-	if in.Spec.StatusCode != "" {
-		apigatewayGatewayResponse.StatusCode = in.Spec.StatusCode
-	}
-
 	if !reflect.DeepEqual(in.Spec.ResponseParameters, map[string]string{}) {
 		apigatewayGatewayResponse.ResponseParameters = in.Spec.ResponseParameters
 	}
@@ -90,6 +86,10 @@ func (in *GatewayResponse) GetTemplate(client dynamic.Interface) (string, error)
 
 	if restApiId != "" {
 		apigatewayGatewayResponse.RestApiId = restApiId
+	}
+
+	if in.Spec.StatusCode != "" {
+		apigatewayGatewayResponse.StatusCode = in.Spec.StatusCode
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

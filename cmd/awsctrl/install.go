@@ -35,9 +35,7 @@ import (
 
 var (
 	installLog = ctrl.Log.WithName("setup")
-
-	imageName string
-	version   string
+	path       string
 )
 
 // installCmd represents the start command
@@ -47,44 +45,25 @@ var installCmd = &cobra.Command{
 	Long: `AWS Controller install will generate the manifests necessary for installing into
 your cluster.
 
-$ awsctrl install {crds|manager}
+$ awsctrl install manager
 
 To install this into your cluster you can pipe this into kubectl.
 
-$ awsctrl inatall crds | kubectl apply -f -`,
+$ awsctrl inatall manager | kubectl apply -f -`,
 	// Run: installCommand,
-}
-
-var installCRDSCmd = &cobra.Command{
-	Use:   "crds",
-	Short: "crds will generate the AWS Controller CRD manifests",
-	Long: `AWS Controller install CRDS will generate the manifests necessary for installing into
-your cluster.
-
-$ awsctrl install crds
-
-To install this into your cluster you can pipe this into kubectl.
-
-$ awsctrl inatall crds | kubectl apply -f -`,
-	Run: installCommand("https://github.com/awsctrl/manager/config/crd"),
 }
 
 var installManagerCmd = &cobra.Command{
 	Use:   "manager",
 	Short: "manager will generate the AWS Controller manager manifests",
-	Long: `AWS Controller install manifests will generate the manifests necessary for installing into
-your cluster.
+	Long: `Install manager will generate the manifests necessary for installing into your cluster.
 
 $ awsctrl install manager
 
 To install this into your cluster you can pipe this into kubectl.
 
 $ awsctrl inatall manager | kubectl apply -f -`,
-	Run: installCommand("https://github.com/awsctrl/manager/config/default"),
-}
-
-func installCommand(path string) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
+	Run: func(cmd *cobra.Command, args []string) {
 		ctrl.SetLogger(zap.Logger(true))
 
 		options := krusty.MakeDefaultOptions()
@@ -103,12 +82,49 @@ func installCommand(path string) func(*cobra.Command, []string) {
 		}
 
 		fmt.Print(string(y))
-	}
+	},
+}
+
+var installConfigCmd = &cobra.Command{
+	Use:   "config",
+	Short: "config will generate the AWS Controller manager self.awsctrl.io/Config CR",
+	Long: `Install config will generate the config for your cluster. This uses the aws cli to get your AWS 
+Account ID
+
+$ awsctrl install config
+
+To install this into your cluster you can pipe this into kubectl.
+
+$ awsctrl inatall config | kubectl apply -f -`,
+	Run: func(cmd *cobra.Command, args []string) {
+		ctrl.SetLogger(zap.Logger(true))
+
+		options := krusty.MakeDefaultOptions()
+
+		fSys := filesys.MakeFsOnDisk()
+		m, err := runKustomize(path, fSys, options)
+		if err != nil {
+			installLog.Error(errors.New(""), "unable to init installer")
+			os.Exit(1)
+		}
+
+		y, err := m.AsYaml()
+		if err != nil {
+			installLog.Error(errors.New(""), "unable to convert YAML")
+			os.Exit(1)
+		}
+
+		fmt.Print(string(y))
+	},
 }
 
 func init() {
-	installCmd.AddCommand(installCRDSCmd)
+	installManagerCmd.Flags().StringVarP(&path, "config-dir", "c", "https://github.com/awsctrl/manager/config/default", "Path to the AWS Controller Manager kustomize configs.")
+
+	installConfigCmd.Flags().StringVarP(&path, "config-dir", "c", "https://github.com/awsctrl/manager/config/self", "Path to the AWS Controller Self Config kustomize configs.")
+
 	installCmd.AddCommand(installManagerCmd)
+	installCmd.AddCommand(installConfigCmd)
 	rootCmd.AddCommand(installCmd)
 }
 

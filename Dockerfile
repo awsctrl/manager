@@ -1,5 +1,5 @@
 # Build the awsctrl binary
-FROM golang:1.12.5 as builder
+FROM golang:1.13.5 as builder
 
 WORKDIR /workspace
 # Copy the Go Modules manifests
@@ -10,17 +10,18 @@ COPY go.sum go.sum
 RUN go mod download
 
 # Copy the go source
-COPY main.go main.go
 COPY apis/ apis/
 COPY aws/ aws/
 COPY cmd/ cmd/
 COPY controllers/ controllers/
+COPY e2e/ e2e/
 COPY encoding/ encoding/
 COPY meta/ meta/
+COPY testutils/ testutils/
 COPY token/ token/
 
 # Build
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o awsctrl main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o awsctrl ./cmd/awsctrl
 
 # Use distroless as minimal base image to package the awsctrl binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details

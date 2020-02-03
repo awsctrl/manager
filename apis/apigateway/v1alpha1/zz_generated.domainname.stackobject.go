@@ -55,9 +55,9 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 				"Name": in.Name + "Ref",
 			},
 		},
-		"DistributionHostedZoneId": map[string]interface{}{
-			"Value":  cloudformation.GetAtt("DomainName", "DistributionHostedZoneId"),
-			"Export": map[string]interface{}{"Name": in.Name + "DistributionHostedZoneId"},
+		"DistributionDomainName": map[string]interface{}{
+			"Value":  cloudformation.GetAtt("DomainName", "DistributionDomainName"),
+			"Export": map[string]interface{}{"Name": in.Name + "DistributionDomainName"},
 		},
 		"RegionalDomainName": map[string]interface{}{
 			"Value":  cloudformation.GetAtt("DomainName", "RegionalDomainName"),
@@ -67,19 +67,10 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 			"Value":  cloudformation.GetAtt("DomainName", "RegionalHostedZoneId"),
 			"Export": map[string]interface{}{"Name": in.Name + "RegionalHostedZoneId"},
 		},
-		"DistributionDomainName": map[string]interface{}{
-			"Value":  cloudformation.GetAtt("DomainName", "DistributionDomainName"),
-			"Export": map[string]interface{}{"Name": in.Name + "DistributionDomainName"},
-		},
 	}
 
 	apigatewayDomainName := &apigateway.DomainName{}
 
-	if in.Spec.SecurityPolicy != "" {
-		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayDomainNameCertificateRefItem := in.Spec.CertificateRef.DeepCopy()
 
@@ -127,6 +118,12 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 	if regionalCertificateArn != "" {
 		apigatewayDomainName.RegionalCertificateArn = regionalCertificateArn
 	}
+
+	if in.Spec.SecurityPolicy != "" {
+		apigatewayDomainName.SecurityPolicy = in.Spec.SecurityPolicy
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 
 	template.Resources = map[string]cloudformation.Resource{
 		"DomainName": apigatewayDomainName,

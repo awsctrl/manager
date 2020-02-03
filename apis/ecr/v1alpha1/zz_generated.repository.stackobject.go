@@ -64,16 +64,6 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 
 	ecrRepository := &ecr.Repository{}
 
-	if in.Spec.RepositoryPolicyText != "" {
-		ecrRepositoryJSON := make(map[string]interface{})
-		err := json.Unmarshal([]byte(in.Spec.RepositoryPolicyText), &ecrRepositoryJSON)
-		if err != nil {
-			return "", err
-		}
-		ecrRepository.RepositoryPolicyText = ecrRepositoryJSON
-	}
-
-	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 	if !reflect.DeepEqual(in.Spec.LifecyclePolicy, Repository_LifecyclePolicy{}) {
 		ecrRepositoryLifecyclePolicy := ecr.Repository_LifecyclePolicy{}
 
@@ -109,6 +99,17 @@ func (in *Repository) GetTemplate(client dynamic.Interface) (string, error) {
 	if in.Spec.RepositoryName != "" {
 		ecrRepository.RepositoryName = in.Spec.RepositoryName
 	}
+
+	if in.Spec.RepositoryPolicyText != "" {
+		ecrRepositoryJSON := make(map[string]interface{})
+		err := json.Unmarshal([]byte(in.Spec.RepositoryPolicyText), &ecrRepositoryJSON)
+		if err != nil {
+			return "", err
+		}
+		ecrRepository.RepositoryPolicyText = ecrRepositoryJSON
+	}
+
+	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
 
 	template.Resources = map[string]cloudformation.Resource{
 		"Repository": ecrRepository,

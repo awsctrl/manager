@@ -62,16 +62,16 @@ func (in *AccessKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 	iamAccessKey := &iam.AccessKey{}
 
-	if in.Spec.UserName != "" {
-		iamAccessKey.UserName = in.Spec.UserName
-	}
-
 	if in.Spec.Serial != iamAccessKey.Serial {
 		iamAccessKey.Serial = in.Spec.Serial
 	}
 
 	if in.Spec.Status != "" {
 		iamAccessKey.Status = in.Spec.Status
+	}
+
+	if in.Spec.UserName != "" {
+		iamAccessKey.UserName = in.Spec.UserName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

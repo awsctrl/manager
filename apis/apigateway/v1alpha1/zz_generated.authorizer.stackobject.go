@@ -58,28 +58,32 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayAuthorizer := &apigateway.Authorizer{}
 
+	if in.Spec.AuthType != "" {
+		apigatewayAuthorizer.AuthType = in.Spec.AuthType
+	}
+
 	if in.Spec.AuthorizerCredentials != "" {
 		apigatewayAuthorizer.AuthorizerCredentials = in.Spec.AuthorizerCredentials
-	}
-
-	if in.Spec.IdentitySource != "" {
-		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
-	}
-
-	if in.Spec.Name != "" {
-		apigatewayAuthorizer.Name = in.Spec.Name
 	}
 
 	if in.Spec.AuthorizerResultTtlInSeconds != apigatewayAuthorizer.AuthorizerResultTtlInSeconds {
 		apigatewayAuthorizer.AuthorizerResultTtlInSeconds = in.Spec.AuthorizerResultTtlInSeconds
 	}
 
-	if in.Spec.Type != "" {
-		apigatewayAuthorizer.Type = in.Spec.Type
+	if in.Spec.AuthorizerUri != "" {
+		apigatewayAuthorizer.AuthorizerUri = in.Spec.AuthorizerUri
+	}
+
+	if in.Spec.IdentitySource != "" {
+		apigatewayAuthorizer.IdentitySource = in.Spec.IdentitySource
 	}
 
 	if in.Spec.IdentityValidationExpression != "" {
 		apigatewayAuthorizer.IdentityValidationExpression = in.Spec.IdentityValidationExpression
+	}
+
+	if in.Spec.Name != "" {
+		apigatewayAuthorizer.Name = in.Spec.Name
 	}
 
 	if len(in.Spec.ProviderRefs) > 0 {
@@ -92,13 +96,17 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 				apigatewayAuthorizerProviderRefsItem.ObjectRef.Namespace = in.Namespace
 			}
 
+			providerARNs, err := apigatewayAuthorizerProviderRefsItem.String(client)
+			if err != nil {
+				return "", err
+			}
+
+			if providerARNs != "" {
+				apigatewayAuthorizerProviderRefs = append(apigatewayAuthorizerProviderRefs, providerARNs)
+			}
 		}
 
 		apigatewayAuthorizer.ProviderARNs = apigatewayAuthorizerProviderRefs
-	}
-
-	if in.Spec.AuthorizerUri != "" {
-		apigatewayAuthorizer.AuthorizerUri = in.Spec.AuthorizerUri
 	}
 
 	// TODO(christopherhein) move these to a defaulter
@@ -118,8 +126,8 @@ func (in *Authorizer) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayAuthorizer.RestApiId = restApiId
 	}
 
-	if in.Spec.AuthType != "" {
-		apigatewayAuthorizer.AuthType = in.Spec.AuthType
+	if in.Spec.Type != "" {
+		apigatewayAuthorizer.Type = in.Spec.Type
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

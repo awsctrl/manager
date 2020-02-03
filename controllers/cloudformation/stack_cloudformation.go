@@ -36,6 +36,27 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
+// stackExists will check for existing stacks
+func (r *StackReconciler) stackExists(ctx context.Context, instance *cloudformationv1alpha1.Stack) bool {
+	var outputs *cfn.DescribeStacksOutput
+	var err error
+	if outputs, err = cloudformationutils.DescribeCFNStacks(r.AWSClient, instance); err != nil {
+		return false
+	}
+
+	if len(outputs.Stacks) == 0 {
+		return false
+	}
+
+	return true
+}
+
+// syncExistingStack will load existing stack details
+func (r *StackReconciler) syncExistingStack(ctx context.Context, instance *cloudformationv1alpha1.Stack) error {
+	stackID := cloudformationutils.Name(instance.GetName(), instance.GetNamespace())
+	return r.updateCFNStackStatus(ctx, instance, metav1alpha1.CreateInProgressStatus, "", stackID, map[string]string{})
+}
+
 // createCFNStack will create a new CFN Stack
 func (r *StackReconciler) createCFNStack(ctx context.Context, instance *cloudformationv1alpha1.Stack) error {
 	output, err := cloudformationutils.CreateCFNStack(r.AWSClient, instance)

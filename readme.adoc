@@ -19,12 +19,25 @@ AWS Controller is Kubernetes controller manager which contains controllers that 
 
 == Overview
 
-*_TBD_*
+The AWS Controller is an open source Kubernetes native application that runs in your Kubernetes cluster and listens to the Kubernetes API Server for AWS related https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/[Custom Resources]. These custom resources allow you to create external Cloud Native resources like https://aws.amazon.com/s3/[Amazon S3 Buckets], https://aws.amazon.com/ecr/[AWS ECR Repositories], and many more. 
 
-== Requirements
+By using the AWS Controller you enable a streamlined experience to deploying your Cloud Native applications on AWS. No longer do you need to manage complex deployment pipelines or manage separate deployment tools for infrastructure as you do your application. Now you can deploy everything using `kubectl apply -f`.
 
-* Kubernetes >1.14
+image::https://awsctrl.io/images/controller-flow.png[link="https://awsctrl.io"]
 
 == Installation
 
-*_TBD_*
+With a Kubernetes cluster configured with link:https://github.com/aws/amazon-eks-pod-identity-webhook[Amazon EKS Pod Identity Webhook] and your `KUBECONFIG` configured locally you can install the `awsctrl` binary and then install the controller.
+
+[source,shell]
+----
+go install go.awsctrl.io/manager/cmd/awsctrl
+awsctrl install manager | kubectl apply -f -
+awsctrl install config | kubectl apply -f -
+----
+
+For more details see link:https://awsctrl.io[AWS Controller Website].
+
+== Requirements
+
+* Kubernetes >1.15

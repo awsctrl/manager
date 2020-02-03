@@ -60,6 +60,14 @@ func (in *AccessPoint) GetTemplate(client dynamic.Interface) (string, error) {
 
 	s3AccessPoint := &s3.AccessPoint{}
 
+	if in.Spec.Bucket != "" {
+		s3AccessPoint.Bucket = in.Spec.Bucket
+	}
+
+	if in.Spec.CreationDate != "" {
+		s3AccessPoint.CreationDate = in.Spec.CreationDate
+	}
+
 	if in.Spec.Name != "" {
 		s3AccessPoint.Name = in.Spec.Name
 	}
@@ -129,14 +137,6 @@ func (in *AccessPoint) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		s3AccessPoint.VpcConfiguration = &s3AccessPointVpcConfiguration
-	}
-
-	if in.Spec.Bucket != "" {
-		s3AccessPoint.Bucket = in.Spec.Bucket
-	}
-
-	if in.Spec.CreationDate != "" {
-		s3AccessPoint.CreationDate = in.Spec.CreationDate
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

@@ -82,6 +82,14 @@ func (in *Group) GetTemplate(client dynamic.Interface) (string, error) {
 				iamGroupManagedPolicyRefsItem.ObjectRef.Namespace = in.Namespace
 			}
 
+			managedPolicyArns, err := iamGroupManagedPolicyRefsItem.String(client)
+			if err != nil {
+				return "", err
+			}
+
+			if managedPolicyArns != "" {
+				iamGroupManagedPolicyRefs = append(iamGroupManagedPolicyRefs, managedPolicyArns)
+			}
 		}
 
 		iamGroup.ManagedPolicyArns = iamGroupManagedPolicyRefs

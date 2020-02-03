@@ -25,6 +25,12 @@ import (
 type HostedZoneSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// HostedZoneConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-hostedzoneconfig
+	HostedZoneConfig HostedZone_HostedZoneConfig `json:"hostedZoneConfig,omitempty" cloudformation:"HostedZoneConfig"`
+
+	// HostedZoneTags http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-hostedzonetags
+	HostedZoneTags []HostedZone_HostedZoneTag `json:"hostedZoneTags,omitempty" cloudformation:"HostedZoneTags"`
+
 	// Name http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-name
 	Name string `json:"name,omitempty" cloudformation:"Name,Parameter"`
 
@@ -33,24 +39,12 @@ type HostedZoneSpec struct {
 
 	// VPCs http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-vpcs
 	VPCs []HostedZone_VPC `json:"vPCs,omitempty" cloudformation:"VPCs"`
-
-	// HostedZoneConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-hostedzoneconfig
-	HostedZoneConfig HostedZone_HostedZoneConfig `json:"hostedZoneConfig,omitempty" cloudformation:"HostedZoneConfig"`
-
-	// HostedZoneTags http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html#cfn-route53-hostedzone-hostedzonetags
-	HostedZoneTags []HostedZone_HostedZoneTag `json:"hostedZoneTags,omitempty" cloudformation:"HostedZoneTags"`
 }
 
 // HostedZone_HostedZoneConfig defines the desired state of HostedZoneHostedZoneConfig
 type HostedZone_HostedZoneConfig struct {
 	// Comment http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-hostedzoneconfig.html#cfn-route53-hostedzone-hostedzoneconfig-comment
 	Comment string `json:"comment,omitempty" cloudformation:"Comment,Parameter"`
-}
-
-// HostedZone_QueryLoggingConfig defines the desired state of HostedZoneQueryLoggingConfig
-type HostedZone_QueryLoggingConfig struct {
-	// CloudWatchLogsLogGroupRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-queryloggingconfig.html#cfn-route53-hostedzone-queryloggingconfig-cloudwatchlogsloggrouparn
-	CloudWatchLogsLogGroupRef metav1alpha1.ObjectReference `json:"cloudWatchLogsLogGroupRef,omitempty" cloudformation:"CloudWatchLogsLogGroupArn,Parameter"`
 }
 
 // HostedZone_HostedZoneTag defines the desired state of HostedZoneHostedZoneTag
@@ -60,6 +54,12 @@ type HostedZone_HostedZoneTag struct {
 
 	// Value http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-hostedzonetags.html#cfn-route53-hostedzonetags-value
 	Value string `json:"value,omitempty" cloudformation:"Value,Parameter"`
+}
+
+// HostedZone_QueryLoggingConfig defines the desired state of HostedZoneQueryLoggingConfig
+type HostedZone_QueryLoggingConfig struct {
+	// CloudWatchLogsLogGroupRef http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-route53-hostedzone-queryloggingconfig.html#cfn-route53-hostedzone-queryloggingconfig-cloudwatchlogsloggrouparn
+	CloudWatchLogsLogGroupRef metav1alpha1.ObjectReference `json:"cloudWatchLogsLogGroupRef,omitempty" cloudformation:"CloudWatchLogsLogGroupArn,Parameter"`
 }
 
 // HostedZone_VPC defines the desired state of HostedZoneVPC

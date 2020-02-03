@@ -58,10 +58,6 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayApiKey := &apigateway.ApiKey{}
 
-	if in.Spec.Value != "" {
-		apigatewayApiKey.Value = in.Spec.Value
-	}
-
 	// TODO(christopherhein) move these to a defaulter
 	apigatewayApiKeyCustomerRefItem := in.Spec.CustomerRef.DeepCopy()
 
@@ -127,6 +123,9 @@ func (in *ApiKey) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayApiKey.StageKeys = apigatewayApiKeyStageKeys
 	}
 	// TODO(christopherhein): implement tags this could be easy now that I have the mechanims of nested objects
+	if in.Spec.Value != "" {
+		apigatewayApiKey.Value = in.Spec.Value
+	}
 
 	template.Resources = map[string]cloudformation.Resource{
 		"ApiKey": apigatewayApiKey,
