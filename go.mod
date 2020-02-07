@@ -19,18 +19,19 @@ require (
 	github.com/rogpeppe/go-internal v1.5.2 // indirect
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/cobra v0.0.5
-	go.awsctrl.io/generator v0.0.0-20200125233602-7934df9bdfe5 // indirect
+	go.awsctrl.io/generator v0.0.0-20200216025405-bfd325fd5341 // indirect
 	go.hein.dev/go-version v0.1.0
-	golang.org/x/crypto v0.0.0-20200128174031-69ecbb4d6d5d // indirect
-	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
+	golang.org/x/crypto v0.0.0-20200208060501-ecb85df21340 // indirect
+	golang.org/x/net v0.0.0-20200202094626-16171245cfb2 // indirect
 	golang.org/x/sys v0.0.0-20191210023423-ac6580df4449 // indirect
-	golang.org/x/tools v0.0.0-20200131211209-ecb101ed6550 // indirect
-	gopkg.in/yaml.v2 v2.2.8 // indirect
+	golang.org/x/tools v0.0.0-20200207224406-61798d64f025 // indirect
+	k8s.io/api v0.17.0
 	k8s.io/apimachinery v0.17.2
 	k8s.io/client-go v0.17.0
 	k8s.io/klog v1.0.0
 	sigs.k8s.io/controller-runtime v0.4.0
 	sigs.k8s.io/kustomize/api v0.3.2
+	sigs.k8s.io/yaml v1.2.0 // indirect
 )
 
 replace github.com/appscode/jsonpatch => gomodules.xyz/jsonpatch v1.0.1
