@@ -34,8 +34,8 @@ import (
 )
 
 var (
-	installLog = ctrl.Log.WithName("setup")
-	path       string
+	installLog              = ctrl.Log.WithName("setup")
+	managerpath, configpath string
 )
 
 // installCmd represents the start command
@@ -69,7 +69,7 @@ $ awsctrl inatall manager | kubectl apply -f -`,
 		options := krusty.MakeDefaultOptions()
 
 		fSys := filesys.MakeFsOnDisk()
-		m, err := runKustomize(path, fSys, options)
+		m, err := runKustomize(managerpath, fSys, options)
 		if err != nil {
 			installLog.Error(errors.New(""), "unable to init installer")
 			os.Exit(1)
@@ -102,7 +102,7 @@ $ awsctrl inatall config | kubectl apply -f -`,
 		options := krusty.MakeDefaultOptions()
 
 		fSys := filesys.MakeFsOnDisk()
-		m, err := runKustomize(path, fSys, options)
+		m, err := runKustomize(configpath, fSys, options)
 		if err != nil {
 			installLog.Error(errors.New(""), "unable to init installer")
 			os.Exit(1)
@@ -119,9 +119,8 @@ $ awsctrl inatall config | kubectl apply -f -`,
 }
 
 func init() {
-	installManagerCmd.Flags().StringVarP(&path, "config-dir", "c", "https://github.com/awsctrl/manager/config/default", "Path to the AWS Controller Manager kustomize configs.")
-
-	installConfigCmd.Flags().StringVarP(&path, "config-dir", "c", "https://github.com/awsctrl/manager/config/self", "Path to the AWS Controller Self Config kustomize configs.")
+	installManagerCmd.Flags().StringVarP(&managerpath, "config-dir", "c", "https://github.com/awsctrl/manager/config/default", "Path to the AWS Controller Manager kustomize configs.")
+	installConfigCmd.Flags().StringVarP(&configpath, "config-dir", "c", "https://github.com/awsctrl/manager/config/self", "Path to the AWS Controller Self Config kustomize configs.")
 
 	installCmd.AddCommand(installManagerCmd)
 	installCmd.AddCommand(installConfigCmd)

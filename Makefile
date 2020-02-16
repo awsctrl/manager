@@ -27,14 +27,14 @@ install-ci: kubebuilder set-env kind #kubectl kubectl-context kubectl-verify
 
 # Run tests
 test: generate fmt vet manifests
-	go test `go list ./... | grep -v e2e` -coverprofile unit.out -covermode atomic
+	go test `go list ./... | grep -v e2e` -coverprofile coverage.out -covermode atomic
 
 test-e2e-%: 
 ifeq (true,${USE_EXISTING_CLUSTER})
 	export KUBECONFIG=${PWD}/kubeconfig-e2e-$*
 	@$(MAKE) kind-create-awsctrl-$*
 endif
-	go test -coverprofile e2e-$*.out -covermode atomic -v -coverpkg ./controllers/... ./e2e/$*/...
+	go test -coverprofile coverage.out -covermode atomic -v -coverpkg ./controllers/$*/... ./e2e/$*/...
 ifeq (true,${USE_EXISTING_CLUSTER})
 	@$(MAKE) kind-delete-awsctrl-$*
 endif

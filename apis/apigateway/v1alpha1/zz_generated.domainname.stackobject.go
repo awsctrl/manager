@@ -55,10 +55,6 @@ func (in *DomainName) GetTemplate(client dynamic.Interface) (string, error) {
 				"Name": in.Name + "Ref",
 			},
 		},
-		"DistributionDomainName": map[string]interface{}{
-			"Value":  cloudformation.GetAtt("DomainName", "DistributionDomainName"),
-			"Export": map[string]interface{}{"Name": in.Name + "DistributionDomainName"},
-		},
 		"RegionalDomainName": map[string]interface{}{
 			"Value":  cloudformation.GetAtt("DomainName", "RegionalDomainName"),
 			"Export": map[string]interface{}{"Name": in.Name + "RegionalDomainName"},

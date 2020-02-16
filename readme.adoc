@@ -1,10 +1,10 @@
 = AWS Controller
 :toc: macro
 
-[cols="a,a,a,a,a,a"]
+[cols="a,a,a,a,a,a,a,a,a"]
 |===
-| *API Version* | *Website* | *Build Status* | *Test Coverage* | *Go Report Card* | *License* 
-| image::https://img.shields.io/badge/apiversion-v1alpha1red.svg[link="https://github.com/awsctrl/manager/blob/master/LICENSE"] | image::https://img.shields.io/badge/website-n/a-red.svg[link="https://awsctrl.io"] | image::https://travis-ci.org/awsctrl/manager.svg?branch=master[link="https://travis-ci.org/awsctrl/manager"] | image::https://codecov.io/gh/awsctrl/manager/branch/master/graph/badge.svg[link="https://codecov.io/gh/awsctrl/manager"] | image::https://goreportcard.com/badge/github.com/awsctrl/manager[link="https://goreportcard.com/report/github.com/awsctrl/manager"] | image::https://img.shields.io/badge/license-Apache%202.0-blue.svg[link="https://github.com/awsctrl/manager/blob/master/LICENSE"]
+| *API Version* | *Website* | *Build Status* | *Coverage* | *Report Card* | *License* | *Issues* | *Pull Requests* | *Latest Release*
+| image::https://img.shields.io/badge/apiversion-v1alpha1-red.svg[link="https://github.com/awsctrl/manager/blob/master/LICENSE"] | image::https://img.shields.io/badge/website-n/a-red.svg[link="https://awsctrl.io"] | image::https://travis-ci.org/awsctrl/manager.svg?branch=master[link="https://travis-ci.org/awsctrl/manager"] | image::https://codecov.io/gh/awsctrl/manager/branch/master/graph/badge.svg[link="https://codecov.io/gh/awsctrl/manager"] | image::https://goreportcard.com/badge/github.com/awsctrl/manager[link="https://goreportcard.com/report/github.com/awsctrl/manager"] | image::https://img.shields.io/github/license/awsctrl/manager.svg[link="https://github.com/awsctrl/manager/blob/master/LICENSE"] | image::https://img.shields.io/github/issues/awsctrl/manager.svg[link="https://github.com/awsctrl/manager/issues"] | image::https://img.shields.io/github/issues-pr/awsctrl/manager.svg[link="https://github.com/awsctrl/manager/pulls"] | image::https://img.shields.io/github/release/awsctrl/manager.svg[link="https://github.com/awsctrl/manager/releases/latest"]
 |===
 
 toc::[]
