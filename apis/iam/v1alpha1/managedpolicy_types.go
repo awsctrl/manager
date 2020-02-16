@@ -25,15 +25,6 @@ import (
 type ManagedPolicySpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-policydocument
-	PolicyDocument string `json:"policyDocument,omitempty" cloudformation:"PolicyDocument,Parameter"`
-
-	// Roles http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-roles
-	Roles []string `json:"roles,omitempty" cloudformation:"Roles"`
-
-	// Users http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-users
-	Users []string `json:"users,omitempty" cloudformation:"Users"`
-
 	// Description http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-description
 	Description string `json:"description,omitempty" cloudformation:"Description,Parameter"`
 
@@ -45,6 +36,15 @@ type ManagedPolicySpec struct {
 
 	// Path http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-ec2-dhcpoptions-path
 	Path string `json:"path,omitempty" cloudformation:"Path,Parameter"`
+
+	// PolicyDocument http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-policydocument
+	PolicyDocument string `json:"policyDocument,omitempty" cloudformation:"PolicyDocument,Parameter"`
+
+	// Roles http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-roles
+	Roles []string `json:"roles,omitempty" cloudformation:"Roles"`
+
+	// Users http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-managedpolicy.html#cfn-iam-managedpolicy-users
+	Users []string `json:"users,omitempty" cloudformation:"Users"`
 }
 
 // ManagedPolicyStatus defines the observed state of ManagedPolicy

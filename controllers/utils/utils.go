@@ -29,8 +29,10 @@ import (
 )
 
 var (
-	ControllerOwnerKey        = ".metadata.controller"
-	StackTemplateVersionLabel = "stack-template-version"
+	// ControllerOwnerKey defines the field that will reference ownership
+	ControllerOwnerKey = ".metadata.controller"
+	// StackTemplateVersionLabel defines the stack version for version management
+	StackTemplateVersionLabel = "stack.cloudformation.awsctrl.io/template-version"
 )
 
 // IsStatusComplete will return true completed status

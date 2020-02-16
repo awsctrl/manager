@@ -25,9 +25,6 @@ import (
 type VersionSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
-	// ProvisionedConcurrencyConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-version.html#cfn-lambda-version-provisionedconcurrencyconfig
-	ProvisionedConcurrencyConfig Version_ProvisionedConcurrencyConfiguration `json:"provisionedConcurrencyConfig,omitempty" cloudformation:"ProvisionedConcurrencyConfig"`
-
 	// CodeSha256 http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-version.html#cfn-lambda-version-codesha256
 	CodeSha256 string `json:"codeSha256,omitempty" cloudformation:"CodeSha256,Parameter"`
 
@@ -36,6 +33,9 @@ type VersionSpec struct {
 
 	// FunctionName http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-version.html#cfn-lambda-version-functionname
 	FunctionName string `json:"functionName,omitempty" cloudformation:"FunctionName,Parameter"`
+
+	// ProvisionedConcurrencyConfig http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-version.html#cfn-lambda-version-provisionedconcurrencyconfig
+	ProvisionedConcurrencyConfig Version_ProvisionedConcurrencyConfiguration `json:"provisionedConcurrencyConfig,omitempty" cloudformation:"ProvisionedConcurrencyConfig"`
 }
 
 // Version_ProvisionedConcurrencyConfiguration defines the desired state of VersionProvisionedConcurrencyConfiguration

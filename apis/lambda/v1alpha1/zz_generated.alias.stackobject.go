@@ -59,6 +59,14 @@ func (in *Alias) GetTemplate(client dynamic.Interface) (string, error) {
 
 	lambdaAlias := &lambda.Alias{}
 
+	if in.Spec.Description != "" {
+		lambdaAlias.Description = in.Spec.Description
+	}
+
+	if in.Spec.FunctionName != "" {
+		lambdaAlias.FunctionName = in.Spec.FunctionName
+	}
+
 	if in.Spec.FunctionVersion != "" {
 		lambdaAlias.FunctionVersion = in.Spec.FunctionVersion
 	}
@@ -85,12 +93,12 @@ func (in *Alias) GetTemplate(client dynamic.Interface) (string, error) {
 		for _, item := range in.Spec.RoutingConfig.AdditionalVersionWeights {
 			lambdaAliasAliasRoutingConfigurationVersionWeight := lambda.Alias_VersionWeight{}
 
-			if float64(item.FunctionWeight) != lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionWeight {
-				lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionWeight = float64(item.FunctionWeight)
-			}
-
 			if item.FunctionVersion != "" {
 				lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionVersion = item.FunctionVersion
+			}
+
+			if float64(item.FunctionWeight) != lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionWeight {
+				lambdaAliasAliasRoutingConfigurationVersionWeight.FunctionWeight = float64(item.FunctionWeight)
 			}
 
 		}
@@ -100,14 +108,6 @@ func (in *Alias) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		lambdaAlias.RoutingConfig = &lambdaAliasAliasRoutingConfiguration
-	}
-
-	if in.Spec.Description != "" {
-		lambdaAlias.Description = in.Spec.Description
-	}
-
-	if in.Spec.FunctionName != "" {
-		lambdaAlias.FunctionName = in.Spec.FunctionName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

@@ -58,10 +58,6 @@ func (in *BasePathMapping) GetTemplate(client dynamic.Interface) (string, error)
 
 	apigatewayBasePathMapping := &apigateway.BasePathMapping{}
 
-	if in.Spec.Stage != "" {
-		apigatewayBasePathMapping.Stage = in.Spec.Stage
-	}
-
 	if in.Spec.BasePath != "" {
 		apigatewayBasePathMapping.BasePath = in.Spec.BasePath
 	}
@@ -85,6 +81,10 @@ func (in *BasePathMapping) GetTemplate(client dynamic.Interface) (string, error)
 
 	if restApiId != "" {
 		apigatewayBasePathMapping.RestApiId = restApiId
+	}
+
+	if in.Spec.Stage != "" {
+		apigatewayBasePathMapping.Stage = in.Spec.Stage
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

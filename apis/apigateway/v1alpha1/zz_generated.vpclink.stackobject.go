@@ -76,6 +76,14 @@ func (in *VpcLink) GetTemplate(client dynamic.Interface) (string, error) {
 				apigatewayVpcLinkTargetRefsItem.ObjectRef.Namespace = in.Namespace
 			}
 
+			targetArns, err := apigatewayVpcLinkTargetRefsItem.String(client)
+			if err != nil {
+				return "", err
+			}
+
+			if targetArns != "" {
+				apigatewayVpcLinkTargetRefs = append(apigatewayVpcLinkTargetRefs, targetArns)
+			}
 		}
 
 		apigatewayVpcLink.TargetArns = apigatewayVpcLinkTargetRefs

@@ -18,6 +18,7 @@ package v1alpha1
 
 import (
 	goversion "go.hein.dev/go-version"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -30,7 +31,12 @@ type ConfigSpec struct {
 	AWS ConfigAWS `json:"aws"`
 
 	// Resources is a whitelist of Services and Resources to enable
-	Resources []string `json:"resources"`
+	// +optional
+	Resources []string `json:"resources,omitempty"`
+
+	// Sync is the config for the syncing parameters
+	// +optional
+	Sync ConfigSync `json:"sync,omitempty"`
 
 	// Version stores the operator version information
 	// +optional
@@ -46,33 +52,59 @@ type ConfigAWS struct {
 	SupportedRegions []string `json:"supportedRegions"`
 
 	// AccountID defines the account which each resource is connected to
-	AccountID string `json:"accountID"`
+	// +optional
+	AccountID string `json:"accountID,omitempty"`
+}
+
+// ConfigSync contains the sync configurations
+type ConfigSync struct {
+	// Enabled turns on the syncing
+	Enabled bool `json:"enabled"`
 }
 
 // ConfigStatus defines the observed state of Config
 type ConfigStatus struct {
 	// Conditions defines the stages the deployment is in
 	// +optional
-	Conditions []ConfigStatusConditions `json:"conditions,omitempty"`
+	Conditions []ConfigStatusCondition `json:"conditions,omitempty"`
 }
 
-// ConfigStatusConditions defines the conditions the operator is in
-type ConfigStatusConditions struct {
+// ConfigStatusCondition defines the conditions the operator is in
+type ConfigStatusCondition struct {
+	// type of cluster condition, values in (\"Ready\")
+	Type ConfigConditionType `json:"type"`
+
+	// Status of the condition, one of (\"True\", \"False\", \"Unknown\")
+	Status corev1.ConditionStatus `json:"status"`
+
+	// LastTransitionTime
+	LastTransitionTime metav1.Time `json:"lastTransitionTime"`
+
 	// Message defines the human readable message for the condition
 	// +optional
 	Message string `json:"message,omitempty"`
 
 	// Reason defines the Machine readable status
 	// +optional
-	Reason ReasonCondition `json:"reason,omitempty"`
+	Reason string `json:"reason,omitempty"`
 }
 
-// ReasonCondition defines the state changes
-type ReasonCondition string
+// ConfigConditionType defines type for config condition type.
+type ConfigConditionType string
+
+const (
+	// ConfigConditionReady represents the readiness of the AWS Controller.
+	ConfigConditionReady ConfigConditionType = "Ready"
+
+	// ConfigConditionPendingAWSConfiguration represents the controller not
+	// being configured with AWS
+	ConfigConditionPendingAWSConfiguration ConfigConditionType = "PendingAWSConfiguration"
+)
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-// +kubebuilder:resource:categories=aws;all;self
+// +kubebuilder:resource:categories=aws;self
+// +kubebuilder:printcolumn:JSONPath=.status.conditions[?(@.status == "True")].type,description="status of the stack",name=Status,priority=0,type=string
 
 // Config is the Schema for the Configs API
 type Config struct {

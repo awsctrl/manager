@@ -59,15 +59,6 @@ func (in *Model) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayModel := &apigateway.Model{}
 
-	if in.Spec.Schema != "" {
-		apigatewayModelJSON := make(map[string]interface{})
-		err := json.Unmarshal([]byte(in.Spec.Schema), &apigatewayModelJSON)
-		if err != nil {
-			return "", err
-		}
-		apigatewayModel.Schema = apigatewayModelJSON
-	}
-
 	if in.Spec.ContentType != "" {
 		apigatewayModel.ContentType = in.Spec.ContentType
 	}
@@ -95,6 +86,15 @@ func (in *Model) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if restApiId != "" {
 		apigatewayModel.RestApiId = restApiId
+	}
+
+	if in.Spec.Schema != "" {
+		apigatewayModelJSON := make(map[string]interface{})
+		err := json.Unmarshal([]byte(in.Spec.Schema), &apigatewayModelJSON)
+		if err != nil {
+			return "", err
+		}
+		apigatewayModel.Schema = apigatewayModelJSON
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

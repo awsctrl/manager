@@ -58,12 +58,12 @@ func (in *UserToGroupAddition) GetTemplate(client dynamic.Interface) (string, er
 
 	iamUserToGroupAddition := &iam.UserToGroupAddition{}
 
-	if len(in.Spec.Users) > 0 {
-		iamUserToGroupAddition.Users = in.Spec.Users
-	}
-
 	if in.Spec.GroupName != "" {
 		iamUserToGroupAddition.GroupName = in.Spec.GroupName
+	}
+
+	if len(in.Spec.Users) > 0 {
+		iamUserToGroupAddition.Users = in.Spec.Users
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

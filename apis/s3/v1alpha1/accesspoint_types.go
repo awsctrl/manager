@@ -25,6 +25,9 @@ import (
 type AccessPointSpec struct {
 	metav1alpha1.CloudFormationMeta `json:",inline"`
 
+	// Bucket http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-s3-accesspoint.html#cfn-s3-accesspoint-bucket
+	Bucket string `json:"bucket,omitempty" cloudformation:"Bucket,Parameter"`
+
 	// CreationDate http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-s3-accesspoint.html#cfn-s3-accesspoint-creationdate
 	CreationDate string `json:"creationDate,omitempty" cloudformation:"CreationDate,Parameter"`
 
@@ -45,9 +48,6 @@ type AccessPointSpec struct {
 
 	// VpcConfiguration http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-s3-accesspoint.html#cfn-s3-accesspoint-vpcconfiguration
 	VpcConfiguration AccessPoint_VpcConfiguration `json:"vpcConfiguration,omitempty" cloudformation:"VpcConfiguration"`
-
-	// Bucket http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-s3-accesspoint.html#cfn-s3-accesspoint-bucket
-	Bucket string `json:"bucket,omitempty" cloudformation:"Bucket,Parameter"`
 }
 
 // AccessPoint_PublicAccessBlockConfiguration defines the desired state of AccessPointPublicAccessBlockConfiguration

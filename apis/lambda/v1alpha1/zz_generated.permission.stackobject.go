@@ -58,6 +58,14 @@ func (in *Permission) GetTemplate(client dynamic.Interface) (string, error) {
 
 	lambdaPermission := &lambda.Permission{}
 
+	if in.Spec.Action != "" {
+		lambdaPermission.Action = in.Spec.Action
+	}
+
+	if in.Spec.EventSourceToken != "" {
+		lambdaPermission.EventSourceToken = in.Spec.EventSourceToken
+	}
+
 	if in.Spec.FunctionName != "" {
 		lambdaPermission.FunctionName = in.Spec.FunctionName
 	}
@@ -85,14 +93,6 @@ func (in *Permission) GetTemplate(client dynamic.Interface) (string, error) {
 
 	if sourceArn != "" {
 		lambdaPermission.SourceArn = sourceArn
-	}
-
-	if in.Spec.Action != "" {
-		lambdaPermission.Action = in.Spec.Action
-	}
-
-	if in.Spec.EventSourceToken != "" {
-		lambdaPermission.EventSourceToken = in.Spec.EventSourceToken
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

@@ -13,7 +13,7 @@ spec:
           "Effect": "Allow",
           "Principal": {
             "AWS": [
-              "arn:aws:iam::XXXXXXXXXXXX:role/chrishein"
+              "arn:aws:iam::860055033182:role/chrishein"
             ]
           },
           "Action": [

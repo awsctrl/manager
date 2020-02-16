@@ -110,6 +110,11 @@ func (r *StackReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 	}
 
 	if instance.Status.StackID == "" || controllerutils.IsStatusNotActive(instance.Status.Status) {
+		if config.Spec.Sync.Enabled && r.stackExists(ctx, &instance) {
+			log.Info("Syncing existing CFN Stack")
+			return ctrl.Result{RequeueAfter: waitDuration}, r.syncExistingStack(ctx, &instance)
+		}
+
 		log.Info("Creating CFN Stack")
 		return ctrl.Result{RequeueAfter: waitDuration}, r.createCFNStack(ctx, &instance)
 	}

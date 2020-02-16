@@ -22,18 +22,46 @@ spec:
       labels:
         control-plane: controller-manager
     spec:
+      securityContext:
+        # Expected UID for the nonuser:nonuser group in distroless
+        # This is needed for ProjectedService accounts to work
+        # see https://github.com/kubernetes-sigs/external-dns/pull/1185#issuecomment-530439786 for more information
+        fsGroup: 1002
       containers:
       - command:
-        - /manager
+        - /awsctrl
         args:
-        - --enable-leader-election
+        - "start"
+        - "--enable-leader-election"
+        - "--config-name=awsctrl-config"
         image: controller:latest
         name: manager
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              optional: true
+              key: aws-access-key-id
+              name:  awsctrl-aws-credentials
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              optional: true
+              key: aws-secret-access-key
+              name:  awsctrl-aws-credentials
         resources:
           limits:
-            cpu: 100m
-            memory: 30Mi
+            cpu: "1"
+            memory: 512Mi
           requests:
-            cpu: 100m
-            memory: 20Mi
+            cpu: 256m
+            memory: 256Mi
       terminationGracePeriodSeconds: 10

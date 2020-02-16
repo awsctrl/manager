@@ -132,16 +132,6 @@ func runCommand(cmd *cobra.Command, args []string) {
 func init() {
 	rootCmd.AddCommand(startCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// startCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// startCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
 	startCmd.PersistentFlags().StringVar(&configname, "config-name", "config", "Name of the self.awsctrl.io/config to use.")
 	startCmd.PersistentFlags().StringVar(&metricsaddr, "metrics-addr", ":8080", "The address the metric endpoint binds to.")
 	startCmd.PersistentFlags().BoolVar(&enableleaderelection, "enable-leader-election", false,

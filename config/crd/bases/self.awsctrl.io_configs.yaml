@@ -8,11 +8,15 @@ metadata:
   creationTimestamp: null
   name: configs.self.awsctrl.io
 spec:
+  additionalPrinterColumns:
+  - JSONPath: .status.conditions[?(@.status == "True")].type
+    description: status of the stack
+    name: Status
+    type: string
   group: self.awsctrl.io
   names:
     categories:
     - aws
-    - all
     - self
     kind: Config
     listKind: ConfigList
@@ -58,7 +62,6 @@ spec:
                     type: string
                   type: array
               required:
-              - accountID
               - defaultRegion
               - supportedRegions
               type: object
@@ -71,6 +74,15 @@ spec:
               items:
                 type: string
               type: array
+            sync:
+              description: Sync is the config for the syncing parameters
+              properties:
+                enabled:
+                  description: Enabled turns on the syncing
+                  type: boolean
+              required:
+              - enabled
+              type: object
             version:
               description: Version stores the operator version information
               properties:
@@ -84,7 +96,6 @@ spec:
           required:
           - aws
           - clusterName
-          - resources
           type: object
         status:
           description: ConfigStatus defines the observed state of Config
@@ -92,9 +103,13 @@ spec:
             conditions:
               description: Conditions defines the stages the deployment is in
               items:
-                description: ConfigStatusConditions defines the conditions the operator
+                description: ConfigStatusCondition defines the conditions the operator
                   is in
                 properties:
+                  lastTransitionTime:
+                    description: LastTransitionTime
+                    format: date-time
+                    type: string
                   message:
                     description: Message defines the human readable message for the
                       condition
@@ -102,6 +117,17 @@ spec:
                   reason:
                     description: Reason defines the Machine readable status
                     type: string
+                  status:
+                    description: Status of the condition, one of (\"True\", \"False\",
+                      \"Unknown\")
+                    type: string
+                  type:
+                    description: type of cluster condition, values in (\"Ready\")
+                    type: string
+                required:
+                - lastTransitionTime
+                - status
+                - type
                 type: object
               type: array
           type: object

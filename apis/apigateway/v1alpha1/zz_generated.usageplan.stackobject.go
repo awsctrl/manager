@@ -59,15 +59,6 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayUsagePlan := &apigateway.UsagePlan{}
 
-	// TODO(christopherhein) move these to a defaulter
-	if in.Spec.UsagePlanName == "" {
-		apigatewayUsagePlan.UsagePlanName = in.Name
-	}
-
-	if in.Spec.UsagePlanName != "" {
-		apigatewayUsagePlan.UsagePlanName = in.Spec.UsagePlanName
-	}
-
 	apigatewayUsagePlanApiStages := []apigateway.UsagePlan_ApiStage{}
 
 	for _, item := range in.Spec.ApiStages {
@@ -149,6 +140,15 @@ func (in *UsagePlan) GetTemplate(client dynamic.Interface) (string, error) {
 		}
 
 		apigatewayUsagePlan.Throttle = &apigatewayUsagePlanThrottleSettings
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	if in.Spec.UsagePlanName == "" {
+		apigatewayUsagePlan.UsagePlanName = in.Name
+	}
+
+	if in.Spec.UsagePlanName != "" {
+		apigatewayUsagePlan.UsagePlanName = in.Spec.UsagePlanName
 	}
 
 	template.Resources = map[string]cloudformation.Resource{

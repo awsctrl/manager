@@ -59,6 +59,35 @@ func (in *Method) GetTemplate(client dynamic.Interface) (string, error) {
 
 	apigatewayMethod := &apigateway.Method{}
 
+	if in.Spec.ApiKeyRequired || !in.Spec.ApiKeyRequired {
+		apigatewayMethod.ApiKeyRequired = in.Spec.ApiKeyRequired
+	}
+
+	if len(in.Spec.AuthorizationScopes) > 0 {
+		apigatewayMethod.AuthorizationScopes = in.Spec.AuthorizationScopes
+	}
+
+	if in.Spec.AuthorizationType != "" {
+		apigatewayMethod.AuthorizationType = in.Spec.AuthorizationType
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayMethodAuthorizerRefItem := in.Spec.AuthorizerRef.DeepCopy()
+
+	if apigatewayMethodAuthorizerRefItem.ObjectRef.Namespace == "" {
+		apigatewayMethodAuthorizerRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.AuthorizerRef = *apigatewayMethodAuthorizerRefItem
+	authorizerId, err := in.Spec.AuthorizerRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if authorizerId != "" {
+		apigatewayMethod.AuthorizerId = authorizerId
+	}
+
 	if in.Spec.HttpMethod != "" {
 		apigatewayMethod.HttpMethod = in.Spec.HttpMethod
 	}
@@ -66,36 +95,45 @@ func (in *Method) GetTemplate(client dynamic.Interface) (string, error) {
 	if !reflect.DeepEqual(in.Spec.Integration, Method_Integration{}) {
 		apigatewayMethodIntegration := apigateway.Method_Integration{}
 
-		if in.Spec.Integration.PassthroughBehavior != "" {
-			apigatewayMethodIntegration.PassthroughBehavior = in.Spec.Integration.PassthroughBehavior
+		if len(in.Spec.Integration.CacheKeyParameters) > 0 {
+			apigatewayMethodIntegration.CacheKeyParameters = in.Spec.Integration.CacheKeyParameters
+		}
+
+		if in.Spec.Integration.CacheNamespace != "" {
+			apigatewayMethodIntegration.CacheNamespace = in.Spec.Integration.CacheNamespace
+		}
+
+		// TODO(christopherhein) move these to a defaulter
+		apigatewayMethodIntegrationConnectionRefItem := in.Spec.Integration.ConnectionRef.DeepCopy()
+
+		if apigatewayMethodIntegrationConnectionRefItem.ObjectRef.Namespace == "" {
+			apigatewayMethodIntegrationConnectionRefItem.ObjectRef.Namespace = in.Namespace
+		}
+
+		in.Spec.Integration.ConnectionRef = *apigatewayMethodIntegrationConnectionRefItem
+		connectionId, err := in.Spec.Integration.ConnectionRef.String(client)
+		if err != nil {
+			return "", err
+		}
+
+		if connectionId != "" {
+			apigatewayMethodIntegration.ConnectionId = connectionId
+		}
+
+		if in.Spec.Integration.ConnectionType != "" {
+			apigatewayMethodIntegration.ConnectionType = in.Spec.Integration.ConnectionType
 		}
 
 		if in.Spec.Integration.ContentHandling != "" {
 			apigatewayMethodIntegration.ContentHandling = in.Spec.Integration.ContentHandling
 		}
 
+		if in.Spec.Integration.Credentials != "" {
+			apigatewayMethodIntegration.Credentials = in.Spec.Integration.Credentials
+		}
+
 		if in.Spec.Integration.IntegrationHttpMethod != "" {
 			apigatewayMethodIntegration.IntegrationHttpMethod = in.Spec.Integration.IntegrationHttpMethod
-		}
-
-		if len(in.Spec.Integration.CacheKeyParameters) > 0 {
-			apigatewayMethodIntegration.CacheKeyParameters = in.Spec.Integration.CacheKeyParameters
-		}
-
-		if in.Spec.Integration.TimeoutInMillis != apigatewayMethodIntegration.TimeoutInMillis {
-			apigatewayMethodIntegration.TimeoutInMillis = in.Spec.Integration.TimeoutInMillis
-		}
-
-		if in.Spec.Integration.Uri != "" {
-			apigatewayMethodIntegration.Uri = in.Spec.Integration.Uri
-		}
-
-		if in.Spec.Integration.Type != "" {
-			apigatewayMethodIntegration.Type = in.Spec.Integration.Type
-		}
-
-		if !reflect.DeepEqual(in.Spec.Integration.RequestParameters, map[string]string{}) {
-			apigatewayMethodIntegration.RequestParameters = in.Spec.Integration.RequestParameters
 		}
 
 		apigatewayMethodIntegrationIntegrationResponses := []apigateway.Method_IntegrationResponse{}
@@ -128,50 +166,41 @@ func (in *Method) GetTemplate(client dynamic.Interface) (string, error) {
 		if len(apigatewayMethodIntegrationIntegrationResponses) > 0 {
 			apigatewayMethodIntegration.IntegrationResponses = apigatewayMethodIntegrationIntegrationResponses
 		}
-		// TODO(christopherhein) move these to a defaulter
-		apigatewayMethodIntegrationConnectionRefItem := in.Spec.Integration.ConnectionRef.DeepCopy()
-
-		if apigatewayMethodIntegrationConnectionRefItem.ObjectRef.Namespace == "" {
-			apigatewayMethodIntegrationConnectionRefItem.ObjectRef.Namespace = in.Namespace
+		if in.Spec.Integration.PassthroughBehavior != "" {
+			apigatewayMethodIntegration.PassthroughBehavior = in.Spec.Integration.PassthroughBehavior
 		}
 
-		in.Spec.Integration.ConnectionRef = *apigatewayMethodIntegrationConnectionRefItem
-		connectionId, err := in.Spec.Integration.ConnectionRef.String(client)
-		if err != nil {
-			return "", err
-		}
-
-		if connectionId != "" {
-			apigatewayMethodIntegration.ConnectionId = connectionId
-		}
-
-		if in.Spec.Integration.CacheNamespace != "" {
-			apigatewayMethodIntegration.CacheNamespace = in.Spec.Integration.CacheNamespace
-		}
-
-		if in.Spec.Integration.Credentials != "" {
-			apigatewayMethodIntegration.Credentials = in.Spec.Integration.Credentials
+		if !reflect.DeepEqual(in.Spec.Integration.RequestParameters, map[string]string{}) {
+			apigatewayMethodIntegration.RequestParameters = in.Spec.Integration.RequestParameters
 		}
 
 		if !reflect.DeepEqual(in.Spec.Integration.RequestTemplates, map[string]string{}) {
 			apigatewayMethodIntegration.RequestTemplates = in.Spec.Integration.RequestTemplates
 		}
 
-		if in.Spec.Integration.ConnectionType != "" {
-			apigatewayMethodIntegration.ConnectionType = in.Spec.Integration.ConnectionType
+		if in.Spec.Integration.TimeoutInMillis != apigatewayMethodIntegration.TimeoutInMillis {
+			apigatewayMethodIntegration.TimeoutInMillis = in.Spec.Integration.TimeoutInMillis
+		}
+
+		if in.Spec.Integration.Type != "" {
+			apigatewayMethodIntegration.Type = in.Spec.Integration.Type
+		}
+
+		if in.Spec.Integration.Uri != "" {
+			apigatewayMethodIntegration.Uri = in.Spec.Integration.Uri
 		}
 
 		apigatewayMethod.Integration = &apigatewayMethodIntegration
-	}
-
-	if in.Spec.OperationName != "" {
-		apigatewayMethod.OperationName = in.Spec.OperationName
 	}
 
 	apigatewayMethodMethodResponses := []apigateway.Method_MethodResponse{}
 
 	for _, item := range in.Spec.MethodResponses {
 		apigatewayMethodMethodResponse := apigateway.Method_MethodResponse{}
+
+		if !reflect.DeepEqual(item.ResponseModels, map[string]string{}) {
+			apigatewayMethodMethodResponse.ResponseModels = item.ResponseModels
+		}
 
 		if !reflect.DeepEqual(item.ResponseParameters, map[string]bool{}) {
 			apigatewayMethodMethodResponse.ResponseParameters = item.ResponseParameters
@@ -181,76 +210,21 @@ func (in *Method) GetTemplate(client dynamic.Interface) (string, error) {
 			apigatewayMethodMethodResponse.StatusCode = item.StatusCode
 		}
 
-		if !reflect.DeepEqual(item.ResponseModels, map[string]string{}) {
-			apigatewayMethodMethodResponse.ResponseModels = item.ResponseModels
-		}
-
 	}
 
 	if len(apigatewayMethodMethodResponses) > 0 {
 		apigatewayMethod.MethodResponses = apigatewayMethodMethodResponses
 	}
-	if len(in.Spec.AuthorizationScopes) > 0 {
-		apigatewayMethod.AuthorizationScopes = in.Spec.AuthorizationScopes
+	if in.Spec.OperationName != "" {
+		apigatewayMethod.OperationName = in.Spec.OperationName
 	}
 
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayMethodAuthorizerRefItem := in.Spec.AuthorizerRef.DeepCopy()
-
-	if apigatewayMethodAuthorizerRefItem.ObjectRef.Namespace == "" {
-		apigatewayMethodAuthorizerRefItem.ObjectRef.Namespace = in.Namespace
+	if !reflect.DeepEqual(in.Spec.RequestModels, map[string]string{}) {
+		apigatewayMethod.RequestModels = in.Spec.RequestModels
 	}
 
-	in.Spec.AuthorizerRef = *apigatewayMethodAuthorizerRefItem
-	authorizerId, err := in.Spec.AuthorizerRef.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if authorizerId != "" {
-		apigatewayMethod.AuthorizerId = authorizerId
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayMethodRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
-
-	if apigatewayMethodRestApiRefItem.ObjectRef.Namespace == "" {
-		apigatewayMethodRestApiRefItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.RestApiRef = *apigatewayMethodRestApiRefItem
-	restApiId, err := in.Spec.RestApiRef.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if restApiId != "" {
-		apigatewayMethod.RestApiId = restApiId
-	}
-
-	if in.Spec.AuthorizationType != "" {
-		apigatewayMethod.AuthorizationType = in.Spec.AuthorizationType
-	}
-
-	// TODO(christopherhein) move these to a defaulter
-	apigatewayMethodResourceRefItem := in.Spec.ResourceRef.DeepCopy()
-
-	if apigatewayMethodResourceRefItem.ObjectRef.Namespace == "" {
-		apigatewayMethodResourceRefItem.ObjectRef.Namespace = in.Namespace
-	}
-
-	in.Spec.ResourceRef = *apigatewayMethodResourceRefItem
-	resourceId, err := in.Spec.ResourceRef.String(client)
-	if err != nil {
-		return "", err
-	}
-
-	if resourceId != "" {
-		apigatewayMethod.ResourceId = resourceId
-	}
-
-	if in.Spec.ApiKeyRequired || !in.Spec.ApiKeyRequired {
-		apigatewayMethod.ApiKeyRequired = in.Spec.ApiKeyRequired
+	if !reflect.DeepEqual(in.Spec.RequestParameters, map[string]bool{}) {
+		apigatewayMethod.RequestParameters = in.Spec.RequestParameters
 	}
 
 	// TODO(christopherhein) move these to a defaulter
@@ -270,12 +244,38 @@ func (in *Method) GetTemplate(client dynamic.Interface) (string, error) {
 		apigatewayMethod.RequestValidatorId = requestValidatorId
 	}
 
-	if !reflect.DeepEqual(in.Spec.RequestModels, map[string]string{}) {
-		apigatewayMethod.RequestModels = in.Spec.RequestModels
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayMethodResourceRefItem := in.Spec.ResourceRef.DeepCopy()
+
+	if apigatewayMethodResourceRefItem.ObjectRef.Namespace == "" {
+		apigatewayMethodResourceRefItem.ObjectRef.Namespace = in.Namespace
 	}
 
-	if !reflect.DeepEqual(in.Spec.RequestParameters, map[string]bool{}) {
-		apigatewayMethod.RequestParameters = in.Spec.RequestParameters
+	in.Spec.ResourceRef = *apigatewayMethodResourceRefItem
+	resourceId, err := in.Spec.ResourceRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if resourceId != "" {
+		apigatewayMethod.ResourceId = resourceId
+	}
+
+	// TODO(christopherhein) move these to a defaulter
+	apigatewayMethodRestApiRefItem := in.Spec.RestApiRef.DeepCopy()
+
+	if apigatewayMethodRestApiRefItem.ObjectRef.Namespace == "" {
+		apigatewayMethodRestApiRefItem.ObjectRef.Namespace = in.Namespace
+	}
+
+	in.Spec.RestApiRef = *apigatewayMethodRestApiRefItem
+	restApiId, err := in.Spec.RestApiRef.String(client)
+	if err != nil {
+		return "", err
+	}
+
+	if restApiId != "" {
+		apigatewayMethod.RestApiId = restApiId
 	}
 
 	template.Resources = map[string]cloudformation.Resource{
