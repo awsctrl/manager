@@ -10,4 +10,3 @@ spec:
     defaultRegion: us-west-2
     supportedRegions:
     - us-west-2
-    - us-east-2
